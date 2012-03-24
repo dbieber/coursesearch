@@ -1,4 +1,3 @@
-
 public class CourseSummary {
     String classNum;
     String course;
@@ -14,4 +13,8 @@ public class CourseSummary {
     String courseURL;
     String booksURL;
     String evalURL;
+    
+    public String toString() {
+        return course;
+    }
 }
