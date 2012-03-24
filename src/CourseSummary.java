@@ -1,3 +1,4 @@
+
 public class CourseSummary {
     String classNum;
     String course;
@@ -15,6 +16,6 @@ public class CourseSummary {
     String evalURL;
     
     public String toString() {
-        return course;
+        return classNum + " " + course + " " + title + " " + distArea;
     }
 }

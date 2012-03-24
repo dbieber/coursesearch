@@ -15,18 +15,31 @@ public class RegistrarScraper {
     private final String A_TAG = "a";
     private final String HREF_ATTR = "href";
     
-    String URL;
-    String filename;
     HashMap<Integer, CourseSummary> summaries; //maps classNum to courseSummary
     
     public RegistrarScraper() {
         summaries = new HashMap<Integer, CourseSummary>();
     }
     
-    public void scrape(String URL) throws IOException {
-        this.URL = URL;
+    public void scrape(String URL) {
         
+    }
+    
+    public void scrapeRegistrar(String URL) throws IOException {
         Document doc = Jsoup.connect(URL).get();
+        
+        Element table = doc.getElementsByTag(TABLE_TAG).first();
+        Elements links = table.getElementsByTag(A_TAG);
+        for (Element link : links) {
+            //link.text(); // MAT
+            System.out.println("Scraping " + link.text());
+            scrapeDepartment(URL + link.attr(HREF_ATTR)); 
+        }
+    }
+    
+    public void scrapeDepartment(String URL) throws IOException {
+        Document doc = Jsoup.connect(URL).get();
+        
         Element table = doc.getElementsByTag(TABLE_TAG).first();
         Elements rows = table.getElementsByTag(TABLE_ROW_TAG);
         rows.remove(0); // first row is bogus
@@ -69,7 +82,7 @@ public class RegistrarScraper {
     }
     
     public void dump(String filename) {
-        
+        System.out.println(summaries.toString());
     }
     
     public Map<Integer, CourseSummary> courseSummaries() {
@@ -85,10 +98,11 @@ public class RegistrarScraper {
     }
     
     public static void main(String args[]) throws IOException {
-        String URL = "http://registrar.princeton.edu/course-offerings/search_results.xml?submit=Search&term=1124&coursetitle=&instructor=&distr_area=&level=&cat_number=&sort=SYN_PS_PU_ROXEN_SOC_VW.SUBJECT%2C+SYN_PS_PU_ROXEN_SOC_VW.CATALOG_NBR%2CSYN_PS_PU_ROXEN_SOC_VW.CLASS_SECTION%2CSYN_PS_PU_ROXEN_SOC_VW.CLASS_MTG_NBR";
+        String URL = "http://registrar.princeton.edu/course-offerings/";
         URL = "http://registrar.princeton.edu/course-offerings/search_results.xml?term=1124&subject=AAS";
         RegistrarScraper rs = new RegistrarScraper();
-        rs.scrape(URL);
-        System.out.println(rs.courseSummary(43217));
+        rs.scrapeDepartment(URL);
+        rs.dump("");
+        //System.out.println(rs.courseSummary(43217));
     }
 }
