@@ -78,20 +78,23 @@ public class RegistrarScraper {
         Document doc = Jsoup.connect(URL).get();
         
         CourseDetails details = new CourseDetails();
+        /* TODO */
         
+        Integer classNum = Integer.parseInt(
+                details.get(CourseDetails.CLASS_NUM));
         allDetails.put(classNum, details);
     }
     
     public Map<Integer, CourseSummary> courseSummaries() {
         return summaries;
     }
-    
+
     public CourseSummary courseSummary(Integer classNum) {
         return summaries.get(classNum);
     }
     
-    public Object courseDetails(String course) {
-        return null;
+    public CourseSummary courseDetails(Integer classNum) {
+        return allDetails.get(classNum);
     }
     
     public static void main(String args[]) throws IOException {
