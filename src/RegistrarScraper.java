@@ -14,15 +14,12 @@ public class RegistrarScraper {
     private final String TABLE_DATA_TAG = "td";
     private final String A_TAG = "a";
     private final String HREF_ATTR = "href";
-    
+
     HashMap<Integer, CourseSummary> summaries; //maps classNum to courseSummary
+    HashMap<Integer, CourseDetails> allDetails; //maps classNum to courseDetails
     
     public RegistrarScraper() {
         summaries = new HashMap<Integer, CourseSummary>();
-    }
-    
-    public void scrape(String URL) {
-        
     }
     
     public void scrapeRegistrar(String URL) throws IOException {
@@ -31,7 +28,6 @@ public class RegistrarScraper {
         Element table = doc.getElementsByTag(TABLE_TAG).first();
         Elements links = table.getElementsByTag(A_TAG);
         for (Element link : links) {
-            //link.text(); // MAT
             System.out.println("Scraping " + link.text());
             scrapeDepartment(URL + link.attr(HREF_ATTR)); 
         }
@@ -47,42 +43,43 @@ public class RegistrarScraper {
             Elements cells = row.getElementsByTag(TABLE_DATA_TAG);
             
             CourseSummary summary = new CourseSummary();
-            summary.classNum = cells.remove(0).text();
+            summary.put(CourseSummary.CLASS_NUM, cells.remove(0).text());
             
             Element courseCell = cells.remove(0);
             Element courseLink = courseCell.getElementsByTag(A_TAG).first();
-            summary.course = courseLink.text();
-            summary.courseURL = courseLink.attr(HREF_ATTR);
-            
-            summary.title = cells.remove(0).text();
-            summary.distArea = cells.remove(0).text();
-            summary.sect = cells.remove(0).text();
-            summary.days = cells.remove(0).text();
-            summary.time = cells.remove(0).text();
-            summary.location = cells.remove(0).text();
-            summary.enrl = cells.remove(0).text();
-            summary.max = cells.remove(0).text();
-            summary.status = cells.remove(0).text();
+            summary.put(CourseSummary.COURSE, courseLink.text());
+            summary.put(CourseSummary.COURSE_URL, courseLink.attr(HREF_ATTR));
+
+            summary.put(CourseSummary.TITLE, cells.remove(0).text());
+            summary.put(CourseSummary.DIST_AREA, cells.remove(0).text());
+            summary.put(CourseSummary.SECTION, cells.remove(0).text());
+            summary.put(CourseSummary.DAYS, cells.remove(0).text());
+            summary.put(CourseSummary.TIME, cells.remove(0).text());
+            summary.put(CourseSummary.LOCATION, cells.remove(0).text());
+            summary.put(CourseSummary.ENROLLED, cells.remove(0).text());
+            summary.put(CourseSummary.MAX, cells.remove(0).text());
+            summary.put(CourseSummary.STATUS, cells.remove(0).text());
 
             Element booksCell = cells.remove(0);
             Element booksLink = booksCell.getElementsByTag(A_TAG).first();
-            summary.booksURL = booksLink.attr(HREF_ATTR);
+            summary.put(CourseSummary.BOOKS_URL, booksLink.attr(HREF_ATTR));
 
             Element evalCell = cells.remove(0);
             Element evalLink = evalCell.getElementsByTag(A_TAG).first();
-            summary.evalURL = evalLink.attr(HREF_ATTR);
+            summary.put(CourseSummary.EVAL_URL, evalLink.attr(HREF_ATTR));
             
-            Integer classNum = Integer.parseInt(summary.classNum);
+            Integer classNum = Integer.parseInt(
+                    summary.get(CourseSummary.CLASS_NUM));
             summaries.put(classNum, summary);
         }
     }
     
-    public void load(String filename) {
+    public void scrapeCourse(String URL) throws IOException {
+        Document doc = Jsoup.connect(URL).get();
         
-    }
-    
-    public void dump(String filename) {
-        System.out.println(summaries.toString());
+        CourseDetails details = new CourseDetails();
+        
+        allDetails.put(classNum, details);
     }
     
     public Map<Integer, CourseSummary> courseSummaries() {
@@ -99,10 +96,9 @@ public class RegistrarScraper {
     
     public static void main(String args[]) throws IOException {
         String URL = "http://registrar.princeton.edu/course-offerings/";
-        URL = "http://registrar.princeton.edu/course-offerings/search_results.xml?term=1124&subject=AAS";
         RegistrarScraper rs = new RegistrarScraper();
-        rs.scrapeDepartment(URL);
-        rs.dump("");
-        //System.out.println(rs.courseSummary(43217));
+        rs.scrapeRegistrar(URL);
+        
+        System.out.println(rs.courseSummary(43217));
     }
 }
