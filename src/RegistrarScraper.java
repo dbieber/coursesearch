@@ -1,6 +1,11 @@
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
@@ -38,6 +43,7 @@ public class RegistrarScraper {
         for (Element link : links) {
             System.out.println("Scraping " + link.text());
             scrapeDepartment(URL + link.attr(HREF_ATTR), recursive);
+            break; //TODO remove
         }
     }
     
@@ -114,32 +120,34 @@ public class RegistrarScraper {
         return allDetails.get(classNum);
     }
     
-    public void dump(String filename) {
-        try{
-            //use buffering
-            OutputStream file = new FileOutputStream( filename );
-            OutputStream buffer = new BufferedOutputStream( file );
-            ObjectOutput output = new ObjectOutputStream( buffer );
-            try{
-              output.writeObject( summaries );
-            }
-            finally{
-              output.close();
-            }
-          }  
-          catch(IOException e) {}
+    public void dump(String filename) throws IOException {
+        OutputStream file = new FileOutputStream( filename );
+        OutputStream buffer = new BufferedOutputStream( file );
+        ObjectOutput output = new ObjectOutputStream( buffer );
+        output.writeObject( summaries );
+        output.close();
     }
     
-    public void load(String filename) {
+    @SuppressWarnings("unchecked")
+    public void load(String filename) throws IOException, ClassNotFoundException {
+        InputStream file = new FileInputStream( filename );
+        InputStream buffer = new BufferedInputStream( file );
+        ObjectInput input = new ObjectInputStream ( buffer );
         
+        summaries = (HashMap<Integer, CourseSummary>)input.readObject();
+        input.close();
     }
     
-    public static void main(String args[]) throws IOException {
+    public static void main(String args[]) throws IOException, ClassNotFoundException {
         String URL = "http://registrar.princeton.edu/course-offerings/";
         RegistrarScraper rs = new RegistrarScraper();
         rs.scrapeRegistrar(URL);
         rs.dump("temp.txt");
-        
-        System.out.println(rs.courseSummary(43217));
+
+        RegistrarScraper rs2 = new RegistrarScraper();
+        rs2.load("temp.txt");
+
+        System.out.println("B");
+        System.out.println(rs2.courseSummary(43217));
     }
 }
