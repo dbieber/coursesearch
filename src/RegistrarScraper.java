@@ -23,17 +23,20 @@ public class RegistrarScraper {
     }
     
     public void scrapeRegistrar(String URL) throws IOException {
+        scrapeRegistrar(URL, true);
+    }
+    public void scrapeRegistrar(String URL, boolean recursive) throws IOException {
         Document doc = Jsoup.connect(URL).get();
         
         Element table = doc.getElementsByTag(TABLE_TAG).first();
         Elements links = table.getElementsByTag(A_TAG);
         for (Element link : links) {
             System.out.println("Scraping " + link.text());
-            scrapeDepartment(URL + link.attr(HREF_ATTR)); 
+            scrapeDepartment(URL + link.attr(HREF_ATTR), recursive); 
         }
     }
     
-    public void scrapeDepartment(String URL) throws IOException {
+    public void scrapeDepartment(String URL, boolean recursive) throws IOException {
         Document doc = Jsoup.connect(URL).get();
         
         Element table = doc.getElementsByTag(TABLE_TAG).first();
@@ -71,6 +74,9 @@ public class RegistrarScraper {
             Integer classNum = Integer.parseInt(
                     summary.get(CourseSummary.CLASS_NUM));
             summaries.put(classNum, summary);
+            if (recursive) {
+                scrapeCourse(summary.get(CourseSummary.COURSE_URL));
+            }
         }
     }
     
