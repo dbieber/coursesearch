@@ -1,4 +1,9 @@
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +37,7 @@ public class RegistrarScraper {
         Elements links = table.getElementsByTag(A_TAG);
         for (Element link : links) {
             System.out.println("Scraping " + link.text());
-            scrapeDepartment(URL + link.attr(HREF_ATTR), recursive); 
+            scrapeDepartment(URL + link.attr(HREF_ATTR), recursive);
         }
     }
     
@@ -109,10 +114,31 @@ public class RegistrarScraper {
         return allDetails.get(classNum);
     }
     
+    public void dump(String filename) {
+        try{
+            //use buffering
+            OutputStream file = new FileOutputStream( filename );
+            OutputStream buffer = new BufferedOutputStream( file );
+            ObjectOutput output = new ObjectOutputStream( buffer );
+            try{
+              output.writeObject( summaries );
+            }
+            finally{
+              output.close();
+            }
+          }  
+          catch(IOException e) {}
+    }
+    
+    public void load(String filename) {
+        
+    }
+    
     public static void main(String args[]) throws IOException {
         String URL = "http://registrar.princeton.edu/course-offerings/";
         RegistrarScraper rs = new RegistrarScraper();
         rs.scrapeRegistrar(URL);
+        rs.dump("temp.txt");
         
         System.out.println(rs.courseSummary(43217));
     }
