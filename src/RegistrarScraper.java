@@ -23,7 +23,7 @@ public class RegistrarScraper {
     }
     
     public void scrapeRegistrar(String URL) throws IOException {
-        scrapeRegistrar(URL, true);
+        scrapeRegistrar(URL, false);
     }
     public void scrapeRegistrar(String URL, boolean recursive) throws IOException {
         Document doc = Jsoup.connect(URL).get();
@@ -81,14 +81,20 @@ public class RegistrarScraper {
     }
     
     public void scrapeCourse(String URL) throws IOException {
+
+        /* TODO fix */
+        URL = "http://registrar.princeton.edu/course-offerings/" + URL;
+        System.out.println(URL);
         Document doc = Jsoup.connect(URL).get();
+        
+        System.out.println(doc.text());
         
         CourseDetails details = new CourseDetails();
         /* TODO */
         
-        Integer classNum = Integer.parseInt(
-                details.get(CourseDetails.CLASS_NUM));
-        allDetails.put(classNum, details);
+        //Integer classNum = Integer.parseInt(
+        //        details.get(CourseDetails.CLASS_NUM));
+        //allDetails.put(classNum, details);
     }
     
     public Map<Integer, CourseSummary> courseSummaries() {
