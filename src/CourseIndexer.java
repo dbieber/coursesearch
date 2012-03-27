@@ -1,4 +1,3 @@
-
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -13,6 +12,11 @@ import java.util.Collection;
 public class CourseIndexer {
 	private IndexWriter writer;
 	private RegistrarData rd;
+
+    static final Field.Store YES = Field.Store.YES;
+    static final Field.Store NO = Field.Store.NO;
+    static final Field.Index ANALYZED = Field.Index.ANALYZED;
+    static final Field.Index NOT_ANALYZED = Field.Index.NOT_ANALYZED;
 	
 	//
 	// indexDir = path where index should be created
@@ -45,10 +49,16 @@ public class CourseIndexer {
 		}
 	}
 	
+	private void addPropToDoc(Document doc, CourseDetails details, String prop, Field.Store store, Field.Index analyzed) {
+	    doc.add(new Field(prop, details.get(prop), store, analyzed));
+	}
+	
 	private void indexCourse(CourseDetails course) {
 		try {
 			Document doc = new Document();
-			doc.add(new Field("CLASS_NUM", course.CLASS_NUM, Field.Store.YES, Field.Index.ANALYZED));
+			
+			addPropToDoc(doc, course, CourseDetails.CLASS_NUM, YES, ANALYZED);
+			
 			doc.add(new Field("COURSE", course.COURSE, Field.Store.YES, Field.Index.ANALYZED));
 			doc.add(new Field("TITLE", course.TITLE, Field.Store.YES, Field.Index.ANALYZED));
 			doc.add(new Field("DIST_AREA", course.DIST_AREA, Field.Store.YES, Field.Index.ANALYZED));
