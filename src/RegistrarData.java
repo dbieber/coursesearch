@@ -16,7 +16,7 @@ public class RegistrarData {
     
     public static final String URL = "http://registrar.princeton.edu/course-offerings/";
 
-    private HashMap<Integer, CourseDetails> courses; //maps classNum to CourseDetails
+    private HashMap<Integer, CourseDetails> courses; //maps courseId to CourseDetails
     
     public RegistrarData() {
         courses = new HashMap<Integer, CourseDetails>();

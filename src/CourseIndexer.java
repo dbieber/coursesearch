@@ -89,6 +89,7 @@ public class CourseIndexer {
 	
 	public static void main(String[] args) {
 		RegistrarData rd = new RegistrarData();
+
 		String filename = "coursedata";
 		try {
 			rd.load(filename);
@@ -98,7 +99,7 @@ public class CourseIndexer {
 			System.out.println("Didn't work");
 		}
 		
-		
+
 	
 	}
 	
