@@ -27,12 +27,10 @@ public class RegistrarScraper {
     private final String DESCR_ID = "descr";
     private final String STRONG_TAG = "strong";
 
-    HashMap<Integer, CourseSummary> summaries; //maps classNum to courseSummary
-    HashMap<Integer, CourseDetails> allDetails; //maps classNum to courseDetails
+    HashMap<Integer, CourseSummary> courses; //maps classNum to courseSummary
     
     public RegistrarScraper() {
-        summaries = new HashMap<Integer, CourseSummary>();
-        allDetails = new HashMap<Integer, CourseDetails>();
+        courses = new HashMap<Integer, CourseSummary>();
     }
     
     public void scrapeRegistrar(String URL) throws IOException {
@@ -87,7 +85,7 @@ public class RegistrarScraper {
             
             Integer classNum = Integer.parseInt(
                     summary.get(CourseSummary.CLASS_NUM));
-            summaries.put(classNum, summary);
+            courses.put(classNum, summary);
             if (recursive) {
                 scrapeCourse(classNum, summary.get(CourseSummary.COURSE_URL));
             }
@@ -106,14 +104,14 @@ public class RegistrarScraper {
         URL = "http://registrar.princeton.edu/course-offerings/" + URL;
         Document doc = Jsoup.connect(URL).get();
         
-        CourseDetails details = new CourseDetails();
+        CourseSummary summary = courseSummary(classNum);
         
         Element descr = doc.getElementById(DESCR_ID);
         String descrStr = descr.text();
-        details.put(CourseDetails.DESCRIPTION, descrStr);
+        summary.put(CourseSummary.DESCRIPTION, descrStr);
         
         String professors = doc.select("p strong").text();
-        details.put(CourseDetails.PROFESSORS, professors);
+        summary.put(CourseSummary.PROFESSORS, professors);
         
         Elements allHeaders = doc.select("strong, em");
         int numBefore = 0;
@@ -144,28 +142,26 @@ public class RegistrarScraper {
         for (int j = 0; j < numAfter; j++) {
         	allHeaders.remove(0);
         }
-        details.put(CourseDetails.READING_LIST, sReadList.toString());
+        summary.put(CourseSummary.READING_LIST, sReadList.toString());
         
-        allDetails.put(classNum, details);
+        courses.put(classNum, summary);
     }
     
     public Map<Integer, CourseSummary> courseSummaries() {
-        return summaries;
+        return courses;
     }
 
     public CourseSummary courseSummary(Integer classNum) {
-        return summaries.get(classNum);
-    }
-    
-    public CourseSummary courseDetails(Integer classNum) {
-        return allDetails.get(classNum);
+        CourseSummary s = courses.get(classNum);
+        if (s == null) return new CourseSummary();
+        return s;
     }
     
     public void dump(String filename) throws IOException {
         OutputStream file = new FileOutputStream( filename );
         OutputStream buffer = new BufferedOutputStream( file );
         ObjectOutput output = new ObjectOutputStream( buffer );
-        output.writeObject( summaries );
+        output.writeObject( courses );
         output.close();
     }
     
@@ -175,7 +171,7 @@ public class RegistrarScraper {
         InputStream buffer = new BufferedInputStream( file );
         ObjectInput input = new ObjectInputStream ( buffer );
         
-        summaries = (HashMap<Integer, CourseSummary>)input.readObject();
+        courses = (HashMap<Integer, CourseSummary>)input.readObject();
         input.close();
     }
     
@@ -193,6 +189,6 @@ public class RegistrarScraper {
         */
         RegistrarScraper rs = new RegistrarScraper();
         rs.scrapeCourse(42510, "course_details.xml?courseid=004899&term=1124");
-        System.out.println(rs.courseDetails(42510).get(CourseDetails.PROFESSORS));
+        System.out.println(rs.courseSummary(42510).get(CourseSummary.PROFESSORS));
     }
 }
