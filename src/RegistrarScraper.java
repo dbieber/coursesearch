@@ -25,7 +25,7 @@ public class RegistrarScraper {
     private final String A_TAG = "a";
     private final String HREF_ATTR = "href";
     private final String DESCR_ID = "descr";
-    private final String STRONG = "strong";
+    private final String STRONG_TAG = "strong";
 
     HashMap<Integer, CourseSummary> summaries; //maps classNum to courseSummary
     HashMap<Integer, CourseDetails> allDetails; //maps classNum to courseDetails
@@ -88,7 +88,7 @@ public class RegistrarScraper {
                     summary.get(CourseSummary.CLASS_NUM));
             summaries.put(classNum, summary);
             if (recursive) {
-                scrapeCourse(summary.get(CourseSummary.COURSE_URL));
+                scrapeCourse(classNum, summary.get(CourseSummary.COURSE_URL));
             }
         }
     }
@@ -99,30 +99,18 @@ public class RegistrarScraper {
     	System.out.println(doc.outerHtml());
     }
     
-    public void scrapeCourse(String URL) throws IOException {
+    public void scrapeCourse(Integer classNum, String URL) throws IOException {
 
         /* TODO fix */
         URL = "http://registrar.princeton.edu/course-offerings/" + URL;
         System.out.println(URL);
         Document doc = Jsoup.connect(URL).get();
         
-        //System.out.println(doc.text());
-        
         CourseDetails details = new CourseDetails();
-        /* TODO */
-        // <div id="descr"> for description
+        
         Element descr = doc.getElementById(DESCR_ID);
         String descrStr = descr.text();
-        
-        //System.out.println("Description:" + descrStr);
-        //System.out.println(descr.outerHtml());
-        //Element timetable = doc.getElementById("timetable");
-        //System.out.println(timetable.text());
-        
-        //Elements sectHeaders = doc.getElementsByTag(STRONG);  
-        
-        // this is a temporary solution -- find a way to reference post descr strong tags 
-        
+        details.put(CourseDetails.DESCRIPTION, descrStr);
         
         Elements allHeaders = doc.select("strong, em");
         int numBefore = 0;
@@ -140,7 +128,6 @@ public class RegistrarScraper {
         }
         Element sReadList1 = allHeaders.remove(0); // remove Sample Reading List
 
-        System.out.println(sReadList1.text());
         StringBuilder sReadList = new StringBuilder();
         
         int numAfter = 0;
@@ -156,19 +143,9 @@ public class RegistrarScraper {
         	allHeaders.remove(0);
         }
         System.out.println(sReadList);
+        details.put(CourseDetails.READING_LIST, sReadList.toString());
         
-        Element next = allHeaders.remove(0);
-        System.out.println("Siblings\n");
-        Elements siblings = next.siblingElements();
-        for (Element sibling : siblings) {
-        	System.out.println(sibling.text());
-        }
-        
-        
-        
-        //Integer classNum = Integer.parseInt(
-        //        details.get(CourseDetails.CLASS_NUM));
-        //allDetails.put(classNum, details);
+        allDetails.put(classNum, details);
     }
     
     public Map<Integer, CourseSummary> courseSummaries() {
