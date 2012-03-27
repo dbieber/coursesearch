@@ -58,30 +58,11 @@ public class CourseIndexer {
 			Document doc = new Document();
 			
 			addPropToDoc(doc, course, CourseDetails.CLASS_NUM, YES, ANALYZED);
-			
-			doc.add(new Field("COURSE", course.COURSE, Field.Store.YES, Field.Index.ANALYZED));
-			doc.add(new Field("TITLE", course.TITLE, Field.Store.YES, Field.Index.ANALYZED));
-			doc.add(new Field("DIST_AREA", course.DIST_AREA, Field.Store.YES, Field.Index.ANALYZED));
-			doc.add(new Field("SECTION", course.SECTION, Field.Store.YES, Field.Index.ANALYZED));
-			doc.add(new Field("DAYS", course.DAYS, Field.Store.YES, Field.Index.ANALYZED));
-			doc.add(new Field("TIME", course.TIME, Field.Store.YES, Field.Index.ANALYZED));
-			doc.add(new Field("LOCATION", course.LOCATION, Field.Store.YES, Field.Index.ANALYZED));
-			doc.add(new Field("ENROLLED", course.ENROLLED, Field.Store.YES, Field.Index.ANALYZED));
-			doc.add(new Field("MAX", course.MAX, Field.Store.YES, Field.Index.ANALYZED));
-			doc.add(new Field("STATUS", course.STATUS, Field.Store.YES, Field.Index.ANALYZED));
-			doc.add(new Field("COURSE_URL", course.COURSE_URL, Field.Store.YES, Field.Index.NOT_ANALYZED));
-			doc.add(new Field("BOOKS_URL", course.BOOKS_URL, Field.Store.YES, Field.Index.NOT_ANALYZED));
-			doc.add(new Field("EVAL_URL", course.EVAL_URL, Field.Store.YES, Field.Index.NOT_ANALYZED));
-			doc.add(new Field("PROFESSORS", course.PROFESSORS, Field.Store.YES, Field.Index.ANALYZED));
-			doc.add(new Field("READING_LIST", course.READING_LIST, Field.Store.YES, Field.Index.ANALYZED));
-			doc.add(new Field("DESCRIPTION", course.DESCRIPTION, Field.Store.YES, Field.Index.ANALYZED));
-			
+
 			writer.addDocument(doc);
-			System.out.println("Added " + course.COURSE + " " + course.TITLE);
 			
 		}
 		catch (Exception E) {
-			System.out.println("I couldn't index this course : " + course.TITLE);
 		} 
 	}
 	
