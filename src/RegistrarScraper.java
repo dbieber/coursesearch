@@ -32,6 +32,7 @@ public class RegistrarScraper {
     
     public RegistrarScraper() {
         summaries = new HashMap<Integer, CourseSummary>();
+        allDetails = new HashMap<Integer, CourseDetails>();
     }
     
     public void scrapeRegistrar(String URL) throws IOException {
@@ -103,7 +104,6 @@ public class RegistrarScraper {
 
         /* TODO fix */
         URL = "http://registrar.princeton.edu/course-offerings/" + URL;
-        System.out.println(URL);
         Document doc = Jsoup.connect(URL).get();
         
         CourseDetails details = new CourseDetails();
@@ -111,6 +111,9 @@ public class RegistrarScraper {
         Element descr = doc.getElementById(DESCR_ID);
         String descrStr = descr.text();
         details.put(CourseDetails.DESCRIPTION, descrStr);
+        
+        String professors = doc.select("p strong").text();
+        details.put(CourseDetails.PROFESSORS, professors);
         
         Elements allHeaders = doc.select("strong, em");
         int numBefore = 0;
@@ -120,13 +123,12 @@ public class RegistrarScraper {
         		// can we remove elements of the iterator we're in?
         		break;
         	}
-        	numBefore++;
-        	//System.out.println("Before: " + sectHeader.text());        
+        	numBefore++;       
         }
         for (int j = 0; j < numBefore; j++) {
         	allHeaders.remove(0);
         }
-        Element sReadList1 = allHeaders.remove(0); // remove Sample Reading List
+        allHeaders.remove(0);
 
         StringBuilder sReadList = new StringBuilder();
         
@@ -142,7 +144,6 @@ public class RegistrarScraper {
         for (int j = 0; j < numAfter; j++) {
         	allHeaders.remove(0);
         }
-        System.out.println(sReadList);
         details.put(CourseDetails.READING_LIST, sReadList.toString());
         
         allDetails.put(classNum, details);
@@ -188,12 +189,10 @@ public class RegistrarScraper {
         RegistrarScraper rs2 = new RegistrarScraper();
         rs2.load("temp.txt");
 
-        System.out.println("B");
         System.out.println(rs2.courseSummary(43217));
         */
-        RegistrarScraper rs3 = new RegistrarScraper();
-        rs3.scrapeCourse("course_details.xml?courseid=008487&term=1124");
-        rs3.test();
-        //
+        RegistrarScraper rs = new RegistrarScraper();
+        rs.scrapeCourse(42510, "course_details.xml?courseid=004899&term=1124");
+        System.out.println(rs.courseDetails(42510).get(CourseDetails.PROFESSORS));
     }
 }
