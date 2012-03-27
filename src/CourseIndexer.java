@@ -38,12 +38,13 @@ public class CourseIndexer {
 	
 	
 	private void indexRegistrar() {
-		for (CourseSummary course : rd.courseSummaries) {
+		Collection<CourseDetails> courses = rd.courseDetails();
+		for (CourseDetails course : courses) {
 			indexCourse(course);			
 		}
 	}
 	
-	private void indexCourse(CourseSummary course) {
+	private void indexCourse(CourseDetails course) {
 		try {
 			Document doc = new Document();
 			doc.add(new Field("CLASS_NUM", course.CLASS_NUM, Field.Store.YES, Field.Index.ANALYZED));
@@ -57,9 +58,9 @@ public class CourseIndexer {
 			doc.add(new Field("ENROLLED", course.ENROLLED, Field.Store.YES, Field.Index.ANALYZED));
 			doc.add(new Field("MAX", course.MAX, Field.Store.YES, Field.Index.ANALYZED));
 			doc.add(new Field("STATUS", course.STATUS, Field.Store.YES, Field.Index.ANALYZED));
-			doc.add(new Field("COURSE_URL", course.COURSE_URL, Field.Store.YES, Field.Index.ANALYZED));
-			doc.add(new Field("BOOKS_URL", course.BOOKS_URL, Field.Store.YES, Field.Index.ANALYZED));
-			doc.add(new Field("EVAL_URL", course.EVAL_URL, Field.Store.YES, Field.Index.ANALYZED));
+			doc.add(new Field("COURSE_URL", course.COURSE_URL, Field.Store.YES, Field.Index.NOT_ANALYZED));
+			doc.add(new Field("BOOKS_URL", course.BOOKS_URL, Field.Store.YES, Field.Index.NOT_ANALYZED));
+			doc.add(new Field("EVAL_URL", course.EVAL_URL, Field.Store.YES, Field.Index.NOT_ANALYZED));
 			doc.add(new Field("PROFESSORS", course.PROFESSORS, Field.Store.YES, Field.Index.ANALYZED));
 			doc.add(new Field("READING_LIST", course.READING_LIST, Field.Store.YES, Field.Index.ANALYZED));
 			doc.add(new Field("DESCRIPTION", course.DESCRIPTION, Field.Store.YES, Field.Index.ANALYZED));
