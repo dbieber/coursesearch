@@ -2,7 +2,7 @@ import java.util.HashMap;
 
 // import org.json;
 
-public class CourseSummary extends HashMap<String, String> {
+public class CourseDetails extends HashMap<String, String> {
     
     private static final long serialVersionUID = 1L;
 
@@ -25,11 +25,11 @@ public class CourseSummary extends HashMap<String, String> {
     public static final String READING_LIST = "reading_list";
     public static final String DESCRIPTION = "description";
 
-    public CourseSummary() {
+    public CourseDetails() {
         super();
     }
 
-    public CourseSummary(String summary) {
+    public CourseDetails(String details) {
         super();
     }
 }
