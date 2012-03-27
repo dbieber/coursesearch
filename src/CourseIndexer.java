@@ -8,6 +8,7 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
 import java.io.*;
+import java.util.Collection;
 
 public class CourseIndexer {
 	private IndexWriter writer;
