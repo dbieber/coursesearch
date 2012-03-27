@@ -75,7 +75,7 @@ public class CourseIndexer {
 			addPropToDoc(doc, course, CourseDetails.DESCRIPTION, YES, ANALYZED);
 			
 			writer.addDocument(doc);
-			System.out.println("Added");
+			System.out.println("Added " + course.get("COURSE"));
 			
 		}
 		catch (Exception E) {
@@ -89,6 +89,15 @@ public class CourseIndexer {
 	
 	public static void main(String[] args) {
 		RegistrarData rd = new RegistrarData();
+		String filename = "coursedata";
+		try {
+			rd.load(filename);
+			CourseIndexer indexer = new CourseIndexer(rd, "testIndex");
+			
+		} catch (Exception e) {
+			System.out.println("Didn't work");
+		}
+		
 		
 	
 	}
