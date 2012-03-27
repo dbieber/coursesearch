@@ -1,16 +1,4 @@
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -25,17 +13,21 @@ public class RegistrarScraper {
     private final String A_TAG = "a";
     private final String HREF_ATTR = "href";
     private final String DESCR_ID = "descr";
-    private final String STRONG_TAG = "strong";
 
-    HashMap<Integer, CourseSummary> courses; //maps classNum to courseSummary
+    RegistrarData data;
     
     public RegistrarScraper() {
-        courses = new HashMap<Integer, CourseSummary>();
+        data = new RegistrarData();
+    }
+    
+    public RegistrarScraper(RegistrarData data) {
+        this.data = data;
     }
     
     public void scrapeRegistrar(String URL) throws IOException {
         scrapeRegistrar(URL, false);
     }
+    
     public void scrapeRegistrar(String URL, boolean recursive) throws IOException {
         Document doc = Jsoup.connect(URL).get();
         
@@ -44,7 +36,6 @@ public class RegistrarScraper {
         for (Element link : links) {
             System.out.println("Scraping " + link.text());
             scrapeDepartment(URL + link.attr(HREF_ATTR), recursive);
-            break; //TODO remove
         }
     }
     
@@ -57,37 +48,35 @@ public class RegistrarScraper {
         for (Element row : rows) {
             Elements cells = row.getElementsByTag(TABLE_DATA_TAG);
             
-            CourseSummary summary = new CourseSummary();
-            summary.put(CourseSummary.CLASS_NUM, cells.remove(0).text());
+            CourseDetails details = new CourseDetails();
+            details.put(CourseDetails.CLASS_NUM, cells.remove(0).text());
             
             Element courseCell = cells.remove(0);
             Element courseLink = courseCell.getElementsByTag(A_TAG).first();
-            summary.put(CourseSummary.COURSE, courseLink.text());
-            summary.put(CourseSummary.COURSE_URL, courseLink.attr(HREF_ATTR));
+            details.put(CourseDetails.COURSE, courseLink.text());
+            details.put(CourseDetails.COURSE_URL, courseLink.attr(HREF_ATTR));
 
-            summary.put(CourseSummary.TITLE, cells.remove(0).text());
-            summary.put(CourseSummary.DIST_AREA, cells.remove(0).text());
-            summary.put(CourseSummary.SECTION, cells.remove(0).text());
-            summary.put(CourseSummary.DAYS, cells.remove(0).text());
-            summary.put(CourseSummary.TIME, cells.remove(0).text());
-            summary.put(CourseSummary.LOCATION, cells.remove(0).text());
-            summary.put(CourseSummary.ENROLLED, cells.remove(0).text());
-            summary.put(CourseSummary.MAX, cells.remove(0).text());
-            summary.put(CourseSummary.STATUS, cells.remove(0).text());
+            details.put(CourseDetails.TITLE, cells.remove(0).text());
+            details.put(CourseDetails.DIST_AREA, cells.remove(0).text());
+            details.put(CourseDetails.SECTION, cells.remove(0).text());
+            details.put(CourseDetails.DAYS, cells.remove(0).text());
+            details.put(CourseDetails.TIME, cells.remove(0).text());
+            details.put(CourseDetails.LOCATION, cells.remove(0).text());
+            details.put(CourseDetails.ENROLLED, cells.remove(0).text());
+            details.put(CourseDetails.MAX, cells.remove(0).text());
+            details.put(CourseDetails.STATUS, cells.remove(0).text());
 
             Element booksCell = cells.remove(0);
             Element booksLink = booksCell.getElementsByTag(A_TAG).first();
-            summary.put(CourseSummary.BOOKS_URL, booksLink.attr(HREF_ATTR));
+            details.put(CourseDetails.BOOKS_URL, booksLink.attr(HREF_ATTR));
 
             Element evalCell = cells.remove(0);
             Element evalLink = evalCell.getElementsByTag(A_TAG).first();
-            summary.put(CourseSummary.EVAL_URL, evalLink.attr(HREF_ATTR));
+            details.put(CourseDetails.EVAL_URL, evalLink.attr(HREF_ATTR));
             
-            Integer classNum = Integer.parseInt(
-                    summary.get(CourseSummary.CLASS_NUM));
-            courses.put(classNum, summary);
+            data.addCourseDetails(details);
             if (recursive) {
-                scrapeCourse(classNum, summary.get(CourseSummary.COURSE_URL));
+                scrapeCourse(details.get(CourseDetails.COURSE_URL));
             }
         }
     }
@@ -98,20 +87,21 @@ public class RegistrarScraper {
     	System.out.println(doc.outerHtml());
     }
     
-    public void scrapeCourse(Integer classNum, String URL) throws IOException {
-
+    public void scrapeCourse(String URL) throws IOException {
         /* TODO fix */
         URL = "http://registrar.princeton.edu/course-offerings/" + URL;
         Document doc = Jsoup.connect(URL).get();
         
-        CourseSummary summary = courseSummary(classNum);
+        CourseDetails details = new CourseDetails();
+        
+        details.put(CourseDetails.COURSE_URL, URL);
         
         Element descr = doc.getElementById(DESCR_ID);
         String descrStr = descr.text();
-        summary.put(CourseSummary.DESCRIPTION, descrStr);
+        details.put(CourseDetails.DESCRIPTION, descrStr);
         
         String professors = doc.select("p strong").text();
-        summary.put(CourseSummary.PROFESSORS, professors);
+        details.put(CourseDetails.PROFESSORS, professors);
         
         Elements allHeaders = doc.select("strong, em");
         int numBefore = 0;
@@ -142,53 +132,14 @@ public class RegistrarScraper {
         for (int j = 0; j < numAfter; j++) {
         	allHeaders.remove(0);
         }
-        summary.put(CourseSummary.READING_LIST, sReadList.toString());
+        details.put(CourseDetails.READING_LIST, sReadList.toString());
         
-        courses.put(classNum, summary);
-    }
-    
-    public Map<Integer, CourseSummary> courseSummaries() {
-        return courses;
-    }
-
-    public CourseSummary courseSummary(Integer classNum) {
-        CourseSummary s = courses.get(classNum);
-        if (s == null) return new CourseSummary();
-        return s;
-    }
-    
-    public void dump(String filename) throws IOException {
-        OutputStream file = new FileOutputStream( filename );
-        OutputStream buffer = new BufferedOutputStream( file );
-        ObjectOutput output = new ObjectOutputStream( buffer );
-        output.writeObject( courses );
-        output.close();
-    }
-    
-    @SuppressWarnings("unchecked")
-    public void load(String filename) throws IOException, ClassNotFoundException {
-        InputStream file = new FileInputStream( filename );
-        InputStream buffer = new BufferedInputStream( file );
-        ObjectInput input = new ObjectInputStream ( buffer );
-        
-        courses = (HashMap<Integer, CourseSummary>)input.readObject();
-        input.close();
+        data.addCourseDetails(details);
     }
     
     public static void main(String args[]) throws IOException, ClassNotFoundException {
         String URL = "http://registrar.princeton.edu/course-offerings/";
-        /*
         RegistrarScraper rs = new RegistrarScraper();
         rs.scrapeRegistrar(URL);
-        rs.dump("temp.txt");
-
-        RegistrarScraper rs2 = new RegistrarScraper();
-        rs2.load("temp.txt");
-
-        System.out.println(rs2.courseSummary(43217));
-        */
-        RegistrarScraper rs = new RegistrarScraper();
-        rs.scrapeCourse(42510, "course_details.xml?courseid=004899&term=1124");
-        System.out.println(rs.courseSummary(42510).get(CourseSummary.PROFESSORS));
     }
 }
