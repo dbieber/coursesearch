@@ -34,10 +34,6 @@ public class CourseDetails extends HashMap<String, String> {
         super();
         courseId = NO_ID;
     }
-
-    public CourseDetails(String details) {
-        super();
-    }
     
     public int courseId() {
         if (courseId != NO_ID) return courseId;

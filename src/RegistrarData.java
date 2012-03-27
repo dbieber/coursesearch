@@ -23,8 +23,14 @@ public class RegistrarData {
     
     public void addCourseDetails(CourseDetails details) {
         int courseId = details.courseId();
-        //TODO merge
-        courses.put(courseId, details);
+        CourseDetails oldDetails = courses.get(courseId);
+        if (oldDetails == null) {
+            courses.put(courseId, details);
+        } else {
+            for (String key : details.keySet()) {
+                oldDetails.put(key, details.get(key));
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")

@@ -88,12 +88,13 @@ public class RegistrarScraper {
     }
     
     public void scrapeCourse(String URL) throws IOException {
-
         /* TODO fix */
         URL = "http://registrar.princeton.edu/course-offerings/" + URL;
         Document doc = Jsoup.connect(URL).get();
         
         CourseDetails details = new CourseDetails();
+        
+        details.put(CourseDetails.COURSE_URL, URL);
         
         Element descr = doc.getElementById(DESCR_ID);
         String descrStr = descr.text();
