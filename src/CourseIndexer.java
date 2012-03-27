@@ -89,7 +89,7 @@ public class CourseIndexer {
 	
 	public static void main(String[] args) {
 		RegistrarData rd = new RegistrarData();
-		
+		rd.load("coursedata");
 	
 	}
 	
