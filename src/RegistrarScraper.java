@@ -24,6 +24,8 @@ public class RegistrarScraper {
     private final String TABLE_DATA_TAG = "td";
     private final String A_TAG = "a";
     private final String HREF_ATTR = "href";
+    private final String DESCR_ID = "descr";
+    private final String STRONG = "strong";
 
     HashMap<Integer, CourseSummary> summaries; //maps classNum to courseSummary
     HashMap<Integer, CourseDetails> allDetails; //maps classNum to courseDetails
@@ -91,6 +93,12 @@ public class RegistrarScraper {
         }
     }
     
+    public void test() {
+    	String html = "<html><body><h1>Title</h1>Main Text Body</body></html>";
+    	Document doc = Jsoup.parse(html);
+    	System.out.println(doc.outerHtml());
+    }
+    
     public void scrapeCourse(String URL) throws IOException {
 
         /* TODO fix */
@@ -98,10 +106,65 @@ public class RegistrarScraper {
         System.out.println(URL);
         Document doc = Jsoup.connect(URL).get();
         
-        System.out.println(doc.text());
+        //System.out.println(doc.text());
         
         CourseDetails details = new CourseDetails();
         /* TODO */
+        // <div id="descr"> for description
+        Element descr = doc.getElementById(DESCR_ID);
+        String descrStr = descr.text();
+        
+        //System.out.println("Description:" + descrStr);
+        //System.out.println(descr.outerHtml());
+        //Element timetable = doc.getElementById("timetable");
+        //System.out.println(timetable.text());
+        
+        //Elements sectHeaders = doc.getElementsByTag(STRONG);  
+        
+        // this is a temporary solution -- find a way to reference post descr strong tags 
+        
+        
+        Elements allHeaders = doc.select("strong, em");
+        int numBefore = 0;
+        for (Element sectHeader : allHeaders) {        	
+        	if (sectHeader.text().equals("Sample reading list:")) {
+        		// cycle through and remove 
+        		// can we remove elements of the iterator we're in?
+        		break;
+        	}
+        	numBefore++;
+        	//System.out.println("Before: " + sectHeader.text());        
+        }
+        for (int j = 0; j < numBefore; j++) {
+        	allHeaders.remove(0);
+        }
+        Element sReadList1 = allHeaders.remove(0); // remove Sample Reading List
+
+        System.out.println(sReadList1.text());
+        StringBuilder sReadList = new StringBuilder();
+        
+        int numAfter = 0;
+        for (Element sectHeader : allHeaders) {
+        	if (sectHeader.text().equals("Reading/Writing assignments:")) {
+        		break;        	
+        	}
+        	numAfter++;
+        	sReadList = sReadList.append(" " + sectHeader.text());
+        	
+        }
+        for (int j = 0; j < numAfter; j++) {
+        	allHeaders.remove(0);
+        }
+        System.out.println(sReadList);
+        
+        Element next = allHeaders.remove(0);
+        System.out.println("Siblings\n");
+        Elements siblings = next.siblingElements();
+        for (Element sibling : siblings) {
+        	System.out.println(sibling.text());
+        }
+        
+        
         
         //Integer classNum = Integer.parseInt(
         //        details.get(CourseDetails.CLASS_NUM));
@@ -140,6 +203,7 @@ public class RegistrarScraper {
     
     public static void main(String args[]) throws IOException, ClassNotFoundException {
         String URL = "http://registrar.princeton.edu/course-offerings/";
+        /*
         RegistrarScraper rs = new RegistrarScraper();
         rs.scrapeRegistrar(URL);
         rs.dump("temp.txt");
@@ -149,5 +213,10 @@ public class RegistrarScraper {
 
         System.out.println("B");
         System.out.println(rs2.courseSummary(43217));
+        */
+        RegistrarScraper rs3 = new RegistrarScraper();
+        rs3.scrapeCourse("course_details.xml?courseid=008487&term=1124");
+        rs3.test();
+        //
     }
 }
