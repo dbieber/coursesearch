@@ -75,11 +75,11 @@ public class CourseIndexer {
 			addPropToDoc(doc, course, CourseDetails.DESCRIPTION, YES, ANALYZED);
 			
 			writer.addDocument(doc);
-			System.out.println("Added " + course.COURSE + " " + course.TITLE);
+			System.out.println("Added");
 			
 		}
 		catch (Exception E) {
-			System.out.println("I couldn't index this course : " + course.TITLE);
+			System.out.println("I couldn't index this course");
 		} 
 	}
 	
