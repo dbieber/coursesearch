@@ -22,10 +22,9 @@ public class RegistrarData {
     }
     
     public void addCourseDetails(CourseDetails details) {
-        Integer classNum = Integer.parseInt(
-                details.get(CourseDetails.CLASS_NUM));
+        int courseId = details.courseId();
         //TODO merge
-        courses.put(classNum, details);
+        courses.put(courseId, details);
     }
 
     @SuppressWarnings("unchecked")

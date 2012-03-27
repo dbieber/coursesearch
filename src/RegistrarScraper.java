@@ -20,9 +20,14 @@ public class RegistrarScraper {
         data = new RegistrarData();
     }
     
+    public RegistrarScraper(RegistrarData data) {
+        this.data = data;
+    }
+    
     public void scrapeRegistrar(String URL) throws IOException {
         scrapeRegistrar(URL, false);
     }
+    
     public void scrapeRegistrar(String URL, boolean recursive) throws IOException {
         Document doc = Jsoup.connect(URL).get();
         

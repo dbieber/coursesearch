@@ -25,11 +25,34 @@ public class CourseDetails extends HashMap<String, String> {
     public static final String READING_LIST = "reading_list";
     public static final String DESCRIPTION = "description";
 
+    public static final int NO_ID = -1;
+    public static final int ID_LENGTH = 6;
+    
+    private int courseId;
+    
     public CourseDetails() {
         super();
+        courseId = NO_ID;
     }
 
     public CourseDetails(String details) {
         super();
+    }
+    
+    public int courseId() {
+        if (courseId != NO_ID) return courseId;
+        String url = get(COURSE_URL);
+        String mark = "courseid=";
+        int location;
+        if (url != null) {
+            location = url.indexOf(mark);
+            String strId;
+            if (location != -1) {
+                location += mark.length();
+                strId = url.substring(location, location + ID_LENGTH);
+                courseId = Integer.parseInt(strId);
+            }
+        }
+        return courseId;
     }
 }
