@@ -9,13 +9,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class RegistrarData {
     
     public static final String URL = "http://registrar.princeton.edu/course-offerings/";
 
-    HashMap<Integer, CourseDetails> courses; //maps classNum to CourseDetails
+    private HashMap<Integer, CourseDetails> courses; //maps classNum to CourseDetails
     
     public RegistrarData() {
         courses = new HashMap<Integer, CourseDetails>();
@@ -32,7 +33,15 @@ public class RegistrarData {
             }
         }
     }
+    
+    public Collection<CourseDetails> courseDetails() {
+        return courses.values();
+    }
 
+    public CourseDetails courseDetails(int courseId) {
+        return courses.get(courseId);
+    }
+    
     @SuppressWarnings("unchecked")
     public void load(String filename) throws IOException, ClassNotFoundException {
         InputStream file = new FileInputStream( filename );
@@ -44,6 +53,8 @@ public class RegistrarData {
     }
 
     public void dump(String filename) throws IOException {
+        /* TODO Better to write to temporary file first, then replace
+         * old file with temporary one, since dump may not complete. */
         OutputStream file = new FileOutputStream( filename );
         OutputStream buffer = new BufferedOutputStream( file );
         ObjectOutput output = new ObjectOutputStream( buffer );

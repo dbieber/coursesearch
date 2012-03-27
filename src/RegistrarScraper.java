@@ -89,6 +89,7 @@ public class RegistrarScraper {
     
     public void scrapeCourse(String URL) throws IOException {
         /* TODO fix */
+        System.out.println(URL);
         URL = "http://registrar.princeton.edu/course-offerings/" + URL;
         Document doc = Jsoup.connect(URL).get();
         
@@ -139,7 +140,22 @@ public class RegistrarScraper {
     
     public static void main(String args[]) throws IOException, ClassNotFoundException {
         String URL = "http://registrar.princeton.edu/course-offerings/";
-        RegistrarScraper rs = new RegistrarScraper();
-        rs.scrapeRegistrar(URL);
+        RegistrarData data = new RegistrarData();
+        data.load("coursedata");
+        RegistrarScraper rs = new RegistrarScraper(data);
+
+        int count = 100;
+        for (CourseDetails details : data.courseDetails()) {
+            try {
+                rs.scrapeCourse(details.get(CourseDetails.COURSE_URL));
+            } catch(Exception e) { System.out.println("minor failure for " + details.get(CourseDetails.COURSE_URL));}
+            count--;
+            if (count == 0) {
+                break;
+            }
+        }
+        
+        rs.data.dump("coursedata");
+        System.out.println(rs.data);
     }
 }
