@@ -58,11 +58,28 @@ public class CourseIndexer {
 			Document doc = new Document();
 			
 			addPropToDoc(doc, course, CourseDetails.CLASS_NUM, YES, ANALYZED);
-
+			addPropToDoc(doc, course, CourseDetails.COURSE, YES, ANALYZED);
+			addPropToDoc(doc, course, CourseDetails.TITLE, YES, ANALYZED);
+			addPropToDoc(doc, course, CourseDetails.DIST_AREA, YES, ANALYZED);
+			addPropToDoc(doc, course, CourseDetails.DAYS, YES, ANALYZED);
+			addPropToDoc(doc, course, CourseDetails.TIME, YES, ANALYZED);
+			addPropToDoc(doc, course, CourseDetails.LOCATION, YES, ANALYZED);
+			addPropToDoc(doc, course, CourseDetails.ENROLLED, YES, ANALYZED);
+			addPropToDoc(doc, course, CourseDetails.MAX, YES, ANALYZED);
+			addPropToDoc(doc, course, CourseDetails.STATUS, YES, ANALYZED);
+			addPropToDoc(doc, course, CourseDetails.COURSE_URL, NO, NOT_ANALYZED);
+			addPropToDoc(doc, course, CourseDetails.BOOKS_URL, NO, NOT_ANALYZED);
+			addPropToDoc(doc, course, CourseDetails.EVAL_URL, NO, NOT_ANALYZED);
+			addPropToDoc(doc, course, CourseDetails.PROFESSORS, YES, ANALYZED);
+			addPropToDoc(doc, course, CourseDetails.READING_LIST, YES, ANALYZED);
+			addPropToDoc(doc, course, CourseDetails.DESCRIPTION, YES, ANALYZED);
+			
 			writer.addDocument(doc);
+			System.out.println("Added");
 			
 		}
 		catch (Exception E) {
+			System.out.println("I couldn't index this course");
 		} 
 	}
 	
