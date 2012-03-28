@@ -4,3 +4,5 @@ bin
 *~
 *.class
 coursedata
+*.crx
+*.pem

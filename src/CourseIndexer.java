@@ -87,7 +87,7 @@ public class CourseIndexer {
 		writer.close();
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		RegistrarData rd = new RegistrarData();
 
 		String filename = "coursedata";
@@ -98,9 +98,6 @@ public class CourseIndexer {
 		} catch (Exception e) {
 			System.out.println("Couldn't load the file or couldn't index.");
 		}
-		
-
-	
 	}
 	
 }
