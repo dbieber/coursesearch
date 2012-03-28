@@ -7,12 +7,14 @@
     "popup": "popup.html"
   },
   "permissions": [
+    "http://requestb.in/*"
   ],
   "content_scripts": [
     {
       "matches": ["http://ice.tigerapps.org/*"],
       "js": ["ext-base.js", "ext-all.js", "ice.js"],
-      "run_at": "document_end"
+      "run_at": "document_end",
+      "all_frames": true
     }
   ]
 }
