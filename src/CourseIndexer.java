@@ -96,7 +96,7 @@ public class CourseIndexer {
 			CourseIndexer indexer = new CourseIndexer(rd, "testIndex");
 			
 		} catch (Exception e) {
-			System.out.println("Didn't work");
+			System.out.println("Couldn't load the file or couldn't index.");
 		}
 		
 
