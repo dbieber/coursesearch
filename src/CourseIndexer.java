@@ -79,7 +79,7 @@ public class CourseIndexer {
 			
 		}
 		catch (Exception E) {
-			System.out.println("I couldn't index this course");
+			System.out.println("I couldn't index this course:" + course.get("TITLE"));
 		} 
 	}
 	
