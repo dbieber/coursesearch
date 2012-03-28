@@ -1,6 +1,5 @@
 function setup() {
     CS = {};
-    CS.window = window.frames[0];
     CS.search = Ext.getDom("search");
     CS.toolbar = CS.search.getElementsByClassName("x-toolbar")[0];
     CS.searchbutton = CS.toolbar.getElementsByTagName("button")[0];
