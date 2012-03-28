@@ -87,7 +87,7 @@ public class CourseIndexer {
 		writer.close();
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		RegistrarData rd = new RegistrarData();
 		rd.load("coursedata");
 	
