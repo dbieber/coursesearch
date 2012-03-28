@@ -98,9 +98,6 @@ public class CourseIndexer {
 		} catch (Exception e) {
 			System.out.println("Didn't work");
 		}
-		
-
-	
 	}
 	
 }
