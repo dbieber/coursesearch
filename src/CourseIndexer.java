@@ -93,6 +93,7 @@ public class CourseIndexer {
 		String filename = "coursedata";
 		try {
 			rd.load(filename);
+			
 			CourseIndexer indexer = new CourseIndexer(rd, "testIndex");
 			
 		} catch (Exception e) {
