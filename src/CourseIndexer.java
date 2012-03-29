@@ -79,7 +79,7 @@ public class CourseIndexer {
 			
 		}
 		catch (Exception E) {
-			System.out.println("I couldn't index this course");
+			System.out.println("I couldn't index this course:" + course.get("TITLE"));
 		} 
 	}
 	
@@ -93,10 +93,11 @@ public class CourseIndexer {
 		String filename = "coursedata";
 		try {
 			rd.load(filename);
+			
 			CourseIndexer indexer = new CourseIndexer(rd, "testIndex");
 			
 		} catch (Exception e) {
-			System.out.println("Didn't work");
+			System.out.println("Couldn't load the file or couldn't index.");
 		}
 	}
 	

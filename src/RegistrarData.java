@@ -44,8 +44,8 @@ public class RegistrarData {
     
     @SuppressWarnings("unchecked")
     public void load(String filename) throws IOException, ClassNotFoundException {
-        InputStream file = new FileInputStream( filename );
-        InputStream buffer = new BufferedInputStream( file );
+    	InputStream file = new FileInputStream( filename );
+    	InputStream buffer = new BufferedInputStream( file );
         ObjectInput input = new ObjectInputStream ( buffer );
         
         courses = (HashMap<Integer, CourseDetails>)input.readObject();
