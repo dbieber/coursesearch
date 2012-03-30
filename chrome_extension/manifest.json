@@ -7,7 +7,6 @@
     "popup": "popup.html"
   },
   "permissions": [
-    "<all_urls>",
     "http://localhost:8000/"
   ],
   "content_scripts": [

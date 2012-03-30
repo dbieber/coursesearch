@@ -2,7 +2,6 @@ function setup() {
     CS = {};
     CS.search = Ext.getDom("search");
     if (CS.search == null) return; // wrong frame
-    console.log("This is the frame to remember!");
     CS.toolbar = CS.search.getElementsByClassName("x-toolbar")[0];
     CS.searchfield = CS.toolbar.getElementsByTagName("input")[0];
     CS.searchbutton = CS.toolbar.getElementsByTagName("button")[0];
@@ -16,6 +15,7 @@ function setup() {
 	    },
 	    success: function(response){
 		var text = response.responseText;
+		console.log(text);
 	    }
 	});
     }

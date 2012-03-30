@@ -8,8 +8,8 @@ app = Flask(__name__)
 def index():
     postData = request.form
     query = postData['query']
-    print query
-    return "nah"
+    print "Query: %s" % query
+    return query
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
