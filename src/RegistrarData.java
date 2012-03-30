@@ -49,6 +49,7 @@ public class RegistrarData {
         ObjectInput input = new ObjectInputStream ( buffer );
         
         courses = (HashMap<Integer, CourseDetails>)input.readObject();
+        System.out.println("Now read in the courses");
         input.close();
     }
 

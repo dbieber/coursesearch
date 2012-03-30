@@ -49,8 +49,13 @@ public class CourseIndexer {
 		}
 	}
 	
-	private void addPropToDoc(Document doc, CourseDetails details, String prop, Field.Store store, Field.Index analyzed) {
-	    doc.add(new Field(prop, details.get(prop), store, analyzed));
+	private boolean addPropToDoc(Document doc, CourseDetails details, String prop, Field.Store store, Field.Index analyzed) {
+	    String value = details.get(prop);
+	    if (value != null) {
+	    	doc.add(new Field(prop, value, store, analyzed));
+	    	return true;
+	    }
+	    return false;
 	}
 	
 	private void indexCourse(CourseDetails course) {
@@ -75,11 +80,11 @@ public class CourseIndexer {
 			addPropToDoc(doc, course, CourseDetails.DESCRIPTION, YES, ANALYZED);
 			
 			writer.addDocument(doc);
-			System.out.println("Added " + course.get("COURSE"));
+			System.out.println("Added " + course.get(CourseDetails.COURSE));
 			
 		}
-		catch (Exception E) {
-			System.out.println("I couldn't index this course:" + course.get("TITLE"));
+		catch (Exception e) {
+			System.out.println("I couldn't index this course:" + course.get(CourseDetails.COURSE) + " " + e);
 		} 
 	}
 	
@@ -91,14 +96,17 @@ public class CourseIndexer {
 		RegistrarData rd = new RegistrarData();
 
 		String filename = "coursedata";
+		//rd.dump("temp");
+		
 		try {
 			rd.load(filename);
-			
+			System.out.println("made it here!");
 			CourseIndexer indexer = new CourseIndexer(rd, "testIndex");
 			
 		} catch (Exception e) {
 			System.out.println("Couldn't load the file or couldn't index.");
 		}
+		
 	}
 	
 }
