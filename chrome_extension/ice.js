@@ -11,8 +11,7 @@ function setup() {
 	Ext.Ajax.request({
 	    url: 'http://localhost:8000',
 	    params: {
-		id: 1,
-		query: CS.searchfield.textContent
+		query: CS.searchfield.value
 	    },
 	    success: function(response){
 		var text = response.responseText;
