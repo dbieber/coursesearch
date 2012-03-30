@@ -25,6 +25,7 @@ public class CourseIndexer {
     private IndexSearcher searcher;
     private StandardAnalyzer analyzer;
 
+
     static final Field.Store YES = Field.Store.YES;
     static final Field.Store NO = Field.Store.NO;
     static final Field.Index ANALYZED = Field.Index.ANALYZED;
@@ -47,8 +48,6 @@ public class CourseIndexer {
         indexRegistrar();
 
         closeIndex();
-
-        //searchSetUp();
     }
 
     // -----------------------------------------------------------------
@@ -94,8 +93,8 @@ public class CourseIndexer {
             addPropToDoc(doc, course, CourseDetails.DESCRIPTION, YES, ANALYZED);
 
             writer.addDocument(doc);
-            //System.out.println("Added " + course.get(CourseDetails.COURSE));
 
+            //System.out.println("Added " + course.get(CourseDetails.COURSE));
         }
         catch (Exception e) {
             System.out.println("I couldn't index this course:" + course.get(CourseDetails.COURSE) + " " + e);
@@ -105,7 +104,6 @@ public class CourseIndexer {
     private void closeIndex() throws IOException {
         writer.close();
     }
-
 
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {

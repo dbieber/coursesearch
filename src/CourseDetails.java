@@ -3,7 +3,7 @@ import java.util.HashMap;
 // import org.json;
 
 public class CourseDetails extends HashMap<String, String> {
-    
+
     private static final long serialVersionUID = 1L;
 
     public static final String CLASS_NUM = "classNum";
@@ -20,21 +20,21 @@ public class CourseDetails extends HashMap<String, String> {
     public static final String COURSE_URL = "courseURL";
     public static final String BOOKS_URL = "booksURL";
     public static final String EVAL_URL = "evalURL";
-    
+
     public static final String PROFESSORS = "professors";
     public static final String READING_LIST = "reading_list";
     public static final String DESCRIPTION = "description";
 
     public static final int NO_ID = -1;
     public static final int ID_LENGTH = 6;
-    
+
     private int courseId;
-    
+
     public CourseDetails() {
         super();
         courseId = NO_ID;
     }
-    
+
     public int courseId() {
         if (courseId != NO_ID) return courseId;
         String url = get(COURSE_URL);

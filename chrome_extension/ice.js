@@ -2,6 +2,7 @@ function setup() {
     CS = {};
     CS.search = Ext.getDom("search");
     if (CS.search == null) return; // wrong frame
+    console.log("This is the frame to remember!");
     CS.toolbar = CS.search.getElementsByClassName("x-toolbar")[0];
     CS.searchfield = CS.toolbar.getElementsByTagName("input")[0];
     CS.searchbutton = CS.toolbar.getElementsByTagName("button")[0];
@@ -9,7 +10,7 @@ function setup() {
     function search(evt, el, o) {
 	evt.stopPropagation();
 	Ext.Ajax.request({
-	    url: 'http://localhost:8000',
+	    url: 'http://localhost:8000/',
 	    params: {
 		query: CS.searchfield.value
 	    },
