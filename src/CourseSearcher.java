@@ -60,7 +60,7 @@ public class CourseSearcher {
 	 * @throws ClassNotFoundException 
 	 */
 	public static void main(String[] args) throws IOException, ParseException, ClassNotFoundException {
-		String filename = "filename";
+		String filename = "coursedata";
 		String indexDir = "testIndex";
 		RegistrarData rd = new RegistrarData();
 		rd.load(filename);
@@ -73,7 +73,5 @@ public class CourseSearcher {
 		mysearch.search("algebra");
 		
 		mysearch.closeSearcher();
-
 	}
-
 }

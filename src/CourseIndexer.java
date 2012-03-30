@@ -1,17 +1,9 @@
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
@@ -22,9 +14,7 @@ public class CourseIndexer {
     private IndexWriter writer;
     private FSDirectory index;
     private RegistrarData rd;
-    private IndexSearcher searcher;
     private StandardAnalyzer analyzer;
-
 
     static final Field.Store YES = Field.Store.YES;
     static final Field.Store NO = Field.Store.NO;
@@ -37,8 +27,9 @@ public class CourseIndexer {
     public CourseIndexer(RegistrarData rd, String indexDir) throws IOException {
         this.rd = rd;
 
+        //index = SimpleFSDirectory.open(new File(indexDir));
         index = FSDirectory.open(new File(indexDir));
-
+        
         analyzer = new StandardAnalyzer(Version.LUCENE_35);
 
         IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_35, analyzer);
@@ -104,7 +95,6 @@ public class CourseIndexer {
     private void closeIndex() throws IOException {
         writer.close();
     }
-
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         RegistrarData rd = new RegistrarData();
