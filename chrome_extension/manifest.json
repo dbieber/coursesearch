@@ -7,7 +7,8 @@
     "popup": "popup.html"
   },
   "permissions": [
-    "http://requestb.in/*"
+    "<all_urls>",
+    "http://localhost:8000/"
   ],
   "content_scripts": [
     {

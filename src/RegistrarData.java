@@ -13,15 +13,15 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class RegistrarData {
-    
+
     public static final String URL = "http://registrar.princeton.edu/course-offerings/";
 
     private HashMap<Integer, CourseDetails> courses; //maps courseId to CourseDetails
-    
+
     public RegistrarData() {
         courses = new HashMap<Integer, CourseDetails>();
     }
-    
+
     public void addCourseDetails(CourseDetails details) {
         int courseId = details.courseId();
         CourseDetails oldDetails = courses.get(courseId);
@@ -33,7 +33,7 @@ public class RegistrarData {
             }
         }
     }
-    
+
     public Collection<CourseDetails> courseDetails() {
         return courses.values();
     }
@@ -41,13 +41,13 @@ public class RegistrarData {
     public CourseDetails courseDetails(int courseId) {
         return courses.get(courseId);
     }
-    
+
     @SuppressWarnings("unchecked")
     public void load(String filename) throws IOException, ClassNotFoundException {
-    	InputStream file = new FileInputStream( filename );
-    	InputStream buffer = new BufferedInputStream( file );
+        InputStream file = new FileInputStream( filename );
+        InputStream buffer = new BufferedInputStream( file );
         ObjectInput input = new ObjectInputStream ( buffer );
-        
+
         courses = (HashMap<Integer, CourseDetails>)input.readObject();
         System.out.println("Now read in the courses");
         input.close();
