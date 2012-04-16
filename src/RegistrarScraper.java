@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 
 import org.jsoup.Jsoup;
@@ -81,18 +82,17 @@ public class RegistrarScraper {
         }
     }
 
-    public void test() {
-        String html = "<html><body><h1>Title</h1>Main Text Body</body></html>";
-        Document doc = Jsoup.parse(html);
-        System.out.println(doc.outerHtml());
-    }
+
 
     public void scrapeCourse(String URL) throws IOException {
         /* TODO fix */
+        /* TODO -- need to scrape title from the details, not the summary*/
+        
         System.out.println(URL);
         URL = "http://registrar.princeton.edu/course-offerings/" + URL;
         Document doc = Jsoup.connect(URL).get();
-
+        
+        
         CourseDetails details = new CourseDetails();
 
         details.put(CourseDetails.COURSE_URL, URL);
@@ -107,7 +107,7 @@ public class RegistrarScraper {
         Elements allHeaders = doc.select("strong, em");
         int numBefore = 0;
         for (Element sectHeader : allHeaders) {        	
-            if (sectHeader.text().equals("Sample reading list:")) {
+            if (sectHeader.text().toLowerCase().equals("sample reading list:")) {
                 // cycle through and remove 
                 // can we remove elements of the iterator we're in?
                 break;
@@ -137,8 +137,8 @@ public class RegistrarScraper {
 
         data.addCourseDetails(details);
     }
-
-    public static void main(String args[]) throws IOException, ClassNotFoundException {
+    
+    public static void test1() throws IOException, ClassNotFoundException {
         String URL = "http://registrar.princeton.edu/course-offerings/";
         RegistrarData data = new RegistrarData();
         data.load("coursedata");
@@ -147,15 +147,19 @@ public class RegistrarScraper {
         int count = 100;
         for (CourseDetails details : data.courseDetails()) {
             try {
-                rs.scrapeCourse(details.get(CourseDetails.COURSE_URL));
+                //rs.scrapeCourse(details.get(CourseDetails.COURSE_URL));
             } catch(Exception e) { System.out.println("minor failure for " + details.get(CourseDetails.COURSE_URL));}
             count--;
             if (count == 0) {
                 break;
             }
         }
-
         rs.data.dump("coursedata");
         System.out.println(rs.data);
+    }
+
+    public static void main(String args[]) throws IOException, ClassNotFoundException {
+        String URL = "http://registrar.princeton.edu/course-offerings/";
+        test1();
     }
 }

@@ -1,3 +1,15 @@
+/*
+ * Name: David Bieber, Abbi Ward
+ * COS 435  - Final Project
+ * 
+ * Description: indexes given RegistrarData to a given index indexDir
+ * 
+ * 
+ * Reference:
+ * http://www.lucenetutorial.com/sample-apps/textfileindexer-java.html
+ * 
+ */
+
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -21,9 +33,11 @@ public class CourseIndexer {
     static final Field.Index ANALYZED = Field.Index.ANALYZED;
     static final Field.Index NOT_ANALYZED = Field.Index.NOT_ANALYZED;
 
-    //
-    // indexDir = path where index should be created
-    // Written using as reference : http://www.lucenetutorial.com/sample-apps/textfileindexer-java.html
+    /* Creates an index for the given registrar data in directory indexDir
+     * 
+     * @param rd : RegistrarData we want to index
+     * @param indexDir : directory to put the index in
+     */
     public CourseIndexer(RegistrarData rd, String indexDir) throws IOException {
         this.rd = rd;
 
@@ -45,14 +59,15 @@ public class CourseIndexer {
     // create another constructor that takes a RegistrarData and another indexer and UPDATES an index
     // -----------------------------------------------------------------	
 
-
+    // cycles through courses and indexes each course
     private void indexRegistrar() {
         Collection<CourseDetails> courses = rd.courseDetails();
         for (CourseDetails course : courses) {
             indexCourse(course);			
         }
     }
-
+    // helper method: creates a field based on String prop and adds the proper information
+    //    in CourseDetails details to the doc
     private boolean addPropToDoc(Document doc, CourseDetails details, String prop, Field.Store store, Field.Index analyzed) {
         String value = details.get(prop);
         if (value != null) {
@@ -61,7 +76,8 @@ public class CourseIndexer {
         }
         return false;
     }
-
+    // creates a new document for the given CourseDetails course, adds several
+    // fields and then adds it to the IndexWriter writer
     private void indexCourse(CourseDetails course) {
         try {
             Document doc = new Document();
@@ -91,7 +107,8 @@ public class CourseIndexer {
             System.out.println("I couldn't index this course:" + course.get(CourseDetails.COURSE) + " " + e);
         } 
     }
-
+    
+    //closes the IndexWriter
     private void closeIndex() throws IOException {
         writer.close();
     }
