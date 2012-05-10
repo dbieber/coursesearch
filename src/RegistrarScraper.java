@@ -167,41 +167,8 @@ public class RegistrarScraper {
             }
             text = text.trim();
         }
-        
-        
-        Elements allHeaders = doc.select("strong, em");
-        int numBefore = 0;
-        for (Element sectHeader : allHeaders) {        	
-            if (sectHeader.text().toLowerCase().equals("sample reading list:")) {
-                // cycle through and remove 
-                // can we remove elements of the iterator we're in?
-                break;
-            }
-            numBefore++;       
-        }
-        for (int j = 0; j < numBefore; j++) {
-            allHeaders.remove(0);
-        }
-        allHeaders.remove(0);
-
-        StringBuilder sReadList = new StringBuilder();
-
-        int numAfter = 0;
-        for (Element sectHeader : allHeaders) {
-            if (sectHeader.text().equals("Reading/Writing assignments:")) {
-                break;        	
-            }
-            numAfter++;
-            sReadList = sReadList.append(" " + sectHeader.text());
-
-        }
-        for (int j = 0; j < numAfter; j++) {
-            allHeaders.remove(0);
-        }
-        details.put(CourseDetails.READING_LIST, sReadList.toString());
 
         data.addCourseDetails(details);
-        
     }
     
     public static void test1() throws IOException, ClassNotFoundException {
