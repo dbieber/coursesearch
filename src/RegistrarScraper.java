@@ -20,7 +20,6 @@ public class RegistrarScraper {
     // npdf and na are <em> right after <strong> in id="timetable"
     private final static String[] NPDF = {"No Pass/D/Fail",  "npdf"};
     private final static String[] PDFONLY = {"P/D/F Only"};
-
     private final static String[] NAUDIT = {"na", "No Audit"};
     private final static String[] READPERWK = {"pp reading/ week", " pages of reading weekly", "pages of reading per week", "pages per week", "pages per week"};
 
@@ -112,7 +111,6 @@ public class RegistrarScraper {
         }
         return false;
     }
-
     
     public void scrapeCourse(String URL) throws IOException {
         System.out.println(URL);
@@ -152,12 +150,12 @@ public class RegistrarScraper {
 
         Elements headers = doc.getElementsByTag(STRONG_TAG);
         for (Element header : headers) {
+            // headerText \in HEADERS
             String headerText = matchHeader(header.text());
             if (headerText == null) {
                 continue;
             }
-            // headerText \in HEADERS
-
+            
             Element sibling = header.nextElementSibling();
             System.out.println(header.text());
                         
@@ -184,7 +182,7 @@ public class RegistrarScraper {
     }
     
     public static void test1() throws IOException, ClassNotFoundException {
-        String URL = "http://registrar.princeton.edu/course-offerings/";
+//        String URL = "http://registrar.princeton.edu/course-offerings/";
         RegistrarData data = new RegistrarData();
         data.load("coursedata");
         RegistrarScraper rs = new RegistrarScraper(data);
@@ -192,7 +190,7 @@ public class RegistrarScraper {
         int count = 100;
         for (CourseDetails details : data.courseDetails()) {
             try {
-                //rs.scrapeCourse(details.get(CourseDetails.COURSE_URL));
+//                rs.scrapeCourse(details.get(CourseDetails.COURSE_URL));
             } catch(Exception e) { System.out.println("minor failure for " + details.get(CourseDetails.COURSE_URL));}
             count--;
             if (count == 0) {
