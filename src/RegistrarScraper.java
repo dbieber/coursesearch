@@ -110,24 +110,6 @@ public class RegistrarScraper {
         String base = "http://registrar.princeton.edu/course-offerings/";
         URL = base + URL;
         Document doc = Jsoup.connect(URL).get();
-        /*Tidy htmlSanitizer = new Tidy();
-        htmlSanitizer.setEncloseText(true);
-        htmlSanitizer.setXmlTags(false);
-        htmlSanitizer.setShowWarnings(false);
-        htmlSanitizer.setInputEncoding("UTF-8");
-        htmlSanitizer.setOutputEncoding("UTF-8");
-        htmlSanitizer.setXHTML(true);
-        htmlSanitizer.setMakeClean(true);
-        htmlSanitizer.setEncloseBlockText(true);
-        
-        URL url = new URL(URL);
-        URLConnection site = url.openConnection();
-        InputStream input = site.getInputStream(); 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        org.w3c.dom.Document doc2 = htmlSanitizer.parseDOM(input, out);                
-        Document doc = Jsoup.parse(new ByteArrayInputStream(out.toByteArray()), "UTF-8", base);
-        System.out.println(out);
-        htmlSanitizer.getConfiguration().printConfigOptions(new BufferedWriter(new OutputStreamWriter(System.out)), true);*/
         
         CourseDetails details = new CourseDetails();
 
