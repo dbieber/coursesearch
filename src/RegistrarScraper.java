@@ -127,16 +127,17 @@ public class RegistrarScraper {
 
         String gradingRestrictions = doc.getElementById("timetable").select("strong + em").first().text();
         if (containsOneOf(gradingRestrictions, NPDF)) {
-            //npdf
+            details.put(CourseDetails.PDF, CourseDetails.NO);
+        } else if (containsOneOf(gradingRestrictions, PDFONLY)) {
+            details.put(CourseDetails.PDF, CourseDetails.ONLY);
         } else {
-            
+            details.put(CourseDetails.PDF, CourseDetails.YES);
         }
         if (containsOneOf(gradingRestrictions, NAUDIT)) {
-            //naudit
+            details.put(CourseDetails.AUDIT, CourseDetails.NO);
         } else {
-            
+            details.put(CourseDetails.AUDIT, CourseDetails.YES);
         }
-        // TODO add to index properly. And coursedetails
         
         Element descr = doc.getElementById(DESCR_ID);
         String descrStr = descr.text();

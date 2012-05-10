@@ -20,6 +20,9 @@ public class CourseDetails extends HashMap<String, String> {
     public static final String COURSE_URL = "courseURL";
     public static final String BOOKS_URL = "booksURL";
     public static final String EVAL_URL = "evalURL";
+    
+    public static final String PDF = "pdf";
+    public static final String AUDIT = "audit";
 
     public static final String PROFESSORS = "professors";
     public static final String READING_LIST = "reading_list";
@@ -27,6 +30,10 @@ public class CourseDetails extends HashMap<String, String> {
 
     public static final int NO_ID = -1;
     public static final int ID_LENGTH = 6;
+
+    public static final String YES = "yes";
+    public static final String NO = "no";
+    public static final String ONLY = "only";
 
     private int courseId;
 
