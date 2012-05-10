@@ -18,8 +18,10 @@ public class RegistrarScraper {
             "schedule/classroom assignment", "other information", "other requirements", "reserved seats", "website", "reading/writing assignments"};
     private final static String SEASON = "Fall 2012-2013";
 
-    // npdf and na tags are <em> and right after <strong> in timetable
-    private final static String[] PDF = {"No Pass/D/Fail",  "npdf"};
+    // npdf and na are <em> right after <strong> in id="timetable"
+    private final static String[] NPDF = {"No Pass/D/Fail",  "npdf"};
+    private final static String[] PDFONLY = {"P/D/F Only"};
+
     private final static String[] NAUDIT = {"na", "No Audit"};
     private final static String[] READPERWK = {"pp reading/ week", " pages of reading weekly", "pages of reading per week", "pages per week", "pages per week"};
 
@@ -102,7 +104,16 @@ public class RegistrarScraper {
         }
         return null;
     }
-   
+
+    private boolean containsOneOf(String haystack, String[] needles) {
+        for (String needle : needles) {
+            if (haystack.contains(needle)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     
     public void scrapeCourse(String URL) throws IOException {
         /* TODO fix */
@@ -118,6 +129,16 @@ public class RegistrarScraper {
         details.put(CourseDetails.COURSE_URL, URL);
 
         String gradingRestrictions = doc.getElementById("timetable").select("strong + em").first().text();
+        if (containsOneOf(gradingRestrictions, NPDF)) {
+            //npdf
+        } else {
+            
+        }
+        if (containsOneOf(gradingRestrictions, NAUDIT)) {
+            //naudit
+        } else {
+            
+        }
         // TODO add to index properly. And coursedetails
         
         Element descr = doc.getElementById(DESCR_ID);
@@ -153,11 +174,14 @@ public class RegistrarScraper {
             text = text.trim();  
             //TODO? -- need to specially parse reading/writing assignments for reading amount per week, schedule/classroom assignment for times
         }
+<<<<<<< HEAD
         
         
      
+=======
+
+>>>>>>> 3229f97cd5aee3871394ad2307346f00972c4c87
         data.addCourseDetails(details);
-        
     }
     
     public static void test1() throws IOException, ClassNotFoundException {
