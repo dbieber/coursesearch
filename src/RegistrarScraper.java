@@ -20,6 +20,7 @@ public class RegistrarScraper {
     
     // npdf and na are <em> right after <strong> in id="timetable"
     private final static String[] NPDF = {"No Pass/D/Fail",  "npdf"};
+    private final static String[] PDFONLY = {"P/D/F Only"};
     private final static String[] NAUDIT = {"na", "No Audit"};
 
     RegistrarData data;
@@ -102,6 +103,15 @@ public class RegistrarScraper {
         return null;
     }
 
+    private boolean containsOneOf(String haystack, String[] needles) {
+        for (String needle : needles) {
+            if (haystack.contains(needle)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public void scrapeCourse(String URL) throws IOException {
         /* TODO fix */
         /* TODO -- need to scrape title from the details, not the summary*/
@@ -116,6 +126,16 @@ public class RegistrarScraper {
         details.put(CourseDetails.COURSE_URL, URL);
 
         String gradingRestrictions = doc.getElementById("timetable").select("strong + em").first().text();
+        if (containsOneOf(gradingRestrictions, NPDF)) {
+            //npdf
+        } else {
+            
+        }
+        if (containsOneOf(gradingRestrictions, NAUDIT)) {
+            //naudit
+        } else {
+            
+        }
         // TODO add to index properly. And coursedetails
         
         Element descr = doc.getElementById(DESCR_ID);
