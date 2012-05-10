@@ -1,14 +1,8 @@
-
 import java.io.IOException;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
-import org.w3c.tidy.Tidy;
-
-
 
 public class RegistrarScraper {
 
@@ -19,10 +13,11 @@ public class RegistrarScraper {
     private final String STRONG_TAG = "strong";
     private final String HREF_ATTR = "href";
     private final String DESCR_ID = "descr";
-    //private final int NUM_HEADERS = 10;
+
     private final static String[] HEADERS = {"sample reading list", "requirements/grading", "prerequisites and restrictions", 
             "schedule/classroom assignment", "other information", "other requirements", "reserved seats", "website", "reading/writing assignments"};
     private final static String SEASON = "Fall 2012-2013";
+
     // npdf and na tags are <em> and right after <strong> in timetable
     private final static String[] PDF = {"No Pass/D/Fail",  "npdf"};
     private final static String[] NAUDIT = {"na", "No Audit"};
@@ -32,7 +27,6 @@ public class RegistrarScraper {
 
     public RegistrarScraper() throws IOException {
         data = new RegistrarData();
-        //scrapeCourse("course_details.xml?courseid=000488&term=1132");
     }
 
     public RegistrarScraper(RegistrarData data) {
@@ -95,7 +89,7 @@ public class RegistrarScraper {
             }
         }
     }
-  
+
     private String processHeader(String h) {
         return h.toLowerCase().trim().replaceAll(":", "");
     }
@@ -194,10 +188,6 @@ public class RegistrarScraper {
     }
 
     public static void main(String args[]) throws IOException, ClassNotFoundException {
-        //String URL = "http://registrar.princeton.edu/course-offerings/";
-        //test1();
-        //scrapeCourse2("http://registrar.princeton.edu/course-offerings/course_details.xml?courseid=000488&term=1132");
-        //RegistrarScraper rs= new RegistrarScraper();
         test();
     }
 }
