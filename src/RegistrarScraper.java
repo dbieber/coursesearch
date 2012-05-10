@@ -1,12 +1,5 @@
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.net.URL;
-import java.net.URLConnection;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -33,7 +26,7 @@ public class RegistrarScraper {
     // npdf and na tags are <em> and right after <strong> in timetable
     private final static String[] PDF = {"No Pass/D/Fail",  "npdf"};
     private final static String[] NAUDIT = {"na", "No Audit"};
-    
+    private final static String[] READPERWK = {"pp reading/ week", " pages of reading weekly", "pages of reading per week", "pages per week", "pages per week"};
 
     RegistrarData data;
 
@@ -102,62 +95,7 @@ public class RegistrarScraper {
             }
         }
     }
-    public static void scrapeCourse2(String URL) {
-        In doc = new In(URL);
-        String input = doc.readAll();
-        input = input.substring(input.indexOf(SEASON));
-        input = input.substring(0, input.indexOf("<div id=\"subcontent\">"));
-        System.out.println(input);
-                
-        int[] indexes = getHeaders(input);
-        
-        String[] info = getInfo(input, indexes);
-        
-        System.out.println("Parsed Info:");
-        for (int i = 0; i < info.length; i++) {
-            System.out.println(HEADERS[i]);
-            System.out.println(info[i]);            
-        }
-    }
-    
-    private static String[] getInfo(String input, int[] indexes) {
-        String[] info = new String[HEADERS.length];
-        
-        for (int i = 0; i < HEADERS.length-1; i++) {
-            info[i] = input.substring(indexes[i], indexes[i+1] - HEADERS[i+1].length());            
-        }
-        
-        return info;        
-    }
-    
-    private static int[] getHeaders(String input) {
-        int[] indexes = new int[HEADERS.length];
-        /*
-        String hSampleRL = "sample reading list";
-        String hReqGrad = "requirements/grading";
-        String hPrereq = "prerequisites and restrictions";
-        String hSched = "schedule/classroom assignment";
-        String hOthInfo = "other information";
-        String hOthReq = "other requirements";
-        String hWeb = "website";
-        
-        indexes[0] = input.indexOf(HEADERS[0]) + hSampleRL.length();        
-        indexes[1] = input.indexOf(hReqGrad) + hReqGrad.length();        
-        indexes[2] = input.indexOf(hPrereq) + hPrereq.length();               
-        indexes[3] = input.indexOf(hSched) + hSched.length();        
-        indexes[4] = input.indexOf(hOthInfo) + hOthInfo.length();        
-        indexes[5] = input.indexOf(hOthReq) + hOthReq.length();        
-        indexes[6] = input.indexOf(hWeb) + hWeb.length();
-        
-        */        
-        
-        input = input.toLowerCase();
-        for (int i = 0; i < HEADERS.length; i++) {
-            indexes[i] = input.indexOf(HEADERS[i]) + HEADERS[i].length();            
-        }        
-        return indexes;
-    }
-
+  
     private String processHeader(String h) {
         return h.toLowerCase().trim().replaceAll(":", "");
     }
@@ -170,7 +108,8 @@ public class RegistrarScraper {
         }
         return null;
     }
-
+   
+    
     public void scrapeCourse(String URL) throws IOException {
         /* TODO fix */
         /* TODO -- need to scrape title from the details, not the summary*/
@@ -179,24 +118,6 @@ public class RegistrarScraper {
         String base = "http://registrar.princeton.edu/course-offerings/";
         URL = base + URL;
         Document doc = Jsoup.connect(URL).get();
-        /*Tidy htmlSanitizer = new Tidy();
-        htmlSanitizer.setEncloseText(true);
-        htmlSanitizer.setXmlTags(false);
-        htmlSanitizer.setShowWarnings(false);
-        htmlSanitizer.setInputEncoding("UTF-8");
-        htmlSanitizer.setOutputEncoding("UTF-8");
-        htmlSanitizer.setXHTML(true);
-        htmlSanitizer.setMakeClean(true);
-        htmlSanitizer.setEncloseBlockText(true);
-        
-        URL url = new URL(URL);
-        URLConnection site = url.openConnection();
-        InputStream input = site.getInputStream(); 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        org.w3c.dom.Document doc2 = htmlSanitizer.parseDOM(input, out);                
-        Document doc = Jsoup.parse(new ByteArrayInputStream(out.toByteArray()), "UTF-8", base);
-        System.out.println(out);
-        htmlSanitizer.getConfiguration().printConfigOptions(new BufferedWriter(new OutputStreamWriter(System.out)), true);*/
         
         CourseDetails details = new CourseDetails();
 
@@ -219,9 +140,10 @@ public class RegistrarScraper {
                 continue;
             }
 
+
             Element sibling = header.nextElementSibling();
             System.out.println(header.text());
-            
+                        
             String text = "";
             while (sibling != null && matchHeader(sibling.text()) == null) {
                 String elementText = sibling.text().trim();
@@ -234,41 +156,12 @@ public class RegistrarScraper {
                 }
                 sibling = sibling.nextElementSibling();
             }
-            text = text.trim();
+            text = text.trim();  
+            //TODO? -- need to specially parse reading/writing assignments for reading amount per week, schedule/classroom assignment for times
         }
         
         
-        Elements allHeaders = doc.select("strong, em");
-        int numBefore = 0;
-        for (Element sectHeader : allHeaders) {        	
-            if (sectHeader.text().toLowerCase().equals("sample reading list:")) {
-                // cycle through and remove 
-                // can we remove elements of the iterator we're in?
-                break;
-            }
-            numBefore++;       
-        }
-        for (int j = 0; j < numBefore; j++) {
-            allHeaders.remove(0);
-        }
-        allHeaders.remove(0);
-
-        StringBuilder sReadList = new StringBuilder();
-
-        int numAfter = 0;
-        for (Element sectHeader : allHeaders) {
-            if (sectHeader.text().equals("Reading/Writing assignments:")) {
-                break;        	
-            }
-            numAfter++;
-            sReadList = sReadList.append(" " + sectHeader.text());
-
-        }
-        for (int j = 0; j < numAfter; j++) {
-            allHeaders.remove(0);
-        }
-        details.put(CourseDetails.READING_LIST, sReadList.toString());
-
+     
         data.addCourseDetails(details);
         
     }
@@ -294,7 +187,7 @@ public class RegistrarScraper {
     }
     
     public static void test() throws IOException {
-        String URL = "http://registrar.princeton.edu/course-offerings/search_results.xml?term=1132&subject=COS";
+        String URL = "http://registrar.princeton.edu/course-offerings/search_results.xml?term=1132&subject=LIN";
         RegistrarData data = new RegistrarData();
         RegistrarScraper rs = new RegistrarScraper(data);
         rs.scrapeDepartment(URL, true);
