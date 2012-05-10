@@ -6,7 +6,6 @@
  * 
  */
 
-
 import java.io.File;
 import java.io.IOException;
 
@@ -26,12 +25,10 @@ import org.apache.lucene.util.Version;
 
 import com.sun.xml.internal.ws.util.xml.CDATA;
 
-
 public class CourseSearcher {
     private FSDirectory index;
     private IndexSearcher searcher;
     private StandardAnalyzer analyzer;
-
 
     public CourseSearcher(String indexDir) throws CorruptIndexException, IOException {
         index = FSDirectory.open(new File(indexDir));
