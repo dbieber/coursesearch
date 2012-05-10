@@ -174,13 +174,7 @@ public class RegistrarScraper {
             text = text.trim();  
             //TODO? -- need to specially parse reading/writing assignments for reading amount per week, schedule/classroom assignment for times
         }
-<<<<<<< HEAD
-        
-        
-     
-=======
 
->>>>>>> 3229f97cd5aee3871394ad2307346f00972c4c87
         data.addCourseDetails(details);
     }
     
