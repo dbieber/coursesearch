@@ -1,21 +1,8 @@
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.net.URL;
-import java.net.URLConnection;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
-import org.w3c.tidy.Tidy;
-
-
 
 public class RegistrarScraper {
 
@@ -26,20 +13,19 @@ public class RegistrarScraper {
     private final String STRONG_TAG = "strong";
     private final String HREF_ATTR = "href";
     private final String DESCR_ID = "descr";
-    //private final int NUM_HEADERS = 10;
+
     private final static String[] HEADERS = {"sample reading list", "requirements/grading", "prerequisites and restrictions", 
             "schedule/classroom assignment", "other information", "other requirements", "reserved seats", "website", "reading/writing assignments"};
     private final static String SEASON = "Fall 2012-2013";
-    // npdf and na tags are <em> and right after <strong> in timetable
-    private final static String[] PDF = {"No Pass/D/Fail",  "npdf"};
-    private final static String[] NAUDIT = {"na", "No Audit"};
     
+    // npdf and na are <em> right after <strong> in id="timetable"
+    private final static String[] NPDF = {"No Pass/D/Fail",  "npdf"};
+    private final static String[] NAUDIT = {"na", "No Audit"};
 
     RegistrarData data;
 
     public RegistrarScraper() throws IOException {
         data = new RegistrarData();
-        //scrapeCourse("course_details.xml?courseid=000488&term=1132");
     }
 
     public RegistrarScraper(RegistrarData data) {
@@ -101,61 +87,6 @@ public class RegistrarScraper {
                 scrapeCourse(details.get(CourseDetails.COURSE_URL));
             }
         }
-    }
-    public static void scrapeCourse2(String URL) {
-        In doc = new In(URL);
-        String input = doc.readAll();
-        input = input.substring(input.indexOf(SEASON));
-        input = input.substring(0, input.indexOf("<div id=\"subcontent\">"));
-        System.out.println(input);
-                
-        int[] indexes = getHeaders(input);
-        
-        String[] info = getInfo(input, indexes);
-        
-        System.out.println("Parsed Info:");
-        for (int i = 0; i < info.length; i++) {
-            System.out.println(HEADERS[i]);
-            System.out.println(info[i]);            
-        }
-    }
-    
-    private static String[] getInfo(String input, int[] indexes) {
-        String[] info = new String[HEADERS.length];
-        
-        for (int i = 0; i < HEADERS.length-1; i++) {
-            info[i] = input.substring(indexes[i], indexes[i+1] - HEADERS[i+1].length());            
-        }
-        
-        return info;        
-    }
-    
-    private static int[] getHeaders(String input) {
-        int[] indexes = new int[HEADERS.length];
-        /*
-        String hSampleRL = "sample reading list";
-        String hReqGrad = "requirements/grading";
-        String hPrereq = "prerequisites and restrictions";
-        String hSched = "schedule/classroom assignment";
-        String hOthInfo = "other information";
-        String hOthReq = "other requirements";
-        String hWeb = "website";
-        
-        indexes[0] = input.indexOf(HEADERS[0]) + hSampleRL.length();        
-        indexes[1] = input.indexOf(hReqGrad) + hReqGrad.length();        
-        indexes[2] = input.indexOf(hPrereq) + hPrereq.length();               
-        indexes[3] = input.indexOf(hSched) + hSched.length();        
-        indexes[4] = input.indexOf(hOthInfo) + hOthInfo.length();        
-        indexes[5] = input.indexOf(hOthReq) + hOthReq.length();        
-        indexes[6] = input.indexOf(hWeb) + hWeb.length();
-        
-        */        
-        
-        input = input.toLowerCase();
-        for (int i = 0; i < HEADERS.length; i++) {
-            indexes[i] = input.indexOf(HEADERS[i]) + HEADERS[i].length();            
-        }        
-        return indexes;
     }
 
     private String processHeader(String h) {
@@ -301,10 +232,6 @@ public class RegistrarScraper {
     }
 
     public static void main(String args[]) throws IOException, ClassNotFoundException {
-        //String URL = "http://registrar.princeton.edu/course-offerings/";
-        //test1();
-        //scrapeCourse2("http://registrar.princeton.edu/course-offerings/course_details.xml?courseid=000488&term=1132");
-        //RegistrarScraper rs= new RegistrarScraper();
         test();
     }
 }
