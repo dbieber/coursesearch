@@ -127,8 +127,5 @@ public class CourseIndexer {
         } catch (Exception e) {
             System.out.println("Couldn't load the file or couldn't index.");
         }
-
-
     }
-
 }

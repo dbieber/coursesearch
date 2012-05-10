@@ -1,7 +1,5 @@
 import java.util.HashMap;
 
-// import org.json;
-
 public class CourseDetails extends HashMap<String, String> {
 
     private static final long serialVersionUID = 1L;
@@ -31,6 +29,7 @@ public class CourseDetails extends HashMap<String, String> {
     public static final int NO_ID = -1;
     public static final int ID_LENGTH = 6;
 
+    // PDF, AUDIT
     public static final String YES = "yes";
     public static final String NO = "no";
     public static final String ONLY = "only";
