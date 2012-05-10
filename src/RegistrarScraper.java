@@ -18,11 +18,13 @@ public class RegistrarScraper {
     private final static String[] HEADERS = {"sample reading list", "requirements/grading", "prerequisites and restrictions", 
             "schedule/classroom assignment", "other information", "other requirements", "reserved seats", "website", "reading/writing assignments"};
     private final static String SEASON = "Fall 2012-2013";
-    
+
     // npdf and na are <em> right after <strong> in id="timetable"
     private final static String[] NPDF = {"No Pass/D/Fail",  "npdf"};
     private final static String[] PDFONLY = {"P/D/F Only"};
+
     private final static String[] NAUDIT = {"na", "No Audit"};
+    private final static String[] READPERWK = {"pp reading/ week", " pages of reading weekly", "pages of reading per week", "pages per week", "pages per week"};
 
     RegistrarData data;
 
@@ -112,6 +114,7 @@ public class RegistrarScraper {
         }
         return false;
     }
+
     
     public void scrapeCourse(String URL) throws IOException {
         System.out.println(URL);
@@ -156,9 +159,10 @@ public class RegistrarScraper {
                 continue;
             }
 
+
             Element sibling = header.nextElementSibling();
             System.out.println(header.text());
-            
+                        
             String text = "";
             while (sibling != null && matchHeader(sibling.text()) == null) {
                 String elementText = sibling.text().trim();
@@ -171,8 +175,10 @@ public class RegistrarScraper {
                 }
                 sibling = sibling.nextElementSibling();
             }
-            text = text.trim();
-            
+
+            text = text.trim();  
+            // TODO -- need to specially parse reading/writing assignments for reading amount per week, schedule/classroom assignment for times
+            // Also need to index these text Strings.
         }
 
         data.addCourseDetails(details);
@@ -199,7 +205,7 @@ public class RegistrarScraper {
     }
     
     public static void test() throws IOException {
-        String URL = "http://registrar.princeton.edu/course-offerings/search_results.xml?term=1132&subject=COS";
+        String URL = "http://registrar.princeton.edu/course-offerings/search_results.xml?term=1132&subject=VIS";
         RegistrarData data = new RegistrarData();
         RegistrarScraper rs = new RegistrarScraper(data);
         rs.scrapeDepartment(URL, true);
