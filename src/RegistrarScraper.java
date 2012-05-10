@@ -181,7 +181,7 @@ public class RegistrarScraper {
     }
     
     public static void test() throws IOException {
-        String URL = "http://registrar.princeton.edu/course-offerings/search_results.xml?term=1132&subject=LIN";
+        String URL = "http://registrar.princeton.edu/course-offerings/search_results.xml?term=1132&subject=VIS";
         RegistrarData data = new RegistrarData();
         RegistrarScraper rs = new RegistrarScraper(data);
         rs.scrapeDepartment(URL, true);
