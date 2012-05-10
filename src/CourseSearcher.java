@@ -40,7 +40,6 @@ public class CourseSearcher {
         analyzer = new StandardAnalyzer(Version.LUCENE_35);
     }
 
-
     /**
      * @param querystr
      */

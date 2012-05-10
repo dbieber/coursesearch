@@ -66,16 +66,18 @@ public class CourseIndexer {
             indexCourse(course);			
         }
     }
+    
     // helper method: creates a field based on String prop and adds the proper information
     //    in CourseDetails details to the doc
     private boolean addPropToDoc(Document doc, CourseDetails details, String prop, Field.Store store, Field.Index analyzed) {
         String value = details.get(prop);
-        if (value != null) {
+        if (value != null && !value.equals("")) {
             doc.add(new Field(prop, value, store, analyzed));
             return true;
         }
         return false;
     }
+    
     // creates a new document for the given CourseDetails course, adds several
     // fields and then adds it to the IndexWriter writer
     private void indexCourse(CourseDetails course) {
@@ -89,15 +91,20 @@ public class CourseIndexer {
             addPropToDoc(doc, course, CourseDetails.DAYS, YES, ANALYZED);
             addPropToDoc(doc, course, CourseDetails.TIME, YES, ANALYZED);
             addPropToDoc(doc, course, CourseDetails.LOCATION, YES, ANALYZED);
-            addPropToDoc(doc, course, CourseDetails.ENROLLED, YES, ANALYZED);
-            addPropToDoc(doc, course, CourseDetails.MAX, YES, ANALYZED);
+            addPropToDoc(doc, course, CourseDetails.ENROLLED, YES, NOT_ANALYZED);
+            addPropToDoc(doc, course, CourseDetails.MAX, YES, NOT_ANALYZED);
             addPropToDoc(doc, course, CourseDetails.STATUS, YES, ANALYZED);
             addPropToDoc(doc, course, CourseDetails.COURSE_URL, NO, NOT_ANALYZED);
             addPropToDoc(doc, course, CourseDetails.BOOKS_URL, NO, NOT_ANALYZED);
             addPropToDoc(doc, course, CourseDetails.EVAL_URL, NO, NOT_ANALYZED);
             addPropToDoc(doc, course, CourseDetails.PROFESSORS, YES, ANALYZED);
-            addPropToDoc(doc, course, CourseDetails.READING_LIST, YES, ANALYZED);
             addPropToDoc(doc, course, CourseDetails.DESCRIPTION, YES, ANALYZED);
+            addPropToDoc(doc, course, CourseDetails.PDF, YES, NOT_ANALYZED);
+            addPropToDoc(doc, course, CourseDetails.AUDIT, YES, NOT_ANALYZED);
+            for (String header : CourseDetails.TEXT_HEADERS) {
+                // Only adds fields for headers that are present
+                addPropToDoc(doc, course, header, YES, ANALYZED);
+            }
 
             writer.addDocument(doc);
 

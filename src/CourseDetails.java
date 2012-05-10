@@ -5,7 +5,7 @@ import java.util.HashMap;
 public class CourseDetails extends HashMap<String, String> {
 
     private static final long serialVersionUID = 1L;
-
+    
     public static final String CLASS_NUM = "classNum";
     public static final String COURSE = "course";
     public static final String TITLE = "title";
@@ -25,8 +25,23 @@ public class CourseDetails extends HashMap<String, String> {
     public static final String AUDIT = "audit";
 
     public static final String PROFESSORS = "professors";
-    public static final String READING_LIST = "reading_list";
     public static final String DESCRIPTION = "description";
+    
+    // HEADERS
+    public static final String READING_LIST = "sample reading list";
+    public static final String REQUIREMENTS = "requirements/grading";
+    public static final String PREREQUISITES = "prerequisites and restrictions";
+    public static final String SCHEDULE = "schedule/classroom assignment";
+    public static final String OTHER_INFO = "other information";
+    public static final String RESERVED_SEATS = "reserved seats";
+    public static final String WEBSITE = "website";
+    public static final String ASSIGNMENTS = "reading/writing assignments"; // Amount of reading here
+    
+    public final static String[] HEADERS = {READING_LIST, REQUIREMENTS, PREREQUISITES, 
+            SCHEDULE, OTHER_INFO, RESERVED_SEATS, WEBSITE, ASSIGNMENTS};
+
+    public static final String[] TEXT_FIELDS = {COURSE, TITLE, DIST_AREA, LOCATION, PROFESSORS, DESCRIPTION};
+    public static final String[] TEXT_HEADERS = {READING_LIST, REQUIREMENTS, PREREQUISITES, OTHER_INFO, RESERVED_SEATS, ASSIGNMENTS};
 
     public static final int NO_ID = -1;
     public static final int ID_LENGTH = 6;

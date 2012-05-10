@@ -15,8 +15,6 @@ public class RegistrarScraper {
     private final String HREF_ATTR = "href";
     private final String DESCR_ID = "descr";
 
-    private final static String[] HEADERS = {"sample reading list", "requirements/grading", "prerequisites and restrictions", 
-            "schedule/classroom assignment", "other information", "other requirements", "reserved seats", "website", "reading/writing assignments"};
     private final static String SEASON = "Fall 2012-2013";
 
     // npdf and na are <em> right after <strong> in id="timetable"
@@ -98,7 +96,7 @@ public class RegistrarScraper {
     }
     
     private String matchHeader(String header) {
-        for (String h : HEADERS) {
+        for (String h : CourseDetails.HEADERS) {
             if (processHeader(h).equals(processHeader(header))) {
                 return h;
             }
@@ -158,7 +156,7 @@ public class RegistrarScraper {
             if (headerText == null) {
                 continue;
             }
-
+            // headerText \in HEADERS
 
             Element sibling = header.nextElementSibling();
             System.out.println(header.text());
@@ -176,7 +174,8 @@ public class RegistrarScraper {
                 sibling = sibling.nextElementSibling();
             }
 
-            text = text.trim();  
+            text = text.trim();
+            details.put(headerText, text);
             // TODO -- need to specially parse reading/writing assignments for reading amount per week, schedule/classroom assignment for times
             // Also need to index these text Strings.
         }
