@@ -10,6 +10,7 @@ public class RegistrarScraper {
     private final String TABLE_ROW_TAG = "tr";
     private final String TABLE_DATA_TAG = "td";
     private final String A_TAG = "a";
+    private final String H2_TAG = "h2";
     private final String STRONG_TAG = "strong";
     private final String HREF_ATTR = "href";
     private final String DESCR_ID = "descr";
@@ -113,9 +114,6 @@ public class RegistrarScraper {
     }
     
     public void scrapeCourse(String URL) throws IOException {
-        /* TODO fix */
-        /* TODO -- need to scrape title from the details, not the summary*/
-        
         System.out.println(URL);
         String base = "http://registrar.princeton.edu/course-offerings/";
         URL = base + URL;
@@ -125,7 +123,12 @@ public class RegistrarScraper {
 
         details.put(CourseDetails.COURSE_URL, URL);
 
-        String gradingRestrictions = doc.getElementById("timetable").select("strong + em").first().text();
+        Element timetable = doc.getElementById("timetable");
+        
+        String title = timetable.getElementsByTag(H2_TAG).first().text();
+        details.put(CourseDetails.TITLE, title);
+        
+        String gradingRestrictions = timetable.select("strong + em").first().text();
         if (containsOneOf(gradingRestrictions, NPDF)) {
             details.put(CourseDetails.PDF, CourseDetails.NO);
         } else if (containsOneOf(gradingRestrictions, PDFONLY)) {
@@ -169,6 +172,7 @@ public class RegistrarScraper {
                 sibling = sibling.nextElementSibling();
             }
             text = text.trim();
+            
         }
 
         data.addCourseDetails(details);
