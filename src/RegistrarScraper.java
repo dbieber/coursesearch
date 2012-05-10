@@ -218,16 +218,23 @@ public class RegistrarScraper {
             if (headerText == null) {
                 continue;
             }
-            // TODO switch to nodes
+
             Element sibling = header.nextElementSibling();
+            System.out.println(header.text());
+            
             String text = "";
             while (sibling != null && matchHeader(sibling.text()) == null) {
-                text += sibling.text() + " ";
+                String elementText = sibling.text().trim();
+                String nodeText = sibling.nextSibling().attr("text").trim();
+                if (elementText.length() > 0) {
+                    text += elementText + " ";
+                }
+                if (nodeText.length() > 0) {
+                    text += nodeText + '\n';
+                }
                 sibling = sibling.nextElementSibling();
             }
-            System.out.println("XXXXXXXXXXXXX");
-            System.out.println(header.text());
-            System.out.println(text);
+            text = text.trim();
         }
         
         
