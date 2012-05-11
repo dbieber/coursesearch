@@ -68,10 +68,8 @@ public class RegistrarScraper {
             details.put(CourseDetails.TITLE, cells.remove(0).text());
             details.put(CourseDetails.DIST_AREA, cells.remove(0).text());
             details.put(CourseDetails.SECTION, cells.remove(0).text());
-            details.put(CourseDetails.DAYS, cells.remove(0).text());
-            String time = cells.remove(0).text();
-            System.out.println(time);
-            details.put(CourseDetails.TIME, time);
+            details.put(CourseDetails.DAYS, cells.remove(0).text());            
+            details.setTime(cells.remove(0).text());
             details.put(CourseDetails.LOCATION, cells.remove(0).text());
             details.put(CourseDetails.ENROLLED, cells.remove(0).text());
             details.put(CourseDetails.MAX, cells.remove(0).text());
@@ -206,11 +204,11 @@ public class RegistrarScraper {
     }
     
     public static void test() throws IOException {
-        String URL = "http://registrar.princeton.edu/course-offerings/search_results.xml?term=1132&subject=COS";
+        String URL = "http://registrar.princeton.edu/course-offerings/search_results.xml?term=1132&subject=ELE";
         RegistrarData data = new RegistrarData();
         RegistrarScraper rs = new RegistrarScraper(data);
         rs.scrapeDepartment(URL, true);
-        rs.data.dump("cosdata");
+        rs.data.dump("eledata");
         System.out.println(rs.data);
     }
 

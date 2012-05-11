@@ -95,8 +95,8 @@ public class CourseIndexer {
             addPropToDoc(doc, course, CourseDetails.TITLE, YES, ANALYZED);
             addPropToDoc(doc, course, CourseDetails.DIST_AREA, YES, ANALYZED);
             addPropToDoc(doc, course, CourseDetails.DAYS, YES, ANALYZED);
-            addPropToDoc(doc, course, CourseDetails.TIME, YES, ANALYZED);
-            addPropToDoc(doc, course, CourseDetails.LOCATION, YES, ANALYZED);
+            addPropToDoc(doc, course, CourseDetails.TIME, YES, NOT_ANALYZED);
+            addPropToDoc(doc, course, CourseDetails.LOCATION, YES, NOT_ANALYZED);
             addPropToDoc(doc, course, CourseDetails.ENROLLED, YES, NOT_ANALYZED);
             addPropToDoc(doc, course, CourseDetails.MAX, YES, NOT_ANALYZED);
             addPropToDoc(doc, course, CourseDetails.STATUS, YES, ANALYZED);
@@ -130,13 +130,13 @@ public class CourseIndexer {
         RegistrarData rd = new RegistrarData();
 
         //String filename = "coursedata";
-        String filename = "cosdata";
+        String filename = "eledata";
         //rd.dump("temp");
 
         try {
             rd.load(filename);
             System.out.println("made it here!");
-            CourseIndexer indexer = new CourseIndexer(rd, "testCosIndex");
+            CourseIndexer indexer = new CourseIndexer(rd, "testEleIndex");
 
         } catch (Exception e) {
             System.out.println("Couldn't load the file or couldn't index.");

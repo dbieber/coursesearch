@@ -92,7 +92,7 @@ public class CourseSearcher {
     public static void main(String[] args) throws IOException, ParseException, ClassNotFoundException {
         // directory of index to search
         //String indexDir = "testIndex";
-        String indexDir = "testCosIndex";
+        String indexDir = "testEleIndex";
         CourseSearcher mysearch = new CourseSearcher(indexDir);
         // brings up any course with even a precept at 300?
         //mysearch.searchTime("lala");

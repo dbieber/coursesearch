@@ -78,10 +78,16 @@ public class CourseDetails extends HashMap<String, String> {
     }
     
     public void setTime(String time) {
-        if (time.equals(TBA)) {
+        if (time.toLowerCase().trim().equals(TBA)) {
             this.put(TIME, TBA);
+            return;
         }
         String[] times = time.split("-");
+        // Error checking: this should never occur
+        if (times.length < 2) {
+            this.put(TIME, TBA);
+            return;
+        }
         int startTime = militaryTime(times[0]);
         int endTime = militaryTime(times[1]);
 
@@ -103,6 +109,7 @@ public class CourseDetails extends HashMap<String, String> {
             }
         }
         this.put(TIME, timeString.toString());
+        System.out.println(timeString.toString());
     }
     
     private int militaryTime(String time) {
@@ -118,5 +125,10 @@ public class CourseDetails extends HashMap<String, String> {
         ans %= 2400;
         if (ans >= 2400) ans -= 1200; // Account for 12:XXpm
         return ans;
+    }
+    
+    public static void main(String[] args) {
+        CourseDetails details = new CourseDetails();
+        details.setTime("1:27 pm - 4:21 pm");
     }
 }
