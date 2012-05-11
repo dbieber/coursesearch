@@ -51,6 +51,7 @@ public class CourseDetails extends HashMap<String, String> {
     public static final String ONLY = "only";
 
     public static final String TBA = "tba";
+    public static final String PM = "pm";
 
     private int courseId;
 
@@ -81,12 +82,40 @@ public class CourseDetails extends HashMap<String, String> {
             this.put(TIME, TBA);
         }
         String[] times = time.split("-");
-        int startTime = intTime(times[0]);
-        int endTime = intTime(times[1]);
+        int startTime = militaryTime(times[0]);
+        int endTime = militaryTime(times[1]);
+
+        int t = startTime;
+        
+        // Only start on 0s and 30s.
+        if (startTime % 100 < 30)
+            t -= startTime % 100;
+        else if (startTime % 100 > 30)
+            t -= startTime % 100 - 30;
+        
+        StringBuilder timeString = new StringBuilder();
+        while (t < endTime) {
+            timeString.append(String.format("%4d ", t));
+            if (t % 100 == 0) {
+                t += 30;
+            } else {
+                t += 70; // Increase by 30 minutes to next hour
+            }
+        }
+        this.put(TIME, timeString.toString());
     }
     
-    private int intTime(String time) {
-        time = time.trim();
-        
+    private int militaryTime(String time) {
+        time = time.trim().toLowerCase();
+        String[] parts = time.split(" ");
+        int ans = 0;
+        if (parts[1].equals(PM)) {
+            ans += 1200;
+        }
+        String[] components = parts[0].split(":");
+        ans += 100 * Integer.parseInt(components[0]);
+        ans += Integer.parseInt(components[1]);
+        if (ans >= 2400) ans -= 1200; // Account for 12:XXpm
+        return ans;
     }
 }
