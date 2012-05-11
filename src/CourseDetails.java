@@ -114,14 +114,22 @@ public class CourseDetails extends HashMap<String, String> {
     
     public static int militaryTime(String time) {
         time = time.trim().toLowerCase();
-        String[] parts = time.split(" ");
         int ans = 0;
-        if (parts[1].equals(PM)) {
+        String[] parts = time.split(" ");
+        String[] components = parts[0].split(":");
+        int hour = Integer.parseInt(components[0]);
+        ans += 100 * hour;
+        ans += Integer.parseInt(components[1]);
+        if (parts.length == 1) {
+            // 8 9 10 11 12 are morning searches.
+            if (hour <= 7) { // evening search
+                ans += 1200;
+            }
+        }
+        else if (parts[1].equals(PM)) {
             ans += 1200;
         }
-        String[] components = parts[0].split(":");
-        ans += 100 * Integer.parseInt(components[0]);
-        ans += Integer.parseInt(components[1]);
+        
         ans %= 2400;
         if (ans >= 2400) ans -= 1200; // Account for 12:XXpm
         return ans;
