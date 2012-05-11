@@ -14,10 +14,10 @@ public class CourseQuery {
     private String queryToSearch;
     
     // QQ will we remove slashes and dashes from query before searching for terms?
-    private String[] PDF = {"pdfable", "pdf", "pdfing", "easy"};
+    private String[] PDF = {"pdfable", "pdf", "pdfing"};
     private String[] AUDIT = {"auditable", "audit", "auditing"};
     private String[] NAUDIT = {"notauditable", "naudit", "noaudit", "nostrangers", "withoutstrangers"}; // na should be strict
-    private String[] PDFONLY = {"pdfonly", "pdfonlyable", "easy"};
+    private String[] PDFONLY = {"pdfonly", "pdfonlyable"};
     private String[] NPDF = {"npdf", "nopdf", "notpdfable"};
 
     private static final String ANY = "any";

@@ -46,8 +46,8 @@ public class CourseDetails extends HashMap<String, String> {
     public static final int ID_LENGTH = 6;
 
     // PDF, AUDIT
-    public static final String YES = "yes";
-    public static final String NO = "no";
+    public static final String YES = "yesokay";
+    public static final String NO = "notokay";
     public static final String ONLY = "only";
 
     public static final String TBA = "tba";
