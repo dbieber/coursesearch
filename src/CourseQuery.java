@@ -32,9 +32,9 @@ public class CourseQuery {
         }
     }
     
-    private String parseQuery(String query) {
+    private String parseQuery(String query) {              
         // TODO replace word NA with NOTAUDITABLE
-        StringBuilder newQuery = new StringBuilder(query);
+        StringBuilder newQuery = new StringBuilder(query);                      
         StringBuilder cleanQueryBuilder = new StringBuilder();
         int[] lookup= new int[query.length()];
         int i = 0, j = 0;
