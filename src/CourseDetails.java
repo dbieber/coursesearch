@@ -94,8 +94,8 @@ public class CourseDetails extends HashMap<String, String> {
             t -= startTime % 100 - 30;
         
         StringBuilder timeString = new StringBuilder();
-        while (t < endTime) {
-            timeString.append(String.format("%4d ", t));
+        while (t <= endTime) {
+            timeString.append(String.format("%4d ", t)); // Leading spaces, not 0s
             if (t % 100 == 0) {
                 t += 30;
             } else {
@@ -115,6 +115,7 @@ public class CourseDetails extends HashMap<String, String> {
         String[] components = parts[0].split(":");
         ans += 100 * Integer.parseInt(components[0]);
         ans += Integer.parseInt(components[1]);
+        ans %= 2400;
         if (ans >= 2400) ans -= 1200; // Account for 12:XXpm
         return ans;
     }
