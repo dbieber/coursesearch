@@ -69,7 +69,9 @@ public class RegistrarScraper {
             details.put(CourseDetails.DIST_AREA, cells.remove(0).text());
             details.put(CourseDetails.SECTION, cells.remove(0).text());
             details.put(CourseDetails.DAYS, cells.remove(0).text());
-            details.put(CourseDetails.TIME, cells.remove(0).text());
+            String time = cells.remove(0).text();
+            System.out.println(time);
+            details.put(CourseDetails.TIME, time);
             details.put(CourseDetails.LOCATION, cells.remove(0).text());
             details.put(CourseDetails.ENROLLED, cells.remove(0).text());
             details.put(CourseDetails.MAX, cells.remove(0).text());
@@ -113,7 +115,7 @@ public class RegistrarScraper {
     }
     
     public void scrapeCourse(String URL) throws IOException {
-        System.out.println(URL);
+        //System.out.println(URL);
         String base = "http://registrar.princeton.edu/course-offerings/";
         URL = base + URL;
         Document doc = Jsoup.connect(URL).get();
@@ -127,7 +129,7 @@ public class RegistrarScraper {
         String title = timetable.getElementsByTag(H2_TAG).first().text();
         details.put(CourseDetails.TITLE, title);
         
-        System.out.println(title);
+        //System.out.println(title);
         
         String gradingRestrictions = timetable.select("strong + em").first().text();
         if (containsOneOf(gradingRestrictions, NPDF)) {          

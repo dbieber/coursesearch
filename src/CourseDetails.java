@@ -50,6 +50,8 @@ public class CourseDetails extends HashMap<String, String> {
     public static final String NO = "no";
     public static final String ONLY = "only";
 
+    public static final String TBA = "tba";
+
     private int courseId;
 
     public CourseDetails() {
@@ -72,5 +74,19 @@ public class CourseDetails extends HashMap<String, String> {
             }
         }
         return courseId;
+    }
+    
+    public void setTime(String time) {
+        if (time.equals(TBA)) {
+            this.put(TIME, TBA);
+        }
+        String[] times = time.split("-");
+        int startTime = intTime(times[0]);
+        int endTime = intTime(times[1]);
+    }
+    
+    private int intTime(String time) {
+        time = time.trim();
+        
     }
 }
