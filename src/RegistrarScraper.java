@@ -64,7 +64,7 @@ public class RegistrarScraper {
             Element courseLink = courseCell.getElementsByTag(A_TAG).first();
             details.put(CourseDetails.COURSE, courseLink.text());
             details.put(CourseDetails.COURSE_URL, courseLink.attr(HREF_ATTR));
-
+            
             details.put(CourseDetails.TITLE, cells.remove(0).text());
             details.put(CourseDetails.DIST_AREA, cells.remove(0).text());
             details.put(CourseDetails.SECTION, cells.remove(0).text());
@@ -84,7 +84,7 @@ public class RegistrarScraper {
             details.put(CourseDetails.EVAL_URL, evalLink.attr(HREF_ATTR));
 
             data.addCourseDetails(details);
-            if (recursive) {
+            if (recursive) {                
                 scrapeCourse(details.get(CourseDetails.COURSE_URL));
             }
         }
@@ -127,15 +127,17 @@ public class RegistrarScraper {
         String title = timetable.getElementsByTag(H2_TAG).first().text();
         details.put(CourseDetails.TITLE, title);
         
+        System.out.println(title);
+        
         String gradingRestrictions = timetable.select("strong + em").first().text();
-        if (containsOneOf(gradingRestrictions, NPDF)) {
+        if (containsOneOf(gradingRestrictions, NPDF)) {          
             details.put(CourseDetails.PDF, CourseDetails.NO);
-        } else if (containsOneOf(gradingRestrictions, PDFONLY)) {
+        } else if (containsOneOf(gradingRestrictions, PDFONLY)) {            
             details.put(CourseDetails.PDF, CourseDetails.ONLY);
-        } else {
+        } else {            
             details.put(CourseDetails.PDF, CourseDetails.YES);
         }
-        if (containsOneOf(gradingRestrictions, NAUDIT)) {
+        if (containsOneOf(gradingRestrictions, NAUDIT)) {            
             details.put(CourseDetails.AUDIT, CourseDetails.NO);
         } else {
             details.put(CourseDetails.AUDIT, CourseDetails.YES);
@@ -157,7 +159,7 @@ public class RegistrarScraper {
             }
             
             Element sibling = header.nextElementSibling();
-            System.out.println(header.text());
+            //System.out.println(header.text());
                         
             String text = "";
             while (sibling != null && matchHeader(sibling.text()) == null) {
@@ -202,10 +204,12 @@ public class RegistrarScraper {
     }
     
     public static void test() throws IOException {
-        String URL = "http://registrar.princeton.edu/course-offerings/search_results.xml?term=1132&subject=VIS";
+        String URL = "http://registrar.princeton.edu/course-offerings/search_results.xml?term=1132&subject=COS";
         RegistrarData data = new RegistrarData();
         RegistrarScraper rs = new RegistrarScraper(data);
         rs.scrapeDepartment(URL, true);
+        rs.data.dump("cosdata");
+        System.out.println(rs.data);
     }
 
     public static void main(String args[]) throws IOException, ClassNotFoundException {

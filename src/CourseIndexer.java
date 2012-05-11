@@ -71,6 +71,12 @@ public class CourseIndexer {
     //    in CourseDetails details to the doc
     private boolean addPropToDoc(Document doc, CourseDetails details, String prop, Field.Store store, Field.Index analyzed) {
         String value = details.get(prop);
+        if (prop.equals(CourseDetails.PDF)) {
+            System.out.println(value);
+        }
+        if (prop.equals(CourseDetails.TITLE)) {
+            System.out.println(value);
+        }
         if (value != null && !value.equals("")) {
             doc.add(new Field(prop, value, store, analyzed));
             return true;
@@ -123,13 +129,14 @@ public class CourseIndexer {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         RegistrarData rd = new RegistrarData();
 
-        String filename = "coursedata";
+        //String filename = "coursedata";
+        String filename = "cosdata";
         //rd.dump("temp");
 
         try {
             rd.load(filename);
             System.out.println("made it here!");
-            CourseIndexer indexer = new CourseIndexer(rd, "testIndex");
+            CourseIndexer indexer = new CourseIndexer(rd, "testCosIndex");
 
         } catch (Exception e) {
             System.out.println("Couldn't load the file or couldn't index.");

@@ -15,15 +15,12 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
-
-import com.sun.xml.internal.ws.util.xml.CDATA;
 
 public class CourseSearcher {
     private FSDirectory index;
@@ -37,13 +34,15 @@ public class CourseSearcher {
         analyzer = new StandardAnalyzer(Version.LUCENE_35);
     }
 
-    /**
-     * @param querystr
-     */
-    public void search(String querystr) throws ParseException, IOException {
+    public void search(CourseQuery query) throws ParseException, IOException {
+        search(query.getQueryString());
+        // TODO return results
+    }
+    
+    public void search(String query) throws ParseException, IOException {
         Query q = new MultiFieldQueryParser(Version.LUCENE_35,
-                new String[] {CourseDetails.TITLE, CourseDetails.DESCRIPTION, CourseDetails.COURSE},
-                analyzer).parse(querystr);
+                CourseDetails.TEXT_FIELDS,
+                analyzer).parse(query);
         int hitsPerPage = 14;
         TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);
         searcher.search(q, collector);
@@ -92,18 +91,26 @@ public class CourseSearcher {
      */
     public static void main(String[] args) throws IOException, ParseException, ClassNotFoundException {
         // directory of index to search
-        String indexDir = "testIndex";
+        //String indexDir = "testIndex";
+        String indexDir = "testCosIndex";
         CourseSearcher mysearch = new CourseSearcher(indexDir);
         // brings up any course with even a precept at 300?
         //mysearch.searchTime("lala");
         
-        mysearch.search("MUS");
+        /*mysearch.search("MUS");
         mysearch.search("217");
         mysearch.search("Programming");
         mysearch.search("Architecture");
-        mysearch.search("title:Architecture");
-        // need to deal with the fact that cannot search 9:00
-        // when done using search, need to close the searcher
+        mysearch.search("title:Architecture");*/
+        // TODO need to deal with the fact that cannot search 9:00
+        CourseQuery q = new CourseQuery("p/d/f");
+        mysearch.search(q);
+        q = new CourseQuery("pdfonly");
+        mysearch.search(q);
+        mysearch.search(CourseDetails.PDF + ": only");
+        mysearch.search(CourseDetails.PDF + ": no");
+        
+        // when done using search, need to close the searcher                        
         mysearch.closeSearcher();
     }
 }

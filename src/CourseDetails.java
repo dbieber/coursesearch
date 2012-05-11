@@ -38,8 +38,9 @@ public class CourseDetails extends HashMap<String, String> {
     public final static String[] HEADERS = {READING_LIST, REQUIREMENTS, PREREQUISITES, 
             SCHEDULE, OTHER_INFO, RESERVED_SEATS, WEBSITE, ASSIGNMENTS};
 
-    public static final String[] TEXT_FIELDS = {COURSE, TITLE, DIST_AREA, LOCATION, PROFESSORS, DESCRIPTION};
     public static final String[] TEXT_HEADERS = {READING_LIST, REQUIREMENTS, PREREQUISITES, OTHER_INFO, RESERVED_SEATS, ASSIGNMENTS};
+    public static final String[] TEXT_FIELDS = {COURSE, TITLE, DIST_AREA, LOCATION, PROFESSORS, DESCRIPTION,
+        READING_LIST, REQUIREMENTS, PREREQUISITES, OTHER_INFO, RESERVED_SEATS, ASSIGNMENTS}; // includes headers
 
     public static final int NO_ID = -1;
     public static final int ID_LENGTH = 6;
