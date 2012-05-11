@@ -19,7 +19,7 @@ public class CourseQuery {
     private String[] NAUDIT = {"notauditable", "naudit", "noaudit", "nostrangers", "withoutstrangers"}; // na should be strict
     private String[] PDFONLY = {"pdfonly", "pdfonlyable", "easy"};
     private String[] NPDF = {"npdf", "nopdf", "notpdfable"};
-    
+
     private static final String ANY = "any";
     
     public CourseQuery(String query) {
@@ -54,8 +54,9 @@ public class CourseQuery {
     
     private String parseTime(String query) {
         StringBuilder newQuery = new StringBuilder(query);
-        Pattern time = Pattern.compile("\\b\\d\\d?(:\\d\\d)?\\s?([ap]m)?\\b");
+        Pattern time = Pattern.compile("\\b\\d\\d?(:\\d\\d)?(\\s[ap]m\\b)?");
         Matcher m = time.matcher(query);
+        times = "";
         while (m.find()) {
             spacify(newQuery, m.start(), m.end());
             String militaryTime = query.substring(m.start(), m.end());
@@ -150,6 +151,10 @@ public class CourseQuery {
         else if (!audit.equals(ANY)) {
             query += CourseDetails.AUDIT + ": " + audit;
         }
+        
+        if (!times.equals("")) {
+            query += CourseDetails.TIME + ": " + times;
+        }
         return query;
     }
     
@@ -158,7 +163,7 @@ public class CourseQuery {
     }
     
     public static void main(String[] args) {
-        CourseQuery q = new CourseQuery("i want course at 1:00 pleaseeee");
+        CourseQuery q = new CourseQuery("i want course at 4:15pm or 3 pleaseeee");
         System.out.println(q.toString());
     }
     

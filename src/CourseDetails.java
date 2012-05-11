@@ -119,8 +119,10 @@ public class CourseDetails extends HashMap<String, String> {
         String[] components = parts[0].split(":");
         int hour = Integer.parseInt(components[0]);
         ans += 100 * hour;
-        ans += Integer.parseInt(components[1]);
-        if (parts.length == 1) {
+        if (components.length > 1) {
+            ans += Integer.parseInt(components[1]);
+        }
+        if (parts.length == 1 || components.length == 1) {
             // 8 9 10 11 12 are morning searches.
             if (hour <= 7) { // evening search
                 ans += 1200;
