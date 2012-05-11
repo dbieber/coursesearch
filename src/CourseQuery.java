@@ -1,5 +1,7 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CourseQuery {
     
@@ -7,6 +9,7 @@ public class CourseQuery {
     private String pdf; // CourseDetails: YES, NO, ONLY
     private String audit;
     private String reading;
+    private String times;
     private Map<String, String> fieldQueries;
     private String queryToSearch;
     
@@ -18,7 +21,6 @@ public class CourseQuery {
     private String[] NPDF = {"npdf", "nopdf", "notpdfable"};
     
     private static final String ANY = "any";
-    
     
     public CourseQuery(String query) {
         fieldQueries = new HashMap<String, String>();
@@ -32,7 +34,45 @@ public class CourseQuery {
         }
     }
     
+    private void compressSpaces(StringBuilder s) {
+        int i = 1;
+        while (i < s.length()) {
+            if (s.charAt(i) == ' ' && s.charAt(i-1) == ' ') {
+                s.deleteCharAt(i);
+                continue;
+            }
+            i++;
+        }
+    }
+    
     private String parseQuery(String query) {
+        query = parseTime(query);
+        query = parsePdfAudit(query);
+        return query;
+    }
+    
+    private String parseTime(String query) {
+        StringBuilder newQuery = new StringBuilder(query);
+        Pattern time = Pattern.compile("\\b\\d\\d?(:\\d\\d)?\\s?([ap]m)?\\b");
+        Matcher m = time.matcher(query);
+        while (m.find()) {
+            spacify(newQuery, m.start(), m.end());
+            String militaryTime = query.substring(m.start(), m.end());
+            int mTime = CourseDetails.militaryTime(militaryTime);
+            // Only search on 0s and 30s.
+            if (mTime % 100 < 30) {
+                mTime -= mTime % 100;
+            }
+            else if (mTime % 100 > 30) {
+                mTime -= mTime % 100 - 30;
+            }
+            times += String.format("%4d ", mTime);
+        }
+        compressSpaces(newQuery);
+        return newQuery.toString();
+    }
+    
+    private String parsePdfAudit(String query) {
         // TODO replace word NA with NOTAUDITABLE
         StringBuilder newQuery = new StringBuilder(query);
         StringBuilder cleanQueryBuilder = new StringBuilder();
@@ -71,15 +111,7 @@ public class CourseQuery {
                 break;
             }
         }
-        
-        i = 1;
-        while (i < newQuery.length()) {
-            if (newQuery.charAt(i) == ' ' && newQuery.charAt(i-1) == ' ') {
-                newQuery.deleteCharAt(i);
-                continue;
-            }
-            i++;
-        }
+        compressSpaces(newQuery);
         return newQuery.toString();
     }
 

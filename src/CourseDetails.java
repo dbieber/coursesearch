@@ -112,7 +112,7 @@ public class CourseDetails extends HashMap<String, String> {
         System.out.println(timeString.toString());
     }
     
-    private int militaryTime(String time) {
+    public static int militaryTime(String time) {
         time = time.trim().toLowerCase();
         String[] parts = time.split(" ");
         int ans = 0;
