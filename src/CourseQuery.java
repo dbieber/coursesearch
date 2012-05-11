@@ -68,7 +68,7 @@ public class CourseQuery {
             else if (mTime % 100 > 30) {
                 mTime -= mTime % 100 - 30;
             }
-            times += String.format("%4d ", mTime);
+            times += String.format("T%dT ", mTime);
         }
         compressSpaces(newQuery);
         return newQuery.toString();

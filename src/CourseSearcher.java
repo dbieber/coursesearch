@@ -53,7 +53,7 @@ public class CourseSearcher {
         for(int i = 0; i < hits.length; ++i) {
             int docId = hits[i].doc;
             Document d = searcher.doc(docId);
-            System.out.println((i + 1) + ". " + d.get(CourseDetails.COURSE) + ": " + d.get(CourseDetails.TITLE) + " - " + d.get(CourseDetails.DESCRIPTION));
+            System.out.println((i + 1) + ". " + d.get(CourseDetails.COURSE) + ": " + d.get(CourseDetails.TIME) + " " + d.get(CourseDetails.PDF));
         }
     }
     
@@ -74,7 +74,7 @@ public class CourseSearcher {
         for(int i = 0; i < hits.length; ++i) {
             int docId = hits[i].doc;
             Document d = searcher.doc(docId);
-            System.out.println((i + 1) + ". " + d.get(CourseDetails.COURSE) + ": " + d.get(CourseDetails.TITLE) + " - " + d.get(CourseDetails.DESCRIPTION));
+            System.out.println((i + 1) + ". " + d.get(CourseDetails.COURSE) + ": " + d.get(CourseDetails.TIME) + " " + d.get(CourseDetails.PDF));
         }
         
     }
@@ -103,12 +103,12 @@ public class CourseSearcher {
         mysearch.search("Architecture");
         mysearch.search("title:Architecture");*/
         // TODO need to deal with the fact that cannot search 9:00
-        CourseQuery q = new CourseQuery("p/d/f");
-        mysearch.search(q);
-        q = new CourseQuery("pdfonly");
-        mysearch.search(q);
-        mysearch.search(CourseDetails.PDF + ": only");
+        CourseQuery q = new CourseQuery(CourseDetails.TIME + " : T 900");
+        //mysearch.search("l "+ CourseDetails.TIME + " circuit");
         mysearch.search(CourseDetails.PDF + ": no");
+        mysearch.search("architecture");
+        q = new CourseQuery("course 1:30 ");
+        //mysearch.search(q);
         
         // when done using search, need to close the searcher                        
         mysearch.closeSearcher();

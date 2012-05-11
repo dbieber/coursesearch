@@ -1,3 +1,17 @@
+/*
+ * Name: David Bieber, Abbi Ward
+ * COS 435  - Final Project
+ * 
+ * File: CourseDetails.java
+ * Description: stores details about a course in format we need
+ *          for indexing
+ * 
+ * 
+ * Reference:
+ * http://www.lucenetutorial.com/sample-apps/textfileindexer-java.html
+ * 
+ */
+
 import java.util.HashMap;
 
 public class CourseDetails extends HashMap<String, String> {
@@ -101,7 +115,7 @@ public class CourseDetails extends HashMap<String, String> {
         
         StringBuilder timeString = new StringBuilder();
         while (t <= endTime) {
-            timeString.append(String.format("%4d ", t)); // Leading spaces, not 0s
+            timeString.append(String.format("T%dT ", t)); // Leading spaces, not 0s
             if (t % 100 == 0) {
                 t += 30;
             } else {

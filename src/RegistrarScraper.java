@@ -1,3 +1,14 @@
+/*
+ * Name: David Bieber, Abbi Ward
+ * COS 435  - Final Project
+ * 
+ * File: RegistrarScraper.java
+ * Description: scrapes the course registrar
+ * 
+ * 
+ * 
+ */
+
 import java.io.IOException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
