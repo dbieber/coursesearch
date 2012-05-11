@@ -158,7 +158,7 @@ public class CourseQuery {
     }
     
     public static void main(String[] args) {
-        CourseQuery q = new CourseQuery("no audit lalalala");
+        CourseQuery q = new CourseQuery("i want course at 1:00 pleaseeee");
         System.out.println(q.toString());
     }
     
