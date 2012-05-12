@@ -35,6 +35,8 @@ public class CourseDetails extends HashMap<String, String> {
     public static final String BOOKS_URL = "booksURL";
     public static final String EVAL_URL = "evalURL";
     
+    public static final String READING_AMT = "readingamt";
+    
     public static final String PDF = "pdf";
     public static final String AUDIT = "audit";
 
@@ -136,14 +138,30 @@ public class CourseDetails extends HashMap<String, String> {
     }
     
     public void setReadingAmt(String text) {
-        // TODO parse text
+        String readingAmt = "";
+        Pattern number = Pattern.compile("\\d+");
         for (String page : READPERWK) {
             Pattern p = Pattern.compile(String.format("\\b\\d+(-\\d+)?\\s?%s\\b", page));
             Matcher m = p.matcher(text);
             if (m.find()) {
-                text.subst
+                String result = text.substring(m.start(), m.end());
+                Matcher numMatcher = number.matcher(result);
+                int numbers[] = new int[2];
+                int i = 0;
+                while (numMatcher.find() && i < 2) {
+                    numbers[i++] = Integer.parseInt(result.substring(numMatcher.start(), numMatcher.end()));
+                }
+                if (i == 1) {
+                    numbers[1] = numbers[0];
+                }
+                int pages = numbers[0] - numbers[0] % 10;
+                while (pages <= numbers[1]) {
+                    readingAmt += pages + " ";
+                    pages += 10;
+                }
             }
         }
+        this.put(READING_AMT, readingAmt);
     }
     
     /* Converts an integer time into our specially formatted string     
