@@ -27,7 +27,7 @@ public class CourseQuery {
     
     public CourseQuery(String query) {
         fieldQueries = new HashMap<String, String>();
-        textQuery = parseQuery(query);
+        textQuery = parseQuery(query.toLowerCase().trim());
         queryToSearch = getQueryString();
     }
     
@@ -57,6 +57,7 @@ public class CourseQuery {
     
     private String parseDays(String query) {
         StringBuilder newQuery = new StringBuilder(query);
+        days = "";
         for (String day : DAYS) {
             for (int i = day.length(); i >= 1; i--) {
                 Pattern p = Pattern.compile(String.format("\\b%s\\b", day.substring(0, i)));
@@ -99,7 +100,7 @@ public class CourseQuery {
         // TODO replace word NA with NOTAUDITABLE
         StringBuilder newQuery = new StringBuilder(query);                      
         StringBuilder cleanQueryBuilder = new StringBuilder();
-        int[] lookup= new int[query.length()];
+        int[] lookup = new int[query.length()];
         int i = 0, j = 0;
         for (char c : query.toCharArray()) {
             if (('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z')) {
@@ -172,9 +173,13 @@ public class CourseQuery {
         else if (!audit.equals(ANY)) {
             query += CourseDetails.AUDIT + ": " + audit + " ";
         }
-        
+
         if (!times.equals("")) {
-            query += CourseDetails.TIME + ": " + times;
+            query += CourseDetails.TIME + ": " + times + " ";
+        }
+        
+        if (!days.equals("")) {
+            query += CourseDetails.DAYS + ": " + days + " ";
         }
         return query;
     }
