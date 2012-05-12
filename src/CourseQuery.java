@@ -8,7 +8,7 @@ public class CourseQuery {
     private String textQuery;
     private String pdf; // CourseDetails: YES, NO, ONLY
     private String audit;
-    private String reading;
+    private String readingAmt;
     private String times;
     private String days;
     private Map<String, String> fieldQueries;
@@ -49,10 +49,40 @@ public class CourseQuery {
     }
     
     private String parseQuery(String query) {
+        query = parseReadingAmt(query);
         query = parseDays(query);
         query = parseTime(query);
         query = parsePdfAudit(query);
         return query;
+    }
+    
+    private String parseReadingAmt(String query) {
+        readingAmt = "";
+        StringBuilder newQuery = new StringBuilder(query);
+        for (String page : CourseDetails.READPERWK) {
+            Pattern p = Pattern.compile(String.format(CourseDetails.rangeRegex, page));
+            Matcher m = p.matcher(query);
+            while(m.find()) {
+                String result = query.substring(m.start(), m.end());
+                spacify(newQuery, m.start(), m.end());
+                Matcher numMatcher = CourseDetails.numberPattern.matcher(result);
+                int numbers[] = new int[2];
+                int i = 0;
+                while (numMatcher.find()) {
+                    numbers[i++] = Integer.parseInt(result.substring(numMatcher.start(), numMatcher.end()));
+                }
+                if (i == 1) {
+                    numbers[1] = numbers[0];
+                }
+                int pages = numbers[0] - numbers[0] % 10;
+                while (pages <= numbers[1]) {
+                    readingAmt += pages + " ";
+                    pages += 10;
+                }
+            }
+        }
+        compressSpaces(newQuery);
+        return newQuery.toString();
     }
     
     private String parseDays(String query) {
@@ -182,6 +212,9 @@ public class CourseQuery {
         if (!days.equals("")) {
             query += CourseDetails.DAYS + ": " + days + " ";
         }
+        if (!readingAmt.equals("")) {
+            query += CourseDetails.READING_AMT + ": " + readingAmt +" ";
+        }
         return query;
     }
     
@@ -190,7 +223,7 @@ public class CourseQuery {
     }
     
     public static void main(String[] args) {
-        CourseQuery q = new CourseQuery("Monday W F tues THU-rs courses");
+        CourseQuery q = new CourseQuery("100 pages courses");
         System.out.println(q.toString());
     }
     

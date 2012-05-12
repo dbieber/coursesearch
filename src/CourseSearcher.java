@@ -54,7 +54,7 @@ public class CourseSearcher {
         for(int i = 0; i < hits.length; ++i) {
             int docId = hits[i].doc;
             Document d = searcher.doc(docId);
-            System.out.println((i + 1) + ". " + d.get(CourseDetails.COURSE) + ": " + d.get(CourseDetails.TIME) + " " + d.get(CourseDetails.PDF) + " " + d.get(CourseDetails.DAYS));
+            System.out.println((i + 1) + ". " + d.get(CourseDetails.COURSE) + ": " + d.get(CourseDetails.READING_AMT) + " " + d.get(CourseDetails.TIME) + " " + d.get(CourseDetails.PDF) + " " + d.get(CourseDetails.DAYS));
         }
     }
     
@@ -93,7 +93,7 @@ public class CourseSearcher {
     public static void main(String[] args) throws IOException, ParseException, ClassNotFoundException {
         // directory of index to search
         //String indexDir = "testIndex";
-        String indexDir = "testEleIndex";
+        String indexDir = "testHisIndex";
         CourseSearcher mysearch = new CourseSearcher(indexDir);
         // brings up any course with even a precept at 300?
         //mysearch.searchTime("lala");
@@ -106,7 +106,7 @@ public class CourseSearcher {
         // TODO need to deal with the fact that cannot search 9:00
         CourseQuery q = new CourseQuery("pdf 1:30 pm Tues ");
         System.out.println("Query:" + q.toString());
-        mysearch.search(q);
+        mysearch.search(CourseDetails.READING_AMT + ": 100-150");
         //mysearch.search("time: thirteenthir pdf: only");
         //mysearch.search(CourseDetails.PDF + ": only");
        // mysearch.search(CourseDetails.DAYS + ":thursday");

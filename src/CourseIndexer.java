@@ -112,7 +112,7 @@ public class CourseIndexer {
                 // Only adds fields for headers that are present
                 addPropToDoc(doc, course, header, YES, ANALYZED);
             }
-
+            addPropToDoc(doc, course, CourseDetails.READING_AMT, YES, ANALYZED);
             writer.addDocument(doc);
 
             //System.out.println("Added " + course.get(CourseDetails.COURSE));
@@ -131,13 +131,13 @@ public class CourseIndexer {
         RegistrarData rd = new RegistrarData();
 
         //String filename = "coursedata";
-        String filename = "eledata";
+        String filename = "hisdata";
         //rd.dump("temp");
 
         try {
             rd.load(filename);
             System.out.println("made it here!");
-            CourseIndexer indexer = new CourseIndexer(rd, "testEleIndex");
+            CourseIndexer indexer = new CourseIndexer(rd, "testHisIndex");
 
         } catch (Exception e) {
             System.out.println("Couldn't load the file or couldn't index.");

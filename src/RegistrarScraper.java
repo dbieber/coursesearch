@@ -221,11 +221,11 @@ public class RegistrarScraper {
     }
     
     public static void test() throws IOException {
-        String URL = "http://registrar.princeton.edu/course-offerings/search_results.xml?term=1132&subject=ELE";
+        String URL = "http://registrar.princeton.edu/course-offerings/search_results.xml?term=1132&subject=HIS";
         RegistrarData data = new RegistrarData();
         RegistrarScraper rs = new RegistrarScraper(data);
         rs.scrapeDepartment(URL, true);
-        rs.data.dump("eledata");
+        rs.data.dump("hisdata");
         System.out.println(rs.data);
     }
 

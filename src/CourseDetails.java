@@ -20,6 +20,9 @@ public class CourseDetails extends HashMap<String, String> {
 
     private static final long serialVersionUID = 1L;
     
+    public static final String rangeRegex = "\\b\\d+(\\s?-\\s?\\d+)?\\s?%s\\b"; // 10-20 pages
+    public static final Pattern numberPattern = Pattern.compile("\\d+");
+    
     public static final String CLASS_NUM = "classNum";
     public static final String COURSE = "course";
     public static final String TITLE = "title";
@@ -71,7 +74,7 @@ public class CourseDetails extends HashMap<String, String> {
     public static final String TBA = "tba";
     public static final String PM = "pm";
     
-    private final static String[] READPERWK = {"pages", "pp"};
+    public final static String[] READPERWK = {"pages", "pp"};
 
     private int courseId;
 
@@ -139,13 +142,12 @@ public class CourseDetails extends HashMap<String, String> {
     
     public void setReadingAmt(String text) {
         String readingAmt = "";
-        Pattern number = Pattern.compile("\\d+");
         for (String page : READPERWK) {
-            Pattern p = Pattern.compile(String.format("\\b\\d+(-\\d+)?\\s?%s\\b", page));
+            Pattern p = Pattern.compile(String.format(rangeRegex, page));
             Matcher m = p.matcher(text);
             if (m.find()) {
                 String result = text.substring(m.start(), m.end());
-                Matcher numMatcher = number.matcher(result);
+                Matcher numMatcher = numberPattern.matcher(result);
                 int numbers[] = new int[2];
                 int i = 0;
                 while (numMatcher.find() && i < 2) {
