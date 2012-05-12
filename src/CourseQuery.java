@@ -57,6 +57,7 @@ public class CourseQuery {
     
     private String parseDays(String query) {
         StringBuilder newQuery = new StringBuilder(query);
+        System.out.println(query);
         for (String day : DAYS) {
             for (int i = day.length(); i >= 1; i--) {
                 Pattern p = Pattern.compile(String.format("\\b%s\\b", day.substring(0, i)));
@@ -184,7 +185,7 @@ public class CourseQuery {
     }
     
     public static void main(String[] args) {
-        CourseQuery q = new CourseQuery("i want course at 4:15pm or 3 pleaseeee");
+        CourseQuery q = new CourseQuery("monday W F courses");
         System.out.println(q.toString());
     }
     
