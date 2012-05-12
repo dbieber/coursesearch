@@ -91,6 +91,10 @@ public class CourseDetails extends HashMap<String, String> {
         return courseId;
     }
     
+    /* Set the TIME detail of CourseDetails object
+     * Converts a string time of the form "d:dd am - d:dd am" to sets of 
+     * matching numerical times
+     */
     public void setTime(String time) {
         if (time.toLowerCase().trim().equals(TBA)) {
             this.put(TIME, TBA);
@@ -127,6 +131,8 @@ public class CourseDetails extends HashMap<String, String> {
         System.out.println(timeString.toString());
     }
     
+    /* Converts an integer time into our specially formatted string     
+     */
     public static String timeToString(int time) {
         String[] wordHours = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", 
                             "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen",
