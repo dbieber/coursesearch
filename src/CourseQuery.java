@@ -57,7 +57,7 @@ public class CourseQuery {
     
     private String parseDays(String query) {
         StringBuilder newQuery = new StringBuilder(query);
-        System.out.println(query);
+        
         days = "";
         for (String day : DAYS) {
             for (int i = day.length(); i >= 1; i--) {
@@ -190,7 +190,7 @@ public class CourseQuery {
     }
     
     public static void main(String[] args) {
-        CourseQuery q = new CourseQuery("monday W F courses");
+        CourseQuery q = new CourseQuery("Monday W F tues THU-rs courses");
         System.out.println(q.toString());
     }
     

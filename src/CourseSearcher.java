@@ -104,12 +104,13 @@ public class CourseSearcher {
         mysearch.search("Architecture");
         mysearch.search("title:Architecture");*/
         // TODO need to deal with the fact that cannot search 9:00
-        CourseQuery q = new CourseQuery("gimme course pdf at 9 to");
-        //mysearch.search(q);
+        CourseQuery q = new CourseQuery("pdf 1:30 pm Tues ");
+        System.out.println("Query:" + q.toString());
+        mysearch.search(q);
         //mysearch.search("time: thirteenthir pdf: only");
         //mysearch.search(CourseDetails.PDF + ": only");
-        mysearch.search(CourseDetails.DAYS + ":thursday");
-        q = new CourseQuery("course 1:30 ");
+       // mysearch.search(CourseDetails.DAYS + ":thursday");
+       // q = new CourseQuery("course 1:30 ");
         //mysearch.search(q);
         
         // when done using search, need to close the searcher                        
