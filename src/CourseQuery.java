@@ -73,6 +73,7 @@ public class CourseQuery {
         compressSpaces(newQuery);
         return newQuery.toString();
     }
+        
     
     private String parsePdfAudit(String query) {
         // TODO replace word NA with NOTAUDITABLE
