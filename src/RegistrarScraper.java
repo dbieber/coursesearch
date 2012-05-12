@@ -32,7 +32,7 @@ public class RegistrarScraper {
     private final static String[] NPDF = {"No Pass/D/Fail",  "npdf"};
     private final static String[] PDFONLY = {"P/D/F Only"};
     private final static String[] NAUDIT = {"na", "No Audit"};
-    private final static String[] READPERWK = {"pp reading/ week", " pages of reading weekly", "pages of reading per week", "pages per week", "pages per week"};
+    
 
     RegistrarData data;
 
@@ -170,8 +170,8 @@ public class RegistrarScraper {
             }
             
             Element sibling = header.nextElementSibling();
-            //System.out.println(header.text());
-                        
+            //System.out.println(header.text());                        
+            
             String text = "";
             while (sibling != null && matchHeader(sibling.text()) == null) {
                 String elementText = sibling.text().trim();
@@ -187,8 +187,14 @@ public class RegistrarScraper {
 
             text = text.trim();
             details.put(headerText, text);
+            
             // TODO -- need to specially parse reading/writing assignments for reading amount per week, schedule/classroom assignment for times
             // Also need to index these text Strings.
+        }
+        
+        String readingsText = details.get(CourseDetails.ASSIGNMENTS);
+        if (readingsText != null) {
+            details.setReadingAmt(readingsText);
         }
 
         data.addCourseDetails(details);

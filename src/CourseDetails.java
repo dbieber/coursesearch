@@ -13,6 +13,8 @@
  */
 
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CourseDetails extends HashMap<String, String> {
 
@@ -66,6 +68,8 @@ public class CourseDetails extends HashMap<String, String> {
 
     public static final String TBA = "tba";
     public static final String PM = "pm";
+    
+    private final static String[] READPERWK = {"pages", "pp"};
 
     private int courseId;
 
@@ -129,6 +133,17 @@ public class CourseDetails extends HashMap<String, String> {
         }
         this.put(TIME, timeString.toString());
         System.out.println(timeString.toString());
+    }
+    
+    public void setReadingAmt(String text) {
+        // TODO parse text
+        for (String page : READPERWK) {
+            Pattern p = Pattern.compile(String.format("\\b\\d+(-\\d+)?\\s?%s\\b", page));
+            Matcher m = p.matcher(text);
+            if (m.find()) {
+                text.subst
+            }
+        }
     }
     
     /* Converts an integer time into our specially formatted string     
