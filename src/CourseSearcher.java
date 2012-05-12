@@ -104,9 +104,9 @@ public class CourseSearcher {
         mysearch.search("Architecture");
         mysearch.search("title:Architecture");*/
         // TODO need to deal with the fact that cannot search 9:00
-        CourseQuery q = new CourseQuery("pdf 1:30 pm Tues ");
+        CourseQuery q = new CourseQuery("pdfonly");
         System.out.println("Query:" + q.toString());
-        mysearch.search(CourseDetails.READING_AMT + ": 100-150");
+        mysearch.search(q);
         //mysearch.search("time: thirteenthir pdf: only");
         //mysearch.search(CourseDetails.PDF + ": only");
        // mysearch.search(CourseDetails.DAYS + ":thursday");

@@ -131,7 +131,7 @@ public class CourseQuery {
         // TODO replace word NA with NOTAUDITABLE
         StringBuilder newQuery = new StringBuilder(query);                      
         StringBuilder cleanQueryBuilder = new StringBuilder();
-        int[] lookup = new int[query.length()];
+        int[] lookup = new int[query.length() + 1];
         int i = 0, j = 0;
         for (char c : query.toCharArray()) {
             if (('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z')) {
@@ -140,6 +140,7 @@ public class CourseQuery {
             }
             j++;
         }
+        lookup[i] = j;
         String cleanQuery = cleanQueryBuilder.toString();
 
         String[][] pdfTypes = new String[][] {PDFONLY, NPDF, PDF};
@@ -223,7 +224,7 @@ public class CourseQuery {
     }
     
     public static void main(String[] args) {
-        CourseQuery q = new CourseQuery("100 pages courses");
+        CourseQuery q = new CourseQuery("pdfable");
         System.out.println(q.toString());
     }
     
