@@ -10,6 +10,7 @@ public class CourseQuery {
     private String audit;
     private String reading;
     private String times;
+    private String days;
     private Map<String, String> fieldQueries;
     private String queryToSearch;
     
@@ -20,6 +21,8 @@ public class CourseQuery {
     private String[] PDFONLY = {"pdfonly", "pdfonlyable"};
     private String[] NPDF = {"npdf", "nopdf", "notpdfable"};
 
+    private String[] DAYS = {"monday", "tuesday", "wednesday", "thursday", "friday"}; // weekend
+    
     private static final String ANY = "any";
     
     public CourseQuery(String query) {
@@ -34,7 +37,6 @@ public class CourseQuery {
         }
     }
     
-
     private void compressSpaces(StringBuilder s) {
         int i = 1;
         while (i < s.length()) {
@@ -47,9 +49,27 @@ public class CourseQuery {
     }
     
     private String parseQuery(String query) {
+        query = parseDays(query);
         query = parseTime(query);
         query = parsePdfAudit(query);
         return query;
+    }
+    
+    private String parseDays(String query) {
+        StringBuilder newQuery = new StringBuilder(query);
+        for (String day : DAYS) {
+            for (int i = day.length(); i >= 1; i--) {
+                Pattern p = Pattern.compile(String.format("\\b%s\\b", day.substring(0, i)));
+                Matcher m = p.matcher(query);
+                if (m.find()) {
+                    spacify(newQuery, m.start(), m.end());
+                    days += day + " ";
+                    break;
+                }
+            }
+        }
+        compressSpaces(newQuery);
+        return newQuery.toString();
     }
     
     private String parseTime(String query) {
