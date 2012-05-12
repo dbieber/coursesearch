@@ -58,27 +58,7 @@ public class CourseSearcher {
         }
     }
     
-    public void searchTime(String querystr) throws ParseException, IOException {
-        /*
-         * TODO: parse into days and times and then do specific field searches??
-         */
-        Query q = new MultiFieldQueryParser(Version.LUCENE_35,
-                new String[] {CourseDetails.DAYS, CourseDetails.TIME},
-                analyzer).parse(querystr);
-        int hitsPerPage = 20;
-        TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);
-        searcher.search(q, collector);
-        ScoreDoc[] hits = collector.topDocs().scoreDocs;
-        
-        System.out.println("Found " + hits.length + " hits.");
 
-        for(int i = 0; i < hits.length; ++i) {
-            int docId = hits[i].doc;
-            Document d = searcher.doc(docId);
-            System.out.println((i + 1) + ". " + d.get(CourseDetails.COURSE) + ": " + d.get(CourseDetails.TIME) + " " + d.get(CourseDetails.PDF));
-        }
-        
-    }
 
     public void closeSearcher() throws IOException {
         searcher.close();
@@ -103,10 +83,10 @@ public class CourseSearcher {
         mysearch.search("Programming");
         mysearch.search("Architecture");
         mysearch.search("title:Architecture");*/
-        // TODO need to deal with the fact that cannot search 9:00
-        CourseQuery q = new CourseQuery("pdf 1:30 pm Tues ");
+        
+        CourseQuery q = new CourseQuery(" pdfonly x");
         System.out.println("Query:" + q.toString());
-        mysearch.search(CourseDetails.READING_AMT + ": 100-150");
+        mysearch.search(q);
         //mysearch.search("time: thirteenthir pdf: only");
         //mysearch.search(CourseDetails.PDF + ": only");
        // mysearch.search(CourseDetails.DAYS + ":thursday");

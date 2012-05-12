@@ -188,8 +188,7 @@ public class RegistrarScraper {
             text = text.trim();
             details.put(headerText, text);
             
-            // TODO -- need to specially parse reading/writing assignments for reading amount per week, schedule/classroom assignment for times
-            // Also need to index these text Strings.
+            // TODO -- parse schedule/classroom assignment for times            
         }
         
         String readingsText = details.get(CourseDetails.ASSIGNMENTS);

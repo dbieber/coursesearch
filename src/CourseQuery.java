@@ -180,22 +180,10 @@ public class CourseQuery {
         return null;
     }
     
-    public void setPDF(String status) {
-        pdf = status;
-    }
-    
-    public void setAudit(String status) {
-        audit = status;
-    }
-    
     public void setTextField(String field, String value) {
         fieldQueries.put(field, value);
     }
-    
-    public void setReading(String amt) {
-        // TODO magic
-    }
-    
+     
     public String getQueryString() {
         String query = textQuery + " ";
         if (!pdf.equals(ANY)) {
@@ -223,7 +211,7 @@ public class CourseQuery {
     }
     
     public static void main(String[] args) {
-        CourseQuery q = new CourseQuery("100 pages courses");
+        CourseQuery q = new CourseQuery("63-73 pages courses");
         System.out.println(q.toString());
     }
     
