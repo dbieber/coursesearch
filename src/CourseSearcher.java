@@ -40,6 +40,7 @@ public class CourseSearcher {
     }
     
     public void search(String query) throws ParseException, IOException {
+        String[] toSearch = {CourseDetails.TIME, CourseDetails.TITLE};
         Query q = new MultiFieldQueryParser(Version.LUCENE_35,
                 CourseDetails.TEXT_FIELDS,
                 analyzer).parse(query);
@@ -53,7 +54,7 @@ public class CourseSearcher {
         for(int i = 0; i < hits.length; ++i) {
             int docId = hits[i].doc;
             Document d = searcher.doc(docId);
-            System.out.println((i + 1) + ". " + d.get(CourseDetails.COURSE) + ": " + d.get(CourseDetails.TIME) + " " + d.get(CourseDetails.PDF));
+            System.out.println((i + 1) + ". " + d.get(CourseDetails.COURSE) + ": " + d.get(CourseDetails.TIME) + " " + d.get(CourseDetails.PDF) + " " + d.get(CourseDetails.DAYS));
         }
     }
     
@@ -103,10 +104,11 @@ public class CourseSearcher {
         mysearch.search("Architecture");
         mysearch.search("title:Architecture");*/
         // TODO need to deal with the fact that cannot search 9:00
-        CourseQuery q = new CourseQuery(CourseDetails.TIME + " : T 900");
-        //mysearch.search("l "+ CourseDetails.TIME + " circuit");
-        mysearch.search(CourseDetails.PDF + ": no");
-        mysearch.search("architecture");
+        CourseQuery q = new CourseQuery("gimme course pdf at 9 to");
+        //mysearch.search(q);
+        //mysearch.search("time: thirteenthir pdf: only");
+        //mysearch.search(CourseDetails.PDF + ": only");
+        mysearch.search(CourseDetails.DAYS + ":thursday");
         q = new CourseQuery("course 1:30 ");
         //mysearch.search(q);
         

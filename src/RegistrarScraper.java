@@ -79,7 +79,7 @@ public class RegistrarScraper {
             details.put(CourseDetails.TITLE, cells.remove(0).text());
             details.put(CourseDetails.DIST_AREA, cells.remove(0).text());
             details.put(CourseDetails.SECTION, cells.remove(0).text());
-            details.put(CourseDetails.DAYS, cells.remove(0).text());            
+            details.setDays(cells.remove(0).text());            
             details.setTime(cells.remove(0).text());
             details.put(CourseDetails.LOCATION, cells.remove(0).text());
             details.put(CourseDetails.ENROLLED, cells.remove(0).text());

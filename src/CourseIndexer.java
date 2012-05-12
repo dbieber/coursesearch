@@ -47,7 +47,7 @@ public class CourseIndexer {
         analyzer = new StandardAnalyzer(Version.LUCENE_35);
 
         IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_35, analyzer);
-
+        config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
         writer = new IndexWriter(index, config);
 
         indexRegistrar();
@@ -71,8 +71,8 @@ public class CourseIndexer {
     //    in CourseDetails details to the doc
     private boolean addPropToDoc(Document doc, CourseDetails details, String prop, Field.Store store, Field.Index analyzed) {
         String value = details.get(prop);
-        if (prop.equals(CourseDetails.PDF)) {
-            System.out.println(value);
+        if (prop.equals(CourseDetails.TIME)) {
+            System.out.println(value + " asdad ");
         }
         if (prop.equals(CourseDetails.TITLE)) {
             System.out.println(value);
@@ -81,6 +81,7 @@ public class CourseIndexer {
             doc.add(new Field(prop, value, store, analyzed));
             return true;
         }
+//        System.out.println("VALUEUEEU  " + value);
         return false;
     }
     
@@ -95,7 +96,7 @@ public class CourseIndexer {
             addPropToDoc(doc, course, CourseDetails.TITLE, YES, ANALYZED);
             addPropToDoc(doc, course, CourseDetails.DIST_AREA, YES, ANALYZED);
             addPropToDoc(doc, course, CourseDetails.DAYS, YES, ANALYZED);
-            addPropToDoc(doc, course, CourseDetails.TIME, YES, NOT_ANALYZED);
+            addPropToDoc(doc, course, CourseDetails.TIME, YES, ANALYZED);
             addPropToDoc(doc, course, CourseDetails.LOCATION, YES, NOT_ANALYZED);
             addPropToDoc(doc, course, CourseDetails.ENROLLED, YES, NOT_ANALYZED);
             addPropToDoc(doc, course, CourseDetails.MAX, YES, NOT_ANALYZED);

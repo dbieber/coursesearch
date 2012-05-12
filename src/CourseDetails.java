@@ -115,7 +115,8 @@ public class CourseDetails extends HashMap<String, String> {
         
         StringBuilder timeString = new StringBuilder();
         while (t <= endTime) {
-            timeString.append(String.format("T%dT ", t)); // Leading spaces, not 0s
+            timeString.append(timeToString(t)); // Leading spaces, not 0s
+            timeString.append(" ");
             if (t % 100 == 0) {
                 t += 30;
             } else {
@@ -124,6 +125,22 @@ public class CourseDetails extends HashMap<String, String> {
         }
         this.put(TIME, timeString.toString());
         System.out.println(timeString.toString());
+    }
+    
+    public static String timeToString(int time) {
+        String[] wordHours = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", 
+                            "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen",
+                            "twenty", "twentyone", "twentytwo", "twentythree", "twentyfour"};
+        int hour = time / 100;
+        int minute = time % 100;
+        String wordTime = wordHours[hour];
+        if (minute == 30) {
+            wordTime += "thir";                
+        }
+        else {
+            wordTime += "zero";            
+        }
+        return wordTime;
     }
     
     public static int militaryTime(String time) {
@@ -149,6 +166,30 @@ public class CourseDetails extends HashMap<String, String> {
         ans %= 2400;
         if (ans >= 2400) ans -= 1200; // Account for 12:XXpm
         return ans;
+    }
+    
+    public void setDays(String dayStr) {
+        String[] days = dayStr.split(" ");
+        StringBuilder fullDays = new StringBuilder();
+        for (String day : days) {
+            if (day.equals("M")) {
+                fullDays.append("monday ");
+            }
+            else if (day.equals("T")) {
+                fullDays.append("tuesday ");
+            }
+            else if (day.equals("W")) {
+                fullDays.append("wednesday ");
+            }
+            else if (day.equals("Th")) {
+                fullDays.append("thursday ");
+            }
+            else if (day.equals("F")) {
+                fullDays.append("friday ");
+            }
+        }
+
+        this.put(DAYS, fullDays.toString());        
     }
     
     public static void main(String[] args) {

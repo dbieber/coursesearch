@@ -68,7 +68,7 @@ public class CourseQuery {
             else if (mTime % 100 > 30) {
                 mTime -= mTime % 100 - 30;
             }
-            times += String.format("T%dT ", mTime);
+            times += CourseDetails.timeToString(mTime) + " ";
         }
         compressSpaces(newQuery);
         return newQuery.toString();
@@ -146,10 +146,10 @@ public class CourseQuery {
     public String getQueryString() {
         String query = textQuery + " ";
         if (!pdf.equals(ANY)) {
-            query += CourseDetails.PDF + ": " + pdf;
+            query += CourseDetails.PDF + ": " + pdf + " ";
         }
         else if (!audit.equals(ANY)) {
-            query += CourseDetails.AUDIT + ": " + audit;
+            query += CourseDetails.AUDIT + ": " + audit + " ";
         }
         
         if (!times.equals("")) {
