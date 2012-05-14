@@ -101,19 +101,24 @@ public class CourseDetails extends HashMap<String, String> {
     }
     
     /* Set the TIME detail of CourseDetails object
+     */
+    public void setTime(String time) {
+        String result = timesToString(time);
+        this.put(TIME, result);
+    }
+    
+    /*
      * Converts a string time of the form "d:dd am - d:dd am" to sets of 
      * matching numerical times
      */
-    public void setTime(String time) {
+    public static String timesToString(String time) {
         if (time.toLowerCase().trim().equals(TBA)) {
-            this.put(TIME, TBA);
-            return;
+            return TBA;
         }
         String[] times = time.split("-");
         // Error checking: this should never occur
         if (times.length < 2) {
-            this.put(TIME, TBA);
-            return;
+            return TBA;
         }
         int startTime = militaryTime(times[0]);
         int endTime = militaryTime(times[1]);
@@ -136,8 +141,7 @@ public class CourseDetails extends HashMap<String, String> {
                 t += 70; // Increase by 30 minutes to next hour
             }
         }
-        this.put(TIME, timeString.toString());
-        System.out.println(timeString.toString());
+        return timeString.toString();
     }
     
     public void setReadingAmt(String text) {

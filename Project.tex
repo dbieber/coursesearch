@@ -1,0 +1,183 @@
+\documentclass[12pt,letterpaper]{article}
+%\usepackage{psfig}
+\usepackage{amsmath, amssymb}
+\usepackage{fullpage}
+\usepackage{hyperref}
+\setcounter{page}{1}
+\pagenumbering{arabic}
+\def\pp{\par\noindent}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand{\baselinestretch}{1.2}
+\newcommand{\problem}[2]{ \bigskip \pp \textbf{Problem #1}\par}
+\newcommand{\problempts}[2]{ \bigskip \pp \textbf{Problem #1} [#2 points]\par}
+\newcommand{\itempts}[1]{\item ~~~[{#1}]~~~}
+\newcommand{\solution}{\textit{Solution:}\par}
+\newcommand{\partA}[1]{ \medskip \pp \emph{Part #1}\par}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\bbZ}    {\mathbb{Z}}
+\newcommand{\bbQ}    {\mathbb{Q}}
+\newcommand{\bbN}    {\mathbb{N}}
+\newcommand{\bbB}    {\mathbb{B}}
+\newcommand{\bbR}    {\mathbb{R}}
+\newcommand{\bbC}    {\mathbb{C}}
+\newcommand{\calP}   {{\cal{P}}}
+
+\newcommand{\zn}{{\bf 0}_n}
+\newcommand{\on}{{\bf 1}_n}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\title{Course Search \\ \large{COS435: Final Project}}
+\author{David Bieber, Abbi Ward}
+\date{May 15, 2012}
+
+\begin{titlepage}
+\maketitle
+\end{titlepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{abstract}
+This is an abstract.
+\end{abstract}
+
+\section{Introduction}
+We created a robust Princeton course search engine. It handles free-text queries and is integrated with the ICE (Integrated Course Engine) application that many students use for scheduling. In addition to allowing users to search for specific courses, it allows users to get P/D/F-able and P/D/F only courses and search and filter based on the amount of reading per week required. 
+
+
+\section{Goals}
+	Our motivation for this project stems from our own need to find courses to take at Princeton. There are already a few ways to look for classes including the paper course catalog, word of mouth, the Registrar's website, and the Integrated Course Engine (ICE). Each method offers its own advantages but still students complain about the difficulties of searching for desired courses. Given a course, these tools provide the relevant information about it. However, if we start with an information need we cannot easily find a course that satisfies it. In particular, students often request the ability to search for P/D/F-able or P/D/F-only classes, classes with light reading, or classes of a particular difficulty. Additionally, students frequently have time constraints that limit what courses they may choose from, and there is no existing convenient way to search within these contraints.
+	
+	We set out to create a tool to satisfy these demands. The search engine we set out to make must satisfy three objectives. It must be simpler than the registrar's search feature, which is clunky in the sense that search requires entering exact match values for specific fields. It must be more flexible than ICE, which is missing the ability to search by critical course information like professor and reading material. And it must be more powerful than either of the two, as they both lack the ability to search for information students find useful, such as P/D/F options, amount of reading, and course difficulty. The existing tools also lack the ability to flexibly combine search constraints. Neither ICE nor the registrar allows you to search for both keywords and time of day simulatenously, for instance.
+	
+	For our search engine, we aimed to create a single free text search box that can handle all of a student's course informaion needs. In particular, our search engine must allow students to find P/D/F-able classes, classes of a desired reading amount, classes about a particular topic, and classes that fit their schedule. It also must allow students to combine these search contraints freely, and it must provide the courses the student is most likely interested in first.
+	
+\section{Features}
+	\subsection{User facing}
+		\begin{enumerate}
+			\item Free text search
+			
+			The user can simply put what they want into the search bar (for instance, a pdf-able class on Tuesday at 1:30) and they'll get back courses that fit or nearly fit that description. The search is natural and requires little thought from the user on formulating his information need. 
+			
+			\item Basic Search Capabilities
+			
+			Our search engine can perform the same capabilities as the Registrar's search and ICE, combined. Given a course title, department, professor, keywords or any other basic information about the course, our engine will return relevant results. There are no restrictions on how a user can combine search constraints.
+			
+			\item PDF and Audit Options
+			
+			The user can easily search for P/D/F-able, non P/D/F-able, or P/D/F-only classes, as well as auditable, or non-auditable classes.
+			
+			\item Time and Day
+			
+			The user can specify the time and day of the courses for which they're looking. The search engine prioritizes courses that take place in those time slots.
+			
+			\item Reading per week
+			
+			The user may specify a desired amount of reading per week. The search engine returns courses with reading amounts in that range. For this and all of our features, the user may specify their search in a human readable format. The search engine will do its best to understand ``100 pages per week'' or ``100 pp/wk'', for instance.
+			
+		\end{enumerate}
+
+	\subsection{Additional Features}
+		\begin{enumerate}
+			\item Scraping registrar
+			
+			We've created a tool that scrapes the registrar and stores all course data in an easily accessible data format. It is resistant to registrar server failures, as well as local failures.
+			
+			\item Updating index
+			
+			The Indexer interprets our course data and creates an inverted index.
+			
+		\end{enumerate}
+
+	\section{Use Cases}
+		\subsection{Max the Lazy Architect}
+		Max is interested in art and architecture, and really hates all forms of work. He'd love to sleep in until noon, and he'd like to take the easiest classes possible. Of course, he needs to fulfill his departmental and distribution requirements, but he doesn't really care how as long as he can take his daily afternoon nap. So Max pulls up our search engine and types in ``easy afternoon courses''. He gets PSY 207. It's an SA distribution, is P/D/F-able, and lectures don't start until 12:30 pm.   
+		
+		
+		\subsection{Julie the Undecided Poet}
+		\subsection{The Paranoid Physicist}
+
+\section{Components}
+	\subsection{Architecture Overview}
+	\subsection{Registrar Scraper}
+	\subsection{Indexer}
+	The indexer takes the RegistrarData object we created in the RegistrarScraper and returns an inverted index. To index, we first put all data into documents. For each course, we construct a document using the fields from the associated CourseDetails object. In Lucene, documents consist of sets of fields. (similar to relational database-ish?) We created a field for each field in the CourseDetails object. This allows us to take advantage of our known structure in user search. We can parse queries to look through specific fields (explained under query parser). This also makes the document construction and indexing very clear from a coding perspective. 
+	
+	We then create the index using a Standard Analyzer which turns our text into tokens and applies to filters. It first makes everything lowercase, and then eliminates stop words (such as ``a'', ``an'',  ``and'', ``are'', ``as'', ``at'', ``be'', ``but'', ``by'', ``for'', ``if'', ``in'', ``into'', ``is'', ``it'', ``no'', ``not'', ``of'', ``on'', ``or'', ``such'', ``that'', ``the'', ``their'', ``then'', ``there'', ``these'', ``they'', ``this'', ``to'', ``was'', ``will'', ``with''). We have also configured it to overwrite the index as we update. This means we can update documents without worrying if they'll be indexed twice. 
+	\subsection{Query Parser}
+	The two primary components of the query parser are our CourseQuery parsing and Lucene's multifield query parser. From a user's query, we create a CourseQuery object. The CourseQuery object will parse this query to extract pdf-options, days, times and reading amount. It then constructs a new query to send to Lucene's multi-field query parser. This parser takes a query string and will search a set of fields.
+	\subsection{Search Engine}
+		At this level, the user interacts with a search bar. Once he's formed a query, the query is sent to the query parser which puts it into a form appropriate for the index. The searcher retrieves inforation from the index and compiles a list ranked by score. The Lucene scoring formula takes into account a coordinate factor, a query boost, a similarity, a document length norm and a document boost. 
+		The coordinate factor takes into account the number of query terms that appear in the document such that the more query terms that appear, the larger the score. 
+		The query boost???
+		The similarity function takes into account the dot product similarity between query and document and the size of the query. The query length norm is a Euclidean norm and essentially serves the purpose of a normalization factor to allow for comparison between queries.
+				
+		\url{http://lucene.apache.org/core/old_versioned_docs/versions/3_5_0/api/all/org/apache/lucene/search/Similarity.html}
+		
+	\subsection{Ranker}
+	\subsection{Personal Data Store}
+	Personal Data stored:
+		\begin{enumerate}
+			\item Course History
+			\item Associated Ratings for each course taken
+			\item 
+		\end{enumerate}
+	
+		\begin{enumerate}
+			\item Weight departments you've taken courses in and have high scores for those coures
+			\item 
+		\end{enumerate}
+\section{Experiments}
+
+\section{Evaluation}
+	\subsection{Experiment Results}
+	\subsection{Comparison with Existing Search Engines}
+		\begin{enumerate}
+			\item Registrar Search
+				The Registrar Search is essentially a database query. You select values for particular fields and the registrar returns results that exactly match the values for those chosen fields.
+			
+			\item ICE
+				From what we can tell based on experiments, ICE only indexes the description, title, and course abbreviation. It suffices then as a tool to create a schedule but is not, at the moment, a tool that's effective for finding courses to take. Had a wonderful professor and want to find what he's teaching next term? Not with ICE. ICE does allow you to search by time but not in conjunction with other search terms 
+			
+			\item TigerTracks
+			
+			\item Conclusion
+				None of these search engines give the ability to search for the pdf option. 
+		\end{enumerate}
+
+\section{Future Works}
+	\subsection{Personalization}
+		How Lucene Ranking Works
+		The Lucene ranking takes into account several factors. 
+		\begin{equation}
+			score(q,d) = coord(q,d) * queryNorm * \sum_{term t \in q}{tf(\text{t in d}) * idf(t)^2 * termBoost(t) * norm(t,d)}
+		\label{eq:practical}
+		\end{equation}
+		$coord(q,d)$ is the number of terms in doc d\\
+		$queryNorm$ is a normalizing factor. It is the Euclidean norm of the weights as determined by ???\\
+		$tf(\text{t in d})$ represents the term frequency of term t in document d \\
+		$idf(t)$ is the inverse document frequency of term t and is represented mathematically by \[ 1 + log(\frac{numDocs}{docFreq + 1}) \] where docFreq is the frequency of term t in each document. \\
+		$termBoost(t)$ is a factor that essentially boosts a given term t in query q. For instance, we could boost time and days specified to give classes that fit the user's need better.\\
+		$norm(t, d)$ takes into account the document boosts (we can boost documents to appear more frequently), lengthNorm (a factor that allows short fields to contribute more to the score), and the individual field boosts for which term t is the name of a field. 
+		\[ norm(t,d) = docBoost(d) * lengthNorm * \prod_{\text{field f in d named as t}}{fieldBoost(f)} \] 				
+	
+	
+	\subsection{User Interface}
+	Can we make it so that it displays the information requested? i.e. Q = ``CLA MW 330 pdfonly'' then in addition to CLA XXX - TITLE, we should display the time/days of the course and what the pdf options are
+	\subsection{Additional Signals}
+	
+\section{Conclusion}
+
+\appendix
+
+\section{Source Code}
+\section{Max and Julie}
+\section{Thanks}
+
+\end{document}

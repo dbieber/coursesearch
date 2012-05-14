@@ -9,6 +9,7 @@ public class CourseQuery {
     private String pdf; // CourseDetails: YES, NO, ONLY
     private String audit;
     private String readingAmt;
+    private String specialTimes;
     private String times;
     private String days;
     private String abbr;
@@ -16,13 +17,15 @@ public class CourseQuery {
     private String queryToSearch;
     
     // QQ will we remove slashes and dashes from query before searching for terms?
-    private String[] PDF = {"pdfable", "pdf", "pdfing"};
+    private String[] PDF = {"pdfable", "pdf", "pdfing", "easy"};
     private String[] AUDIT = {"auditable", "audit", "auditing"};
-    private String[] NAUDIT = {"notauditable", "naudit", "noaudit", "nostrangers", "withoutstrangers"}; // na should be strict
-    private String[] PDFONLY = {"pdfonly", "pdfonlyable"};
-    private String[] NPDF = {"npdf", "nopdf", "notpdfable"};
+    private String[] NAUDIT = {"notauditable", "naudit", "noaudit", "nostrangers", "withoutstrangers", "not auditable", "no audit", "no strangers", "without strangers"}; // na should be strict
+    private String[] PDFONLY = {"pdfonly", "pdfonlyable", "pdf only"};
+    private String[] NPDF = {"npdf", "nopdf", "notpdfable", "npdf", "no pdf", "not pdfable"};
 
     private String[] DAYS = {"monday", "tuesday", "wednesday", "thursday", "friday"}; // weekend
+    private String[] SPECIAL_TIMES = {"afternoon", "late afternoon", "early", "morning", "night", "noon"}; // weekend
+    private String[] SPECIAL_TIME_VALS = {"1:00 pm - 4:30 pm", "3:00 pm - 8:00 pm", "7:00 am - 12:00 pm", "7:00 am - 12:00 pm", "7:00 pm - 11:00 pm", "12:00 pm - 12:30 pm"};
     
     private static final String ANY = "any";
     
@@ -51,10 +54,11 @@ public class CourseQuery {
     
     private String parseQuery(String query) {
         parseCourseAbbr(query);
+        parseSpecialTimes(query);
         query = parseReadingAmt(query);
-        query = parseDays(query);
         query = parseTime(query);
         query = parsePdfAudit(query);
+        query = parseDays(query);
         return query;
     }
     
@@ -128,12 +132,23 @@ public class CourseQuery {
         return newQuery.toString();
     }
     
+    private void parseSpecialTimes(String query) {
+        specialTimes = "";
+        for (int i = 0; i < SPECIAL_TIMES.length; i++) {
+            int index = query.indexOf(SPECIAL_TIMES[i]);
+            if (index != -1) {
+                specialTimes += CourseDetails.timesToString(SPECIAL_TIME_VALS[i]) + " ";
+            }
+        }
+    }
+    
     private void parseCourseAbbr(String query) {
+        abbr = "";
         //StringBuilder newQuery = new StringBuilder(query);
-        Pattern abbrPat = Pattern.compile("\\b\\w\\w\\w\\s?\\d\\d\\d\\b");
+        Pattern abbrPat = Pattern.compile("\\b\\w\\w\\w\\s*\\d\\d\\d\\b");
         Matcher m = abbrPat.matcher(query);
         if (m.find()) {
-            abbr = query.substring(m.start(), m.end());
+            abbr = query.substring(m.start(), m.start() + 3) + " " + query.substring(m.end() - 3, m.end());
         }
         //return newQuery.toString();
         
@@ -146,7 +161,7 @@ public class CourseQuery {
         int[] lookup = new int[query.length() + 1];
         int i = 0, j = 0;
         for (char c : query.toCharArray()) {
-            if (('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z')) {
+            if (('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || c == ' ') {
                 cleanQueryBuilder.append(c);
                 lookup[i++] = j;
             }
@@ -208,6 +223,9 @@ public class CourseQuery {
 
         if (!times.equals("")) {
             query += CourseDetails.TIME + ": " + times + " ";
+        }
+        if (!specialTimes.equals("")) {
+            query += CourseDetails.TIME + ": " + specialTimes + " ";
         }
         
         if (!days.equals("")) {
