@@ -102,16 +102,17 @@ Max is interested in art and architecture, and really hates all forms of work. H
 
 \section{Components}
 
-	\subsection{Architecture Overview}
-	\subsection{Registrar Scraper}
-	\subsection{Indexer}
+\subsection{Architecture Overview}
+\subsection{Registrar Scraper}
+\subsection{Indexer}
 	
-	The indexer takes the RegistrarData object we created in the RegistrarScraper and returns an inverted index. To index, we first put all data into documents. For each course, we construct a document using the fields from the associated CourseDetails object. In Lucene, documents consist of sets of fields. We created a field for each key-value pair in the CourseDetails object. This allows us to take advantage of the known information structure in user search. We can parse queries to look through specific fields (explained under query parser). This also makes the document construction and indexing very clear from a coding perspective. 
+The indexer takes the RegistrarData object we created in the RegistrarScraper and returns an inverted index. To index, we first put all data into documents. For each course, we construct a document using the fields from the associated CourseDetails object. In Lucene, documents consist of sets of fields. We created a field for each key-value pair in the CourseDetails object. This allows us to take advantage of the known information structure in user search. We can parse queries to look through specific fields (explained under query parser). This also makes the document construction and indexing very clear from a coding perspective. 
+
+We then create the index using a Standard Analyzer which turns our text into tokens and applies two filters. It first makes everything lowercase, and then it eliminates stop words (such as ``a'', ``an'',  ``and'', ``are'', ``as'', ``at'', ``be'', ``but'', ``by'', ``for'', ``if'', ``in'', ``into'', ``is'', ``it'', ``no'', ``not'', ``of'', ``on'', ``or'', ``such'', ``that'', ``the'', ``their'', ``then'', ``there'', ``these'', ``they'', ``this'', ``to'', ``was'', ``will'', ``with''). We have also configured it to overwrite the index as we update. This means we can update documents without worrying if they'll be indexed twice. 
 	
-	We then create the index using a Standard Analyzer which turns our text into tokens and applies two filters. It first makes everything lowercase, and then it eliminates stop words (such as ``a'', ``an'',  ``and'', ``are'', ``as'', ``at'', ``be'', ``but'', ``by'', ``for'', ``if'', ``in'', ``into'', ``is'', ``it'', ``no'', ``not'', ``of'', ``on'', ``or'', ``such'', ``that'', ``the'', ``their'', ``then'', ``there'', ``these'', ``they'', ``this'', ``to'', ``was'', ``will'', ``with''). We have also configured it to overwrite the index as we update. This means we can update documents without worrying if they'll be indexed twice. 
+\subsection{Query Parser}
 	
-	\subsection{Query Parser}
-	
+
 	The two primary components of the query parser are our CourseQuery parsing and Lucene's multifield query parser. From a user's query, we create a CourseQuery object. The CourseQuery object parses this query to extract pdf-options, days, times and reading amount. To extract the P/D/F and audit options information, it searches the query for a pre-determined set of keywords, such as ``pdf'' or ``easy''. It then extracts these from the free-text portion of the query and appends to the remaining query directions for the value the searcher should search. For instance, a query including ``pdf-only art drawing'' will become ``art drawing pdf: only'' at this stage. A similar process occurs for days, times, and reading amount. For times, we perform two special operations. We must convert ranges to sets of values and put these values into army time. We also search for special time search terms such as ``afternoon'' or ``noon'' and set ranges of times. We do not remove these terms from the query in the case that time is not the query term's intention. 
 	From all this data, we construct a new query that can be fed to Lucene's multi-field query parser. This parser takes a query string expands it into a form suitable for searching. 
 	
