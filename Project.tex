@@ -103,7 +103,11 @@ Max is interested in art and architecture, and really hates all forms of work. H
 \section{Components}
 
 \subsection{Architecture Overview}
+Our search engine has several key components that together allow for sophisticated course searches. A visual overview is provided in the accompanying figure. The data that is searchable all comes from the registrar. We crawl pages on the registrar with our Registrar Scraper in order to accumulate this data. The scraper uses application specific logic in order to get a meaningful understanding of information from the HTML pages on the registrar's website. The data is serialized to disk and is used to build the inverted index that our search engine relies upon. Our Indexer, built atop Lucene, maintains the index on disk. When our search engine receives a query, it first applys the query parser in order to create an application specific query. The query parser determines the meaning of the query, so that the search engine knows what to look for in what fields of the indexed course documents. The result of query parsing is then used with the inverted index in order to generate a number of results. These are ranked and given as the result of the search.
+
 \subsection{Registrar Scraper}
+Our registrar scraper operates in three tiers and is highly specific to the job of scraping course data. 
+
 \subsection{Indexer}
 	
 The indexer takes the RegistrarData object we created in the RegistrarScraper and returns an inverted index. To index, we first put all data into documents. For each course, we construct a document using the fields from the associated CourseDetails object. In Lucene, documents consist of sets of fields. We created a field for each key-value pair in the CourseDetails object. This allows us to take advantage of the known information structure in user search. We can parse queries to look through specific fields (explained under query parser). This also makes the document construction and indexing very clear from a coding perspective. 
