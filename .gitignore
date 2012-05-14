@@ -10,3 +10,6 @@ coursedata
 *.log
 *.out
 *.pyc
+*.bbl
+*.pdf
+*.blg
