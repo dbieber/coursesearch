@@ -6,3 +6,7 @@ bin
 coursedata
 *.crx
 *.pem
+*.aux
+*.log
+*.out
+*.pyc
