@@ -116,18 +116,15 @@ We then create the index using a Standard Analyzer which turns our text into tok
 	
 \subsection{Query Parser}
 	
-The two primary components of the query parser are our CourseQuery parsing and Lucene's multifield query parser. From a user's query, we create a CourseQuery object. The CourseQuery object parses this query to extract pdf-options, days, times and reading amount. To extract the P/D/F and audit options information, it searches the query for a pre-determined set of keywords, such as ``pdf'' or ``easy''. It then extracts these from the free-text portion of the query and appends to the remaining query directions for the value the searcher should search. For instance, a query including ``pdf-only art drawing'' will become ``art drawing pdf: only'' at this stage. A similar process occurs for days, times, and reading amount. For times, we perform two special operations. We must convert ranges to sets of values and put these values into army time. We also search for special time search terms such as ``afternoon'' or ``noon'' and set ranges of times. We do not remove these terms from the query in the case that time is not the query term's intention. 
 
-From all this data, we construct a new query that can be fed to Lucene's multi-field query parser. This parser takes a query string and will search a set of fields.
+	The two primary components of the query parser are our CourseQuery parsing and Lucene's multifield query parser. From a user's query, we create a CourseQuery object. The CourseQuery object parses this query to extract pdf-options, days, times and reading amount. To extract the P/D/F and audit options information, it searches the query for a pre-determined set of keywords, such as ``pdf'' or ``easy''. It then extracts these from the free-text portion of the query and appends to the remaining query directions for the value the searcher should search. For instance, a query including ``pdf-only art drawing'' will become ``art drawing pdf: only'' at this stage. A similar process occurs for days, times, and reading amount. For times, we perform two special operations. We must convert ranges to sets of values and put these values into army time. We also search for special time search terms such as ``afternoon'' or ``noon'' and set ranges of times. We do not remove these terms from the query in the case that time is not the query term's intention. 
+	From all this data, we construct a new query that can be fed to Lucene's multi-field query parser. This parser takes a query string expands it into a form suitable for searching. 
 	
-\subsection{Search Engine}
-At this level, the user interacts with a search bar. Once he's formed a query, the query is sent to the query parser which puts it into a form appropriate for the index. The searcher retrieves inforation from the index and compiles a list ranked by score. The Lucene scoring formula takes into account a coordinate factor, a query boost, a similarity, a document length norm and a document boost. 
-
-The coordinate factor takes into account the number of query terms that appear in the document such that the more query terms that appear, the larger the score. 
-
-The query boost???
-
-The similarity function takes into account the dot product similarity between query and document and the size of the query. The query length norm is a Euclidean norm and essentially serves the purpose of a normalization factor to allow for comparison between queries.
+	\subsection{Search Engine}
+		At this level, the user interacts with a search bar. Once he's formed a query, the query is sent to the query parser which puts it into a form appropriate for the index. The The searcher retrieves inforation from the index and compiles a list ranked by score. The Lucene scoring formula takes into account a coordinate factor, a query boost, a similarity, a document length norm and a document boost. 
+		The coordinate factor takes into account the number of query terms that appear in the document such that the more query terms that appear, the larger the score. 
+		The query boost???
+		The similarity function takes into account the dot product similarity between query and document and the size of the query. The query length norm is a Euclidean norm and essentially serves the purpose of a normalization factor to allow for comparison between queries.
 				
 \url{http://lucene.apache.org/core/old_versioned_docs/versions/3_5_0/api/all/org/apache/lucene/search/Similarity.html}
 		
