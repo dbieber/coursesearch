@@ -204,8 +204,8 @@ public class CourseDetails extends HashMap<String, String> {
             ans += 1200;
         }
         
-        ans %= 2400;
         if (ans >= 2400) ans -= 1200; // Account for 12:XXpm
+        ans %= 2400;
         return ans;
     }
     
