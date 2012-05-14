@@ -131,14 +131,14 @@ public class CourseIndexer {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         RegistrarData rd = new RegistrarData();
 
-        //String filename = "coursedata";
-        String filename = "hisdata";
+        String filename = "coursedata";
+        //String filename = "hisdata";
         //rd.dump("temp");
 
         try {
             rd.load(filename);
             System.out.println("made it here!");
-            CourseIndexer indexer = new CourseIndexer(rd, "testHisIndex");
+            CourseIndexer indexer = new CourseIndexer(rd, "AllCourseIndex");
 
         } catch (Exception e) {
             System.out.println("Couldn't load the file or couldn't index.");
