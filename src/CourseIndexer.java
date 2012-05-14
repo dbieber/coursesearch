@@ -47,9 +47,10 @@ public class CourseIndexer {
         analyzer = new StandardAnalyzer(Version.LUCENE_35);
 
         IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_35, analyzer);
+        //config.setSimilarity(new IsolationSimilarity());
         config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
         writer = new IndexWriter(index, config);
-
+        
         indexRegistrar();
 
         closeIndex();
@@ -144,3 +145,4 @@ public class CourseIndexer {
         }
     }
 }
+

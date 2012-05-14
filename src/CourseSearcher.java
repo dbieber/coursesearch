@@ -13,11 +13,13 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.Similarity;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
@@ -40,6 +42,10 @@ public class CourseSearcher {
     }
     
     public void search(String query) throws ParseException, IOException {
+        Similarity me = Similarity.getDefault();
+        Similarity.setDefault(me);        
+        System.out.println(me.idfExplain(new Term("Roman"), searcher, 1).explain());
+        
         String[] toSearch = {CourseDetails.TIME, CourseDetails.TITLE};
         Query q = new MultiFieldQueryParser(Version.LUCENE_35,
                 CourseDetails.TEXT_FIELDS,
@@ -54,7 +60,7 @@ public class CourseSearcher {
         for(int i = 0; i < hits.length; ++i) {
             int docId = hits[i].doc;
             Document d = searcher.doc(docId);
-            System.out.println((i + 1) + ". " + d.get(CourseDetails.COURSE) + ": " + d.get(CourseDetails.READING_AMT) + " " + d.get(CourseDetails.TIME) + " " + d.get(CourseDetails.PDF) + " " + d.get(CourseDetails.DAYS));
+            System.out.println((i + 1) + ". " + hits[i].score + " " + d.get(CourseDetails.COURSE) + ": " + d.get(CourseDetails.READING_AMT) + " " + d.get(CourseDetails.TIME) + " " + d.get(CourseDetails.PDF) + " " + d.get(CourseDetails.DAYS));
         }
     }
     
@@ -84,9 +90,10 @@ public class CourseSearcher {
         mysearch.search("Architecture");
         mysearch.search("title:Architecture");*/
         
-        CourseQuery q = new CourseQuery(" pdfonly x");
+        CourseQuery q = new CourseQuery("his 400");
         System.out.println("Query:" + q.toString());
         mysearch.search(q);
+        mysearch.search(CourseDetails.COURSE + ": his 551 ");
         //mysearch.search("time: thirteenthir pdf: only");
         //mysearch.search(CourseDetails.PDF + ": only");
        // mysearch.search(CourseDetails.DAYS + ":thursday");

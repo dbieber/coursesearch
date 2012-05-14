@@ -11,6 +11,7 @@ public class CourseQuery {
     private String readingAmt;
     private String times;
     private String days;
+    private String abbr;
     private Map<String, String> fieldQueries;
     private String queryToSearch;
     
@@ -49,6 +50,7 @@ public class CourseQuery {
     }
     
     private String parseQuery(String query) {
+        parseCourseAbbr(query);
         query = parseReadingAmt(query);
         query = parseDays(query);
         query = parseTime(query);
@@ -125,7 +127,17 @@ public class CourseQuery {
         compressSpaces(newQuery);
         return newQuery.toString();
     }
+    
+    private void parseCourseAbbr(String query) {
+        //StringBuilder newQuery = new StringBuilder(query);
+        Pattern abbrPat = Pattern.compile("\\b\\w\\w\\w\\s?\\d\\d\\d\\b");
+        Matcher m = abbrPat.matcher(query);
+        if (m.find()) {
+            abbr = query.substring(m.start(), m.end());
+        }
+        //return newQuery.toString();
         
+    }
     
     private String parsePdfAudit(String query) {
         // TODO replace word NA with NOTAUDITABLE
@@ -199,6 +211,9 @@ public class CourseQuery {
         
         if (!days.equals("")) {
             query += CourseDetails.DAYS + ": " + days + " ";
+        }
+        if (!abbr.equals("")) {
+            query += CourseDetails.COURSE + ": " + abbr + " ";
         }
         if (!readingAmt.equals("")) {
             query += CourseDetails.READING_AMT + ": " + readingAmt +" ";
