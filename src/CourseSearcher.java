@@ -94,10 +94,10 @@ public class CourseSearcher {
         mysearch.search("Architecture");
         mysearch.search("title:Architecture");*/
 
-        CourseQuery q = new CourseQuery("afternoon pdf");
+        CourseQuery q = new CourseQuery("p 126 ");
         System.out.println("Query:" + q.toString());
         mysearch.search(q, 14);
-        mysearch.search(CourseDetails.COURSE + ": vis 201 ", 1);
+        mysearch.search(CourseDetails.COURSE + ": 126 ", 1);
         //mysearch.search("time: thirteenthir pdf: only");
         //mysearch.search(CourseDetails.PDF + ": only");
        // mysearch.search(CourseDetails.DAYS + ":thursday");

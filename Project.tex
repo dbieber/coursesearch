@@ -105,6 +105,12 @@ Max is interested in art and architecture, and really hates all forms of work. H
 \subsection{Architecture Overview}
 Our search engine has several key components that together allow for sophisticated course searches. A visual overview is provided in the accompanying figure. The data that is searchable all comes from the registrar. We crawl pages on the registrar with our Registrar Scraper in order to accumulate this data. The scraper uses application specific logic in order to get a meaningful understanding of information from the HTML pages on the registrar's website. The data is serialized to disk and is used to build the inverted index that our search engine relies upon. Our Indexer, built atop Lucene, maintains the index on disk. When our search engine receives a query, it first applys the query parser in order to create an application specific query. The query parser determines the meaning of the query, so that the search engine knows what to look for in what fields of the indexed course documents. The result of query parsing is then used with the inverted index in order to generate a number of results. These are ranked and given as the result of the search.
 
+\begin{figure}
+%\includegraphics{OverallArchDiagram.png}
+\caption{Architecture Overview}
+
+\end{figure}
+
 \subsection{Registrar Scraper}
 
 Our registrar scraper operates in three tiers and is highly specific to the job of scraping course data. A visual overview of the registrar scraper's logic is provided in the accompanying figure. The first tier contains a single document, the registrar's main page, from which we scrape a list of department pages. The second tier is made of these department pages, each of which contains a list of courses. We begin gather course specific information on the second tier, as the department pages contain information about when the classes meet, how large the classes are, and what distribution areas they satisfy. Additionally and most importantly we crawl the second tier for links to pages with additional information about the classes. These class specific pages form the third tier of the registrar scraper. For each page in the third tier we gather as much information as possible about the individual course represented. We can usually find most of the following information about each class: the professor teaching it, a description of the class, a sample reading list, any prerequesites, the way the class is graded, P/D/F and audit options, the amount of work to expect, when the course is offered, and sometimes even more. All of the information about the classes gather during tiers two and three is aggregated and serialized to disk so that it can be later used by the indexer.
@@ -126,7 +132,7 @@ At this level, the user types a query into the search bar. The query is sent to 
 		
 \subsection{Ranker}
 
-\subsubsection{How Lucene Ranking Works}
+\subsubsection{Lucene Ranking}
 The Lucene ranking takes into account several factors. 
 \begin{equation}
   score(q,d) = coord(q,d) * queryNorm * \sum_{\text{term t } \in q}{tf(\text{t in d}) * idf(t)^2 * termBoost(t) * norm(t,d)}
@@ -140,34 +146,32 @@ $termBoost(t)$ is a factor that essentially boosts a given term t in query q. Fo
 $norm(t, d)$ takes into account the document boosts (we can boost documents to appear more frequently), lengthNorm (a factor that allows short fields to contribute more to the score), and the individual field boosts for which term t is the name of a field. 
 \[ norm(t,d) = docBoost(d) * lengthNorm * \prod_{\text{field f in d named as t}}{fieldBoost(f)} \] 				
 
-
-	
-
-\subsection{Personal Data}
-The following is the personal data we could use to implement personalized search results. 
-\begin{enumerate}
-\item Course History
-\item Associated Ratings for each course taken
-\item Friend's Data
-\end{enumerate}
-What we would do with the data
-\begin{enumerate}
-\item Weight departments you've taken courses in and have high scores for those coures
-\item Know which prerequisites you've filled and give a warning before adding
-\end{enumerate}
+\subsubsection{Course Ranking}
+At indexing time, we adjusted the fieldBoost for the following fields: course abbreviation, distribution area, title, and PDF. We determined these values experimentally using a technique similar to the machine learning method gradient descent. As the default fieldBoost values are 1.0, indicating no boost, we first tried our algorithm without any boosting. The results were stellar but the ranking was less than adequate. Based on an educated guess, we set the initial boost values to 1.07
 
 
 \section{Experiments}
 
 \section{Evaluation}
+\subsection{Experiment Testing}
+\begin{enumerate}
+\item Class specific: ELE 301, ENG 300
+\item Department specific: COS, ARC
+\item Number specific: 126, 217
+\item Professor: Chazelle
+\item Course Title: Japanese Society
+\item Include PDF: pdfonly art
+\end{enumerate}
+
+We are limited in the queries we can use to experiment because the queries ICE and the registrar accept are severely limited compared to the ones our search engine accepts. 
 \subsection{Experiment Results}
 \subsection{Comparison with Existing Search Engines}
 \begin{enumerate}
 \item Registrar Search
-  The Registrar Search is essentially a database query. You select values for particular fields and the registrar returns results that exactly match the values for those chosen fields.
+  The Registrar Search is essentially a database query. You select values for particular fields and the registrar returns results that exactly match the values for those chosen fields. 
   
 \item ICE
-  From what we can tell based on experiments, ICE only indexes the description, title, and course abbreviation. It suffices then as a tool to create a schedule but is not, at the moment, a tool that's effective for finding courses to take. Had a wonderful professor and want to find what he's teaching next term? Not with ICE. ICE does allow you to search by time but not in conjunction with other search terms 
+  From what we can tell based on experiments, ICE only indexes the description, title, and course abbreviation. It suffices then as a tool to create a schedule but is not, at the moment, a tool that's effective for finding courses to take. ICE does allow you to search by time but not in conjunction with other search terms. The results ICE returns are in alphabetical order by course abbreviation (i.e. COS 435). They are not truly ranked.
   
 \item TigerTracks
   
@@ -176,7 +180,23 @@ What we would do with the data
 \end{enumerate}
 
 \section{Future Works}
+
 \subsection{Personalization}
+
+\subsection{Personal Data}
+The following is the personal data we could use to implement personalized search results. 
+\begin{enumerate}
+\item Course History
+\item Associated Ratings for each course taken
+\item Friend's Data
+\item Search History
+\end{enumerate}
+What we would do with the data
+\begin{enumerate}
+\item Weight departments you've taken courses in and have high scores for those coures
+\item Know which prerequisites you've filled and give a warning before adding
+\end{enumerate}
+
 	
 \subsection{User Interface}
 Can we make it so that it displays the information requested? i.e. Q = ``CLA MW 330 pdfonly'' then in addition to CLA XXX - TITLE, we should display the time/days of the course and what the pdf options are
