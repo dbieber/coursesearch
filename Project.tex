@@ -113,10 +113,10 @@ For our search engine, we aimed to create a single free text search box that can
 
 \section{Use Cases}
 \subsection{Max the Lazy Architect}
-Max is interested in art and architecture, and really hates all forms of work. He'd love to sleep in until noon, and he'd like to take the easiest classes possible. Of course, he needs to fulfill his departmental and distribution requirements, but he doesn't really care how as long as he can take his daily afternoon nap. So Max pulls up our search engine and types in ``easy afternoon courses''. He gets PSY 207. It's an SA distribution, is P/D/F-able, and lectures don't start until 12:30 pm. ``I'll take it!'' he exclaims, then takes a 15 minute Reddit break before looking for more classes. Max decides to look at courses he needs to take for architecture. He first decides to look at ARC and technology through the query `ARC technology' and sees ARC 311 looks like an interesting course.
+Max is interested in art and architecture, and really hates all forms of work. He'd love to sleep in until noon, and he'd like to take the easiest classes possible. Of course, he needs to fulfill his departmental and distribution requirements, but he doesn't really care how as long as he can take his daily afternoon nap. So Max pulls up our search engine and types in ``easy afternoon courses''. He gets PSY 207. It's an SA distribution, is P/D/F-able, and lectures don't start until 12:30 pm. ``I'll take it!'' he exclaims, then takes a 15 minute Reddit break before looking for more classes. Max decides to look at courses he needs to take for architecture. He first decides he's interested in the looking at technology in architecture and thus searches with the query `ARC technology' and sees ARC 311 looks like an interesting course.
 		
 \subsection{Julie the Undecided Poet}
-Julie can't decide between psychology and poetry. She wishes to pursue understanding the abnormalities and idiosyncracies of the human mind, through both art and science. She first browses the psychology offerings through the query `psy' and decides PSY 207 would be an appropriate course. Julie then, looking for a challenge, seeks a course with about 200 pages of reading per week and no P/D/F option using the query `ENG 200 pages no p/d/f'.She finds ENG 344, Topics in Romanticism: Romantic Passions, is a perfect fit for her interests.  
+Julie can't decide between psychology and poetry. She wishes to pursue understanding the abnormalities and idiosyncracies of the human mind, through both art and science. She first browses the psychology offerings through the query `psy' and decides PSY 207 would be an appropriate course. Julie then, looking for a challenge, seeks a course with about 200 pages of reading per week and no P/D/F option using the query `ENG 200 pages no p/d/f'. She finds ENG 344, Topics in Romanticism: Romantic Passions, is a perfect fit for her interests.  
 
 \section{Components}
 
@@ -132,6 +132,13 @@ Our search engine has several key components that together allow for sophisticat
 
 \subsection{Registrar Scraper}
 
+\begin{figure}
+\begin{center}
+\includegraphics{RegistrarDiagram.png}
+\end{center}
+\caption{Registrar Data Scraping Hierarchy}
+\end{figure}
+
 Our registrar scraper operates in three tiers and is highly specific to the job of scraping course data. A visual overview of the registrar scraper's logic is provided in the accompanying figure. The first tier contains a single document, the registrar's main page, from which we scrape a list of department pages. The second tier is made of these department pages, each of which contains a list of courses. We begin gather course specific information on the second tier, as the department pages contain information about when the classes meet, how large the classes are, and what distribution areas they satisfy. Additionally and most importantly we crawl the second tier for links to pages with additional information about the classes. These class specific pages form the third tier of the registrar scraper. For each page in the third tier we gather as much information as possible about the individual course represented. We can usually find most of the following information about each class: the professor teaching it, a description of the class, a sample reading list, any prerequesites, the way the class is graded, P/D/F and audit options, the amount of work to expect, when the course is offered, and sometimes even more. All of the information about the classes gather during tiers two and three is aggregated and serialized to disk so that it can be later used by the indexer.
 
 The course data for the whole registrar is 1649kB. While scraping the whole registrar, 6 department pages failed to load and 52 course pages failed to load on the first try. Our scraper handled these failures gracefully and reconnected to these pages at a later time. The time of day at which we scrape may be a factor. All but 1 link succeeded on the second iteration. The last one, Macroeconomics/Int'l Finance Workshop, succeeded on the third iteration. There are 1201 total courses and 96 departments (from the perspective of our scraper -- Freshman Seminars and Writing Seminars are considered departments by it). This gives us a $4.3\%$ error rate for courses, $6.3\%$ error rate for department pages, and a $4.5\%$ error rate overall. 
@@ -145,6 +152,13 @@ We then create the index using a Standard Analyzer which turns our text in the d
 The index of our course data is 370kB, giving a compression ratio of 0.224 with respect to the course data scraped. It indexes our course data in an average of 2.1 seconds. 
 	
 \subsection{Query Parser}
+
+\begin{figure}
+\begin{center}
+\includegraphics{QueryParserDiagram.png}
+\end{center}
+\caption{Query Parsing Units}
+\end{figure}
 	
 The two primary components of the query parser are our CourseQuery parsing and Lucene's multi-field query parser. From a user's query, we create a CourseQuery object. The CourseQuery object parses this query to extract pdf-options, days, times and reading amount. To extract the P/D/F and audit options information, it searches the query for a pre-determined set of keywords, such as ``pdf'' or ``easy''. It then extracts these from the free-text portion of the query and appends to the remaining query directions for the value the searcher should search. For instance, a query including ``pdf-only art drawing'' will become ``art drawing pdf: only'' at this stage. A similar process occurs for days, times, and reading amount. For times, we perform two special operations. We must convert ranges to sets of values and put these values into military time. We also search for special time search terms such as ``afternoon'' or ``noon'' and use them to set ranges of times. We do not remove these terms from the query in the case that time is not the query term's intention. Once we have extracted the Princeton-specific information, we pass our new query to Lucene's multi-field query parser. This parser takes a query string expands it into a form suitable for searching a Lucene index. Specifically, for each search term for which a field is not specified, it constructs the query such that the searcher will search all specified fields for the term. 
 	
@@ -175,22 +189,7 @@ At indexing time, we adjusted the fieldBoost for the following fields: course ab
 
 \section{Experiments}
 
-\section{Evaluation}
-\subsection{Experiment Testing}
-\begin{enumerate}
-\item Class specific: ELE 301, ENG 300
-\item Department specific: COS, ARC
-\item Number specific: 126, 217
-\item Professor: Chazelle
-\item Course Title: Japanese Society
-\item Include PDF: pdfonly art
-\end{enumerate}
-
-We are limited in the queries we can use to compare our search engine with the existing ones because the queries ICE and the registrar accept are severely limited compared to the ones our search engine accepts.
-\subsection{Experiment Results}
-
-We tested our index without fieldBoosts versus the index with fieldBoosts. As the score is only affected when relevant fields are selected, we chose queries that included those fields. We found that the ranking with the boosts was improved. 
-
+We tested our index without fieldBoosts versus the index with fieldBoosts. As the score is only affected when relevant fields are selected, we chose queries that included those fields. We found that the ranking with the boosts was improved. We used
 Query: ``arc technology'' \\
 
 We used 3 weights to rate relevance. Very relevant documents earned a weight of 10 and included architecture courses with a focus on technology. Relevant documents that included at least one of the terms received a score of 5. Slightly relevant documents
@@ -217,6 +216,11 @@ We used 3 weights to rate relevance. Very relevant documents earned a weight of 
 \end{tabular}
 
 \vspace{1 cm}
+
+
+\section{Evaluation}
+
+We are limited in the queries we can use to compare our search engine with the existing ones because the queries ICE and the registrar accept are severely limited compared to the ones our search engine accepts.
 
 
 
