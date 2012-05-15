@@ -133,7 +133,9 @@ public class CourseIndexer {
                 } else {
                     addFieldToDoc(doc, CourseDetails.SIZE, CourseDetails.LARGE, YES, ANALYZED);
                 }
-            } catch (Exception e) { System.out.println("Course has no size: " + course.get(CourseDetails.COURSE)); }
+            } catch (Exception e) {
+                System.out.println("Course has no size: " + course.get(CourseDetails.COURSE));
+            }
             
             writer.addDocument(doc);
         }
@@ -149,11 +151,10 @@ public class CourseIndexer {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         RegistrarData rd = new RegistrarData();
-        String filename = "coursedata";
+        String filename = "NewCourseData";
         
         try {
             rd.load(filename);
-            System.out.println("made it here!");
             new CourseIndexer(rd, "AllCourseIndex");
         } catch (Exception e) {
             System.out.println("Couldn't load the file or couldn't index.");

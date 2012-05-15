@@ -2,6 +2,7 @@
 %\usepackage{psfig}
 \usepackage{amsmath, amssymb}
 \usepackage{fullpage}
+\usepackage{graphicx}
 \usepackage{hyperref}
 \setcounter{page}{1}
 \pagenumbering{arabic}
@@ -56,6 +57,7 @@ We set out to create a tool to satisfy these demands. The search engine we set o
 For our search engine, we aimed to create a single free text search box that can handle all of a student's course informaion needs. In particular, our search engine must allow students to find P/D/F-able classes, classes of a desired reading amount, classes about a particular topic, and classes that fit their schedule. It also must allow students to combine these search contraints freely, and it must provide the courses the student is most likely interested in first.
 	
 \section{Features}
+
 \subsection{User facing}
 \begin{enumerate}
 \item Free text search. One search bar for everything.
@@ -105,9 +107,10 @@ Julie can't decide between psychology and poetry. She wishes to pursue understan
 Our search engine has several key components that together allow for sophisticated course searches. A visual overview is provided in the accompanying figure. The data that is searchable all comes from the registrar. We crawl pages on the registrar with our Registrar Scraper in order to accumulate this data. The scraper uses application specific logic in order to get a meaningful understanding of information from the HTML pages on the registrar's website. The data is serialized to disk and is used to build the inverted index that our search engine relies upon. Our Indexer, built atop Lucene, maintains the index on disk. When our search engine receives a query, it first applys the query parser in order to create an application specific query. The query parser determines the meaning of the query, so that the search engine knows what to look for in what fields of the indexed course documents. The result of query parsing is then used with the inverted index in order to generate a number of results. These are ranked and given as the result of the search.
 
 \begin{figure}
-%\includegraphics{OverallArchDiagram.png}
+\begin{center}
+\includegraphics{OverallArchDiagram.png}
+\end{center}
 \caption{Architecture Overview}
-
 \end{figure}
 
 \subsection{Registrar Scraper}
@@ -122,7 +125,7 @@ The indexer takes the RegistrarData object we created in the RegistrarScraper an
 
 We then create the index using a Standard Analyzer which turns our text in the documents into tokens and applies two filters. It first makes everything lowercase, and then it eliminates stop words (such as ``a'', ``an'',  ``and'', ``are'', ``as'', ``at'', ``be'', ``but'', ``by'', ``for'', ``if'', ``in'', ``into'', ``is'', ``it'', ``no'', ``not'', ``of'', ``on'', ``or'', ``such'', ``that'', ``the'', ``their'', ``then'', ``there'', ``these'', ``they'', ``this'', ``to'', ``was'', ``will'', ``with''). We have also configured it to overwrite the index as we update. This means we can update documents without worrying if they'll be indexed twice. At the end of this process, we have created a searchable index that contains all the course information. 
 
-The index of our course data is 370kB.
+The index of our course data is 370kB, giving a compression ratio of 0.224 with respect to the course data scraped.
 	
 \subsection{Query Parser}
 	

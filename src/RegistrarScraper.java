@@ -290,7 +290,7 @@ public class RegistrarScraper {
         RegistrarData data = new RegistrarData();
         RegistrarScraper rs = new RegistrarScraper(data);
         rs.scrapeRegistrar();
-        data.dump("NewCourseData");
+//        data.dump("NewCourseData");
         System.out.println(rs.data);
     }
 

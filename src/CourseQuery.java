@@ -34,6 +34,14 @@ public class CourseQuery {
     private String[] SMALL = {"small", "tiny", "personal", "one on one", "engaging", "discussion based", "close knit"};
     private String[] LARGE = {"large", "lecture", "crowded", "McCosh 50", "big"};
     
+    private String[] DEPARTMENTS = {"AAS", "AFS", "AMS", "ANT", "AOS", "APC", "ARA", "ARC",
+            "ART", "AST", "ATL", "BCS","CBE", "CEE", "CHI", "CHM", "CHV", "CLA", "CLG", "COM", "COS", "CWR", "CZE",
+            "DAN", "EAP", "EAS", "ECO", "ECS", "EEB", "EGR", "ELE", "ENG", "ENV", "EPS", "FIN", "FRE", "FRS", "GEO",
+            "GER", "GHP", "GLS", "GSS", "HEB", "HIN", "HIS", "HLS", "HOS", "HUM", "ISC", "ITA", "JDS", "JPN", "JRN",
+            "KOR", "LAO", "LAS", "LAT", "LIN", "MAE", "MAT", "MED", "MOD", "MOG", "MOL", "MSE", "MUS", "NES", "NEU",
+            "ORF", "PAW", "PER", "PHI", "PHY", "PLS", "POL", "POP", "POR", "PSY", "QCB", "REL",
+            "RUS", "SAS", "SLA", "SOC", "SPA", "STC", "SWA", "THR", "TPP", "TRA", "TUR", "URB", "URD", "VIS", "WRI", "WWS"};
+    
     private static final String ANY = "any";
     
     public CourseQuery(String query) {
@@ -188,8 +196,11 @@ public class CourseQuery {
         Pattern courseNumPattern = Pattern.compile("\\b\\w\\w\\w\\b");
         Matcher deptMatcher = deptPattern.matcher(query);
         Matcher courseNumMatcher = courseNumPattern.matcher(query);
-        if (deptMatcher.find()) {
-            abbr = query.substring(deptMatcher.start(), deptMatcher.end()) + " ";
+        while (deptMatcher.find()) {
+            if (containsOneOf(query.substring(deptMatcher.start(), deptMatcher.end()), DEPARTMENTS) != null) {
+                abbr = query.substring(deptMatcher.start(), deptMatcher.end()) + " ";
+                break;
+            }
         }
         if (courseNumMatcher.find()) {
             abbr += query.substring(courseNumMatcher.start(), courseNumMatcher.end());
