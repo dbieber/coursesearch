@@ -115,11 +115,15 @@ Our search engine has several key components that together allow for sophisticat
 
 Our registrar scraper operates in three tiers and is highly specific to the job of scraping course data. A visual overview of the registrar scraper's logic is provided in the accompanying figure. The first tier contains a single document, the registrar's main page, from which we scrape a list of department pages. The second tier is made of these department pages, each of which contains a list of courses. We begin gather course specific information on the second tier, as the department pages contain information about when the classes meet, how large the classes are, and what distribution areas they satisfy. Additionally and most importantly we crawl the second tier for links to pages with additional information about the classes. These class specific pages form the third tier of the registrar scraper. For each page in the third tier we gather as much information as possible about the individual course represented. We can usually find most of the following information about each class: the professor teaching it, a description of the class, a sample reading list, any prerequesites, the way the class is graded, P/D/F and audit options, the amount of work to expect, when the course is offered, and sometimes even more. All of the information about the classes gather during tiers two and three is aggregated and serialized to disk so that it can be later used by the indexer.
 
+The course data for the whole registrar is 1649kB.
+
 \subsection{Indexer}
 	
 The indexer takes the RegistrarData object we created in the RegistrarScraper and returns an inverted index. We first take all the course data and put it into documents, one per course. In Lucene, documents consist of sets of fields. We use the key-value pairs from the CourseDetails object of each course as fields in each document. This method of construction allows us to take advantage of the known information structure for user search. Through this application-specific structure, we can parse queries to examine particualr fields and will thus return more accurate results. Furthermore, the parallel structure between CourseDetails object and our Indexer makes the code clear and easy to extend and change. If we expand our project to include additional sources, such as the SCORE evaluations and the Student Course Guide, this extensability is critical. 
 
 We then create the index using a Standard Analyzer which turns our text in the documents into tokens and applies two filters. It first makes everything lowercase, and then it eliminates stop words (such as ``a'', ``an'',  ``and'', ``are'', ``as'', ``at'', ``be'', ``but'', ``by'', ``for'', ``if'', ``in'', ``into'', ``is'', ``it'', ``no'', ``not'', ``of'', ``on'', ``or'', ``such'', ``that'', ``the'', ``their'', ``then'', ``there'', ``these'', ``they'', ``this'', ``to'', ``was'', ``will'', ``with''). We have also configured it to overwrite the index as we update. This means we can update documents without worrying if they'll be indexed twice. At the end of this process, we have created a searchable index that contains all the course information. 
+
+The index of our course data is 370kB.
 	
 \subsection{Query Parser}
 	
@@ -127,6 +131,8 @@ The two primary components of the query parser are our CourseQuery parsing and L
 	
 \subsection{Search Engine}
 At this level, the user types a query into the search bar. The query is sent to the query parser which puts it into a form appropriate for the index. The searcher is a Lucene object created from the index. For a given query, it retrieves information from the index and compiles a list ranked by score. ??? We then take these ranked results and re-order them according to our own ranking scheme. ???
+
+This search engine is a Chrome extension and accompanies the existing ICE tool. Our extension takes over the search bar on ICE and submits queries to our server. 
 				
 \url{http://lucene.apache.org/core/old_versioned_docs/versions/3_5_0/api/all/org/apache/lucene/search/Similarity.html}
 		
@@ -184,22 +190,32 @@ We are limited in the queries we can use to experiment because the queries ICE a
 \subsection{Personalization}
 
 \subsection{Personal Data}
-The following is the personal data we could use to implement personalized search results. 
+The following is the personal data we could use to implement personalized search results. These are data we theoretically have access to on the ICE platform.
 \begin{enumerate}
 \item Course History
 \item Associated Ratings for each course taken
 \item Friend's Data
 \item Search History
 \end{enumerate}
-What we would do with the data
+What we would do with the data:
 \begin{enumerate}
-\item Weight departments you've taken courses in and have high scores for those coures
+\item Use search history to tailor results
+
+\item Rank higher the departments in which you've taken courses and have high ratings for that department's courses
+
+This would be especially useful for breaking ties. For instance, I'm more interested in ELE 218 than CLA 218 so if I search 218, ELE 218 should be the top result. 
+
 \item Know which prerequisites you've filled and give a warning before adding
+
 \end{enumerate}
 
 	
 \subsection{User Interface}
-Can we make it so that it displays the information requested? i.e. Q = ``CLA MW 330 pdfonly'' then in addition to CLA XXX - TITLE, we should display the time/days of the course and what the pdf options are
+Because our engine takes free-text queries rather than database queries, when we return results they are ranked by best-fit rather than a yes or no. Thus, if the user enters several terms, we may have results that don't exactly satisfy the information need. To help address this from the user's perspective, we could have a display that also lists the relevant fields searched. For instance, if I search ``CLA MW 330 pdfonly'', then in addition to listing CLA XXX - TITLE, the time/days and pdf options would also be displayed. This allows the user to determine at a glance if the search has been satisfied in an acceptable way. 
+As we have the scores of document in the returned results list. We could compute a percent match to the query to give the user a sense of expected relevance. We could also implement feedback so that the user could give us a thumbs up for relevant or interesting courses. 
+
+As we hope to fully integrate this with ICE, our primary flexibility is with the ranking order and details per hit. We have already created a Chrome extension that takes over the search bar and can send a request to our own server.  
+
 \subsection{Additional Signals}
 
 \section{Conclusion}
