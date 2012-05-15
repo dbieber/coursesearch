@@ -58,21 +58,22 @@ The search engine built for this project performs better than and handles more t
 
 \section{Introduction}
 We created a robust Princeton course search engine. It handles free-text queries and can be integrated with the ICE (Integrated Course Engine) application that many students use for scheduling.
-In addition to allowing users to search for specific courses, it allows users to get P/D/F-able and P/D/F only courses and search and filter based on the amount of reading per week required, professors teaching the course, and other course information.
+In addition to allowing users to search for specific courses, it allows users to get P/D/F-able and P/D/F-only courses and search and filter based on the amount of reading per week required, professors teaching the course, and other course information.
 The search engine is built on top of Apache Lucene, an open source Java search engine library. Lucene helps manage the index and parse queries into acceptable formats.
 As part of creating the search engine, we built a scraper tool that scrapes the Registrar's Course Offerings page and stores all course data.
+Our search engine addresses the complaints and desires many students express about the existing course search options. 
 
 \section{Goals}
 Our motivation for this project stems from our own need to find courses to take at Princeton. There are already a few ways to look for classes including the paper course catalog, word of mouth, the Registrar's website, and the Integrated Course Engine (ICE).
 Each method offers its own advantages but still students complain about the difficulties of searching for desired courses. Given a course, these tools provide the relevant information about it. However, if we start with an information need we cannot easily find a course that satisfies it.
-In particular, students often request the ability to search for P/D/F-able or P/D/F-only classes, classes with light reading, or classes of a particular difficulty. Additionally, students frequently have time constraints that limit what courses they may choose from, and there is no existing convenient way to search within these contraints.
+In particular, students often request the ability to search for P/D/F-able or P/D/F-only classes, classes with light reading, or classes of a particular difficulty. Additionally, students frequently have time constraints that limit what courses they may choose from, and there is no existing convenient way to search within these constraints.
 	
 We set out to create a tool to satisfy these demands. The search engine we set out to make must satisfy three objectives. It must be \emph{simpler than the registrar's search feature}, which is clunky in the sense that search requires entering exact match values for specific fields.
 It must be \emph{more flexible than ICE}, which is missing the ability to search by critical course information like professor and reading material. And it must be \emph{more powerful than either} of the two, as they both lack the ability to search for information students find useful, such as P/D/F options, amount of reading, and course difficulty.
-The existing tools also lack the ability to flexibly combine search constraints. Neither ICE nor the registrar allows you to search for both keywords and time of day simulatenously, for instance.
+The existing tools also lack the ability to flexibly combine search constraints. Neither ICE nor the registrar allows you to search for both keywords and time of day simultaneously, for instance.
 	
-For our search engine, we aimed to create a single free text search box that can handle all of a student's course informaion needs. In particular, our search engine must allow students to find P/D/F-able classes, classes of a desired reading amount, classes about a particular topic, and classes that fit their schedule.
-It also must allow students to combine these search contraints freely, and it must provide the courses the student is most likely interested in first.
+For our search engine, we aimed to create a single free text search box that can handle all of a student's course information needs. In particular, our search engine must allow students to find P/D/F-able classes, classes of a desired reading amount, classes about a particular topic, and classes that fit their schedule.
+It also must allow students to combine these search constraints freely, and it must provide the courses the student is most likely interested in first.
 	
 \section{Features}
 
@@ -80,7 +81,7 @@ It also must allow students to combine these search contraints freely, and it mu
 \begin{enumerate}
 \item Free text search. One search bar for everything.
   
-  The user can simply put what she wants into the search bar (for instance, a pdf-able class on Tuesday at 1:30) and she will get back courses that fit or nearly fit that description. The search is natural and requires little thought from the user on formulating her information need. 
+  The user can simply put what she wants into the search bar (for instance, a P/D/F-able class on Tuesday at 1:30) and she will get back courses that fit or nearly fit that description. The search is natural and requires little thought from the user on formulating her information need. 
   
 \item Basic Search Capabilities
   
@@ -114,15 +115,15 @@ It also must allow students to combine these search contraints freely, and it mu
 
 \section{Use Cases}
 \subsection{Max the Lazy Architect}
-Max is interested in art and architecture, and really hates all forms of work. He'd love to sleep in until noon, and he'd like to take the easiest classes possible. Of course, he needs to fulfill his departmental and distribution requirements, but he doesn't really care how as long as he can take his daily afternoon nap. So Max pulls up our search engine and types in ``ha sa easy afternoon courses'', to search for an easy afternoon course that fulfills an SA or HA requirement. The top two results he gets are  REL 230 JDS 230 and PSY 207. REL 230 would fulfill an HA requirement, and PSY 207 fulfills an SA requirement. As he's more technically minded, he decides to do PSY 207. It satisfies a distribution requirement, is P/D/F-able, and lectures don't start until 12:30 pm. ``I'll take it!'' he exclaims, then takes a 15 minute Reddit break before looking for more classes. Max decides to look at courses he needs to take for architecture. Knowing he's interested in technology in architecture, he searches with the query `ARC technology' and sees that ARC 311, Building Science and Technology, looks like an interesting course.
+Max is interested in art and architecture, and really hates all forms of work. He'd love to sleep in until noon, and he'd like to take the easiest classes possible. Of course, he needs to fulfill his departmental and distribution requirements, but he doesn't really care how as long as he can take his daily afternoon nap. So Max pulls up our search engine and types in ``ha sa easy afternoon courses'', to search for an easy afternoon course that fulfills an SA or HA requirement. The top two results he gets are REL 230 JDS 230 and PSY 207. REL 230 would fulfill an HA requirement, and PSY 207 fulfills an SA requirement. As he's more technically minded, he decides to do PSY 207. It satisfies a distribution requirement, is P/D/F-able, and lectures don't start until 12:30 pm. ``I'll take it!'' he exclaims, then takes a 15 minute Reddit break before looking for more classes. Max decides to look at courses he needs to take for architecture. Knowing he's interested in technology in architecture, he searches with the query `ARC technology' and sees that ARC 311, Building Science and Technology, looks like an interesting course.
 		
 \subsection{Julie the Undecided Poet}
-Julie can't decide between psychology and poetry. She wishes to pursue understanding the abnormalities and idiosyncracies of the human mind, through both art and science. She first browses the psychology offerings through the query `psy' and decides PSY 207 would be an appropriate course. Julie then, looking for a challenge, seeks a course with about 200 pages of reading per week and no P/D/F option using the query `ENG 200 pages no p/d/f'. She finds ENG 344, Topics in Romanticism: Romantic Passions, is a perfect fit for her interests.  
+Julie can't decide between psychology and poetry. She wishes to pursue understanding the abnormalities and idiosyncrasies of the human mind, through both art and science. She first browses the psychology offerings through the query `psy' and decides PSY 207 would be an appropriate course. Julie then, looking for a challenge, seeks a course with about 200 pages of reading per week and no P/D/F option using the query `ENG 200 pages no p/d/f'. She finds ENG 344, Topics in Romanticism: Romantic Passions, is a perfect fit for her interests.  
 
 \section{Components}
 
 \subsection{Architecture Overview}
-Our search engine has several key components that together allow for sophisticated course searches. A visual overview is provided in the accompanying figure. The data that is searchable all comes from the registrar. We crawl pages on the registrar with our Registrar Scraper in order to accumulate this data. The scraper uses application specific logic in order to get a meaningful understanding of information from the HTML pages on the registrar's website. The data is serialized to disk and is used to build the inverted index that our search engine relies upon. Our Indexer, built atop Lucene, maintains the index on disk. When our search engine receives a query, it first applys the query parser in order to create an application specific query. The query parser determines the meaning of the query, so that the search engine knows what to look for in what fields of the indexed course documents. The result of query parsing is then used with the inverted index in order to generate a number of results. These are ranked and given as the result of the search.
+Our search engine has several key components that together allow for sophisticated course searches. A visual overview is provided in the accompanying figure. The data that is searchable all comes from the registrar. We crawl pages on the registrar with our Registrar Scraper in order to accumulate this data. The scraper uses application specific logic in order to get a meaningful understanding of information from the HTML pages on the registrar's website. The data is serialized to disk and is used to build the inverted index that our search engine relies upon. Our Indexer, built atop Lucene, maintains the index on disk. When our search engine receives a query, it first applies the query parser in order to create an application specific query. The query parser determines the meaning of the query, so that the search engine knows what to look for in what fields of the indexed course documents. The result of query parsing is then used with the inverted index in order to generate a number of results. These are ranked and given as the result of the search.
 
 \begin{figure}
 \begin{center}
@@ -140,13 +141,13 @@ Our search engine has several key components that together allow for sophisticat
 \caption{Registrar Data Scraping Hierarchy}
 \end{figure}
 
-Our registrar scraper operates in three tiers and is highly specific to the job of scraping course data. A visual overview of the registrar scraper's logic is provided in the accompanying figure. The first tier contains a single document, the registrar's main page, from which we scrape a list of department pages. The second tier is made of these department pages, each of which contains a list of courses. We begin gather course specific information on the second tier, as the department pages contain information about when the classes meet, how large the classes are, and what distribution areas they satisfy. Additionally and most importantly we crawl the second tier for links to pages with additional information about the classes. These class specific pages form the third tier of the registrar scraper. For each page in the third tier we gather as much information as possible about the individual course represented. We can usually find most of the following information about each class: the professor teaching it, a description of the class, a sample reading list, any prerequesites, the way the class is graded, P/D/F and audit options, the amount of work to expect, when the course is offered, and sometimes even more. All of the information about the classes gather during tiers two and three is aggregated and serialized to disk so that it can be later used by the indexer.
+Our registrar scraper operates in three tiers and is highly specific to the job of scraping course data. A visual overview of the registrar scraper's logic is provided in the accompanying figure. The first tier contains a single document, the registrar's main page, from which we scrape a list of department pages. The second tier is made of these department pages, each of which contains a list of courses. We begin gathering course specific information on the second tier, as the department pages contain information about when the classes meet, how large the classes are, and what distribution areas they satisfy. Additionally and most importantly we crawl the second tier for links to pages with additional information about the classes. These class specific pages form the third tier of the registrar scraper. For each page in the third tier we gather as much information as possible about the individual course represented. We can usually find most of the following information about each class: the professor teaching it, a description of the class, a sample reading list, any prerequisites, the way the class is graded, P/D/F and audit options, the amount of work to expect, when the course is offered, and sometimes even more. All of the information about the classes gathered during tiers two and three is aggregated and serialized to disk so that it can be later used by the indexer.
 
-The course data for the whole registrar is 1649kB. While scraping the whole registrar, 6 department pages failed to load and 52 course pages failed to load on the first try. Our scraper handled these failures gracefully and reconnected to these pages at a later time. The time of day at which we scrape may be a factor. All but 1 link succeeded on the second iteration. The last one, Macroeconomics/Int'l Finance Workshop, succeeded on the third iteration. There are 1201 total courses and 96 departments (from the perspective of our scraper -- Freshman Seminars and Writing Seminars are considered departments by it). This gives us a $4.3\%$ failure rate for courses, $6.3\%$ failure rate for department pages, and a $4.5\%$ failure rate overall. 
+The course data for the whole registrar is 1649kB. While scraping the whole registrar, 6 department pages failed to load and 52 course pages failed to load on the first try. Our scraper handled these failures gracefully and reconnected to these pages at a later time. The time of day at which we scrape may be a factor. All but 1 link succeeded on the second iteration. The last one, Macroeconomics/Int'l Finance Workshop, succeeded on the third iteration. There are 1201 total courses and 96 departments (including Freshman Seminars, Integrated Science, and Writing Seminars as departments). This gives us a $4.3\%$ failure rate for courses, $6.3\%$ failure rate for department pages, and a $4.5\%$ failure rate overall. 
 
 \subsection{Indexer}
 	
-The indexer takes the RegistrarData object we created in the RegistrarScraper and returns an inverted index. We first take all the course data and put it into documents, one per course. In Lucene, documents consist of sets of fields. We use the key-value pairs from the CourseDetails object of each course as fields in each document. This method of construction allows us to take advantage of the known information structure for user search. Through this application-specific structure, we can parse queries to examine particular fields and will thus return more accurate results. Furthermore, the parallel structure between CourseDetails object and our Indexer makes the code clear and easy to extend and change. If we expand our project to include additional sources, such as the SCORE evaluations and the Student Course Guide, this extensability is critical. 
+The indexer takes the RegistrarData object we created in the RegistrarScraper and returns an inverted index. We first take all the course data and put it into documents, one per course. In Lucene, documents consist of sets of fields. We use the key-value pairs from the CourseDetails object of each course as fields in each document. This method of construction allows us to take advantage of the known information structure for user search. Through this application-specific structure, we can parse queries to examine particular fields and will thus return more accurate results. Furthermore, the parallel structure between CourseDetails object and our Indexer makes the code clear and easy to extend and change. If we expand our project to include additional sources, such as the SCORE evaluations and the Student Course Guide, this extensibility is critical. 
 
 We then create the index using a Standard Analyzer which turns our text in the documents into tokens and applies two filters. It first makes everything lowercase, and then it eliminates stop words (such as ``a'', ``an'',  ``and'', ``are'', ``as'', ``at'', ``be'', ``but'', ``by'', ``for'', ``if'', ``in'', ``into'', ``is'', ``it'', ``no'', ``not'', ``of'', ``on'', ``or'', ``such'', ``that'', ``the'', ``their'', ``then'', ``there'', ``these'', ``they'', ``this'', ``to'', ``was'', ``will'', ``with''). We have also configured it to overwrite the index as we update. This means we can update documents without worrying if they'll be indexed twice. At the end of this process, we have created a searchable index that contains all the course information. 
 
@@ -161,20 +162,20 @@ The index of our course data is 370kB, giving a compression ratio of 0.224 with 
 \caption{Query Parsing Units}
 \end{figure}
 	
-The two primary components of the query parser are our CourseQuery parsing and Lucene's multi-field query parser. From a user's query, we create a CourseQuery object. The CourseQuery object parses this query to extract pdf-options, days, times and reading amount. To extract the P/D/F and audit options information, it searches the query for a pre-determined set of keywords, such as ``pdf'' or ``easy''. It then extracts these from the free-text portion of the query and appends to the remaining query directions for the value the searcher should search. For instance, a query including ``pdf-only art drawing'' will become ``art drawing pdf: only'' at this stage. A similar process occurs for days, times, and reading amount.
+The two primary components of the query parser are our CourseQuery parsing and Lucene's multi-field query parser. From a user's query, we create a CourseQuery object. The CourseQuery object parses this query to extract P/D/F-options, days, times and reading amount. To extract the P/D/F and audit options information, it searches the query for a pre-determined set of keywords, such as ``pdf'' or ``easy''. It then extracts these from the free-text portion of the query and appends to the remaining query directions for the value the searcher should search. For instance, a query including ``pdf-only art drawing'' will become ``art drawing pdf: only'' at this stage. A similar process occurs for days, times, and reading amount.
 For times, we perform two special operations. We must convert ranges to sets of values and put these values into military time. We also search for special time search terms such as ``afternoon'' or ``noon'' and use them to set ranges of times. We do not remove these terms from the query in the case that time is not the query term's intention. Once we have extracted the Princeton-specific information, we pass our new query to Lucene's multi-field query parser. This parser takes a query string expands it into a form suitable for searching a Lucene index. Specifically, for each search term for which a field is not specified, it constructs the query such that the searcher will search all specified fields for the term. 
 	
 \subsection{Search Engine}
-At this level, the user types a query into the search bar. The query is sent to the query parser which puts it into a form appropriate for the index. The searcher is a Lucene object created from the index. For a given query, it retrieves information from the index and compiles a list ranked by score. As we customized the boosts at indexing time, the searcher will return our course-specific results. This search engine is a Chrome extension and accompanies the existing ICE tool. Our extension takes over the search bar on ICE and could submit queries to our server. 				
+At this level, the user types a query into the search bar. The query is sent to the query parser which puts it into a form appropriate for the index. The searcher is a Lucene object created from the index. For a given query, it retrieves information from the index and compiles a list ranked by score. As we customized the field boosts at indexing time, the searcher will return our course-specific results. We also began working on a front end for our search engine. It is a Chrome extension and accompanies the existing ICE tool. Our extension takes over the search bar on ICE and could submit queries to our server. 				
 		
 \subsection{Ranker}
 
 \subsubsection{Lucene Ranking}
 The Lucene ranking takes into account several factors. The score for a given query q and document d is as follows:
-\begin{equation}
+\begin{equation*}
   score(q,d) = coord(q,d) * queryNorm * \sum_{\text{term t } \in q}{tf(\text{t in d}) * idf(t)^2 * termBoost(t) * norm(t,d)}
   \label{eq:practical}
-\end{equation}
+\end{equation*}
 Where $coord(q,d)$ is the number of terms in doc d,\\
 $queryNorm$ is a normalizing factor and allows comparison between queries. It is the Euclidean norm of the weights. The sum of the squared weights is determined by the following equation. \[ sumOfSqWeights = (queryBoost(q))^2 * \sum_{\text{t in q}}{(idf(t) * termBoost(t))^2}\]\\
 $tf(\text{t in d})$ represents the term frequency of term t in document d, \\
@@ -188,23 +189,23 @@ At indexing time, we adjusted the fieldBoost for the following fields: course ab
 With a combination of logical reasoning and simply fiddling with the numbers, we adjusted the boost values in order to improve the rankings generated by our search engine. When adjusting the values too far in one direction made the results worse, we modified the fieldBoost values in order to correct for this change, until we were satisfied with the results.
 
 \section{Implementation Choices}
-We chose to build our search engine on top of Apache Lucene, as it provides a powerful library for performing text based search. We considered Sphinx as an alternative, but chose Lucene due to its vibrant community offering support and our own familiarity with Java as compared to C++. In forming the architecture of our search engine, we chose the components described previously in order to make our code base more modualar and managable. For instance our choice of separating our query parsing modules allows us to later extend our search engine to handle additional signals.
+We chose to build our search engine on top of Apache Lucene, as it provides a powerful library for performing text based search. We considered Sphinx as an alternative, but chose Lucene due to its vibrant community offering support and our own familiarity with Java as compared to C++. In forming the architecture of our search engine, we chose the components described previously in order to make our code base more modular and manageable. For instance, our choice of separating our query parsing modules allows us to later extend our search engine to handle additional signals.
 
 In order to implement our scraper, we chose to use the open source JSoup over two alternatives, Kevin Wayne's \emph{In} module and another open source project JTidy. JSoup proved to be cleaner and better documented than either alternative, and was more powerful for traversing the particular type of HTML document we needed to scrape the course data from.
 
-For our scraper, we initially chose a sequential scraping model. All the courses in a particular department were scraped one after another, and the departments were scraped in order as well. Later we changed our scraping model to take after Mercator, using queues to keep track of what URLs still must be scraped, and adding to them as more courses are discovered or as some HTTP requests failed. This allows us to handle connection failures more gracefully and also provides us with the option of parallelizing our scraper, which would be useful if we take on a larger task such as scraping all major university's course data.
+For our scraper, we initially chose a sequential scraping model. All the courses in a particular department were scraped one after another, and the departments were scraped in order as well. Later we changed our scraping model to take after Mercator, using queues to keep track of what URLs still must be scraped, and adding to them as more courses are discovered or as some HTTP requests failed. This allows us to handle connection failures more gracefully and also provides us with the option of parallelizing our scraper, which would be useful if we take on a larger task such as scraping all major universities' course data.
 
 For code sharing we opted to use Git, which despite its steep learning curve proved immensely useful. Its powerful merge feature and the free hosting available on GitHub.com made our development process much smoother than it otherwise would have been.
 
 In order to gather data about our project, we used the powerful grep tool. We \emph{tail}ed and \emph{grep}ed the output of our components in order to collect statistics about the progress of our scraper, indexer, and other components.
 
-We also put effort into creating a user interface on ICE for our search engine, though we did not complete this aspect of the project. For this we used JavaScript and the ExtJS framework (the same framework used by ICE) in order to take over the search button on ICE and redirect ICE course queries to our own server. We chose to use a Chrome extension in order to inject this JavaScript because that allowed us to focus on the logic of the user interface rather than having to deal with the ideosyncroses of many different browsers.
+We also put effort into creating a user interface on ICE for our search engine, though we did not complete this aspect of the project. For this we used JavaScript and the ExtJS framework (the same framework used by ICE) in order to take over the search button on ICE and redirect ICE course queries to our own server. We chose to use a Chrome extension in order to inject this JavaScript because that allowed us to focus on the logic of the user interface rather than having to deal with the idiosyncrasies of many different browsers.
 
 \section{Experiments}
 
 We tested our index without fieldBoosts versus the index with fieldBoosts. As the score is only affected when relevant fields are selected, we chose queries that included those fields. We found that the ranking with the boosts was improved. We used the query ``arc technology'' as our means for comparison. Based on how we boosted fields, this will increase the importance of the `ARC' term relative to the technology term. \\
 
-We used 3 weights to rate relevance. Very relevant documents earned a weight of 10 and included architecture courses with a focus on technology. Relevant documents were courses that were very related at least one of the terms received a score of 5. Slightly relevant courses included the terms but were more tangentially related. 
+We used 3 weights to rate relevance. Very relevant documents earned a weight of 10 and included architecture courses with a focus on technology. Relevant documents were courses that were very related at least one of the terms received a score of 5. Slightly relevant courses included the terms but were more tangentially related and received a score of 1. 
 
 \begin{tabular}{ | l | c | r |}
 	\hline
@@ -228,21 +229,21 @@ We used 3 weights to rate relevance. Very relevant documents earned a weight of 
 
 \vspace{1 cm}
 
-The effect of our boost undoubtedly improves results but is also relatively slight. The boost is important in cases such as these where, when many courses contain the second keyword, emphasis on the department (or whatever other fields the query includes) give us more relevant results. We know that in this application, the course abbrevation, course title and PDF options are important constraints in a student's search. However, in most other query cases, the results between the two will not differ significantly. 
+The effect of our boost undoubtedly improves results but the improvement is relatively slight. The boost is important in cases such as these where, when many courses contain the second keyword, emphasis on the department (or whatever other fields the query includes) give us more relevant results. We know that in this application, the course abbreviation, course title and P/D/F-options are important constraints in a student's search. However, in most other query cases, the results between the two indexes will not differ significantly. 
 
 \section{Evaluation}
 
 \subsection{Comparison with Existing Search Engines}
-Comparing search engines on a query by query basis is difficult in this case. The Registrar Neither the Registrar nor ICE performs any sort of ranking (both return alphabetical results) so we cannot evaluate performance as we did in our earlier experiment. To evaluate our performance, we will consider the degree to which we met our primary three goals : to create something that is (1) simpler than the registrar's search feature, (2) more flexible than ICE, and (3)more powerful than either. 
+Comparing search engines on a query by query basis is difficult in this case. Neither the Registrar nor ICE performs any sort of ranking (both return alphabetical results) so we cannot evaluate performance as we did in our earlier experiment. To evaluate our performance, we will consider the degree to which we met our primary three goals: to create something that is (1) simpler than the registrar's search feature, (2) more flexible than ICE, and (3) more powerful than either. 
 
-The Registrar Search is essentially a database query. You select values for particular fields and the registrar returns results that exactly match the values for those chosen fields. Results are returned in alphabetical order by course abbreviation. Selecting these values requires checkboxes, drop-down menus and multiple textboxes. Users must read the page in order to determine how to fill in the form to get desired results. Our search is a single text-box that requires the user to type what they want. That's it. From the user's perspective, this interface is simpler. 
+The Registrar Search is essentially a database query. You select values for particular fields and the registrar returns results that exactly match the values for those chosen fields. Results are returned in alphabetical order by course abbreviation. Selecting these values requires checkboxes, drop-down menus and multiple textboxes. Users must read the page in order to determine how to fill in the form to get desired results. Our search is a single text-box that requires the user to type what they want. From the user's perspective, this interface is simpler. 
 
 From what we can tell based on experimentation, ICE only indexes the description, title, and course abbreviation. It suffices then as a tool to create a schedule but is not, at the moment, a tool that's effective for finding courses to take. ICE does allow you to search by time but not in conjunction with other search terms. The results ICE returns are in alphabetical order by course abbreviation (i.e. COS 435). They are not ranked. Our search engine, on the other hand, allows queries of all course information including times, P/D/F-options, professors and reading list. Both interfaces take free-text queries as searches but the terms by which users can search on ICE are severely limited compared to ours. 
   
 At a broader scale, our search engine is simply more powerful than both existing tools. We can search for a variety of options that neither of the other two can and we parse complex queries to deliver more relevant results. The Registrar and ICE are functional when you know what courses you want to see. However, when you only know the characteristics of the courses you want to take, our search engine can find those relevant courses for you. In this respect, we are more powerful than both alternatives.
 
 \subsection{Additional Results}
-Our search engine has the capability to search for many different types of coures information. 
+Our search engine has the capability to search for many different types of course information. 
 
 \begin{enumerate}
 \item General Course Information
@@ -259,9 +260,14 @@ To get a course with a specific reading amount, users include ``100 pages'' or `
 
 \item Day and Time
 
-To get a course that occurs at a specific day and time, users include ``T Thurs 1:30'', for instance. As times of courses tend not to overlap, we can automatically classify most times into AM or PM based on their value. We also allow for a variety of day abbreviations such as ``M'' or ``Mon'' for Monday. We allow for special time conventions such as "afternoon", "late afternoon", "early", "morning", "night", "noon" to give users additional flexibility.
+To get a course that occurs at a specific day and time, users include ``T Thurs 1:30'', for instance. As times of courses tend not to overlap, we automatically classify most times into AM or PM based on their value. We also allow for a variety of day abbreviations such as ``M'' or ``Mon'' for Monday. We allow for special time conventions such as ``afternoon'', ``late afternoon'', ``early'', ``morning'', ``night'', and ``noon'' to give users additional flexibility.
+
+\item Class Size
+
+Users can also search for small or large classes, depending on their preference.
 
 \item Additional Parsing
+
 We also search the query for patterns that might indicate a specific course abbreviation, department or course number. We then specify these fields in the query in order to return the most relevant results.  
 
 \end{enumerate}
@@ -270,12 +276,10 @@ We also search the query for patterns that might indicate a specific course abbr
 
 \subsection{Personalization}
 
-Personal Data
-
 The following is the personal data we could use to implement personalized search results. These are data we theoretically have access to on the ICE platform.
 \begin{enumerate}
 \item Course History
-\item Associated Ratings for each course taken
+\item Associated ratings for each course taken
 \item Friend's Data
 \item Search History
 \end{enumerate}
@@ -283,32 +287,32 @@ What we would do with the data:
 \begin{enumerate}
 \item Use search history to tailor results
 
-\item Rank higher the departments in which you've taken courses and have high ratings for that department's courses \\
+\item Rank higher the departments in which you've taken courses and those departments whose courses you've rated highly. 
 
 This would be especially useful for breaking ties. For instance, I'm more interested in ELE 218 than CLA 218 so if I search 218, ELE 218 should be the top result. 
 
-\item Know which prerequisites you've filled and give a warning before adding
+\item Know which prerequisites you've fulfilled and give an indicator where you've not met the prerequisites.
 
-\item Boost the rankings of those classes your friend's have rated highly, and those classes rated highly by users we deem similar to you.
+\item Boost the rankings of those classes your friends have rated highly, and those classes rated highly by users we deem similar to you.
 
 \end{enumerate}
 
 	
 \subsection{User Interface}
 Because our engine takes free-text queries rather than database queries, when we return results they are ranked by best-fit rather than a yes or no. Thus, if the user enters several terms, we may have results that don't exactly satisfy the information need.
-To help address this from the user's perspective, we could have a display that also lists the relevant fields searched. For instance, if I search ``CLA MW 330 pdfonly'', then in addition to listing CLA XXX - TITLE, the time/days and pdf options would also be displayed. This allows the user to determine at a glance if the search has been satisfied in an acceptable way. 
-As we have the scores of document in the returned results list. We could compute a percent match to the query to give the user a sense of expected relevance. We could also implement feedback so that the user could give us a thumbs up for relevant or interesting courses. 
+To help address this from the user's perspective, we could have a display that also lists the relevant fields searched. For instance, if I search ``CLA MW 330 pdfonly'', then in addition to listing CLA XXX - TITLE, the time, days and P/D/F-options would also be displayed. This allows the user to determine at a glance if the search has been satisfied in an acceptable way. 
+As we have the scores of documents in the returned results list, we could compute a percent match to the query to give the user a sense of expected relevance. We could also implement feedback so that the user could give us a thumbs-up for relevant or interesting courses. 
 
 As we hope to fully integrate this with ICE, our primary flexibility is with the ranking order and details per hit. We have already created a Chrome extension that takes over the search bar and can send a request with the query to our own server.
 
 \subsection{Additional Signals}
 
-There are a variety of other sources we may use to help refine our results. We could use SCORE evaluations and the student course guide to help students choose courses with lighter workloads or courses often reviewed positively. Additionally, data on friends's course histories also serve as a ranking signal. We could also consider signals outside ICE such as what's trending on Twitter or on PrincetonFML, a site where students go to complain, celebrate, and share snippets of their lives.
+There are a variety of other sources we may use to help refine our results. We could use SCORE evaluations and the Student Course Guide to help students choose courses with lighter workloads or courses often reviewed positively. Additionally, data on friends' course histories also serve as a ranking signal. We could also consider signals outside ICE such as what's trending on Twitter or on PrincetonFML, a site where students go to complain, celebrate, and share snippets of their lives.
 
 \section{Conclusion}
 
 We created a useful tool for Princeton students. In order to create it, we had to learn about web scraping and build our own Princeton-specific web crawler. Towards the end of the project, we moved towards the Mercator model, as we used queues to determine which links to crawl.
-Our search engine is designed to meet students's information needs. In addition to basic searches, we successfully are able to search for desired PDF and audit options. We can also search for reading amounts and under schedule constraints. We've also created code that is easy to maintain and extend, as we choose to incorporate more signals.
+Our search engine is designed to meet students' information needs. In addition to basic searches, we successfully are able to search for desired PDF and audit options. We can also search for reading amounts and under schedule constraints. We've also created code that is easy to maintain and extend, as we choose to incorporate more signals. This tool has the potential to transform how students find courses and plan their schedules. 
 
 
 \appendix
