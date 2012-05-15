@@ -71,7 +71,7 @@ public class CourseIndexer {
     }
     
     private double getBoostFor(String fieldType) {
-        if (BOOST) {
+        if (boost) {
             if (fieldType.equals(CourseDetails.COURSE)) return 1.07;
             if (fieldType.equals(CourseDetails.DIST_AREA)) return 1.07;
             if (fieldType.equals(CourseDetails.TITLE)) return 1.07;
