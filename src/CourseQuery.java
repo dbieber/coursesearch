@@ -27,6 +27,8 @@ public class CourseQuery {
     private String[] SPECIAL_TIMES = {"afternoon", "late afternoon", "early", "morning", "night", "noon"}; // weekend
     private String[] SPECIAL_TIME_VALS = {"1:00 pm - 4:30 pm", "3:00 pm - 8:00 pm", "7:00 am - 12:00 pm", "7:00 am - 12:00 pm", "7:00 pm - 11:00 pm", "12:00 pm - 12:30 pm"};
     
+    private String[] DIST_AREAS = {"EM", "LA", "SA", "EC", "HA", "QR", "STN", "STL"};
+    
     private static final String ANY = "any";
     
     public CourseQuery(String query) {
