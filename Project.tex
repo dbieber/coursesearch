@@ -197,7 +197,11 @@ In order to implement our scraper, we chose to use the open source JSoup over tw
 
 For our scraper, we initially chose a sequential scraping model. All the courses in a particular department were scraped one after another, and the departments were scraped in order as well. Later we changed our scraping model to take after Mercator, using queues to keep track of what URLs still must be scraped, and adding to them as more courses are discovered or as some HTTP requests failed. This allows us to handle connection failures more gracefully and also provides us with the option of parallelizing our scraper, which would be useful if we take on a larger task such as scraping all major university's course data.
 
-For code sharing we
+For code sharing we opted to use Git, which despite its steep learning curve proved immensely useful. Its powerful merge feature and the free hosting available on GitHub.com made our development process much smoother than it otherwise would have been.
+
+In order to gather data about our project, we used the powerful grep tool. We \emph{tail}ed and \emph{grep}ed the output of our components in order to collect statistics about the progress of our scraper, indexer, and other components.
+
+We also put effort into creating a user interface on ICE for our search engine, though we did not complete this aspect of the project. For this we used JavaScript and the ExtJS framework (the same framework used by ICE) in order to take over the search button on ICE and redirect ICE course queries to our own server. We chose to use a Chrome extension in order to inject this JavaScript because that allowed us to focus on the logic of the user interface rather than having to deal with the ideosyncroses of many different browsers.
 
 \section{Experiments}
 
