@@ -238,7 +238,29 @@ From what we can tell based on experimentation, ICE only indexes the description
 At a broader scale, our search engine is simply more powerful than both existing tools. We can search for a variety of options that neither of the other two can and we parse complex queries to deliver more relevant results. The Registrar and ICE are functional when you know what courses you want to see. However, when you only know the characteristics of the courses you want to take, our search engine can find those relevant courses for you. In this respect, we are more powerful than both alternatives.
 
 \subsection{Additional Results}
+Our search engine has the capability to search for many different types of coures information. 
 
+\begin{enumerate}
+\item General Course Information
+
+	A user can search for specific courses as done on ICE and the Registrar. For example, searching ``ELE 301'' or ``Circuits and signals'' both return ELE 301 as the top result. By searching ``EEG'', we have LIN 370, Brainwaves in Language Research, as the top result. This course describes in its description how the course will look at interpreting EEG results in language research. 
+	
+\item P/D/F Options
+
+To get a course with the P/D/F options, users just include ``pdf'', ``P/D/F'' or ``pdfable'' in their queries. 
+
+\item Reading amount
+
+To get a course with a specific reading amount, users include ``100 pages'' or ``100 pp'' for instance. All units are in reading per week. 
+
+\item Day and Time
+
+To get a course that occurs at a specific day and time, users include ``T Thurs 1:30'', for instance. As times of courses tend not to overlap, we can automatically classify most times into AM or PM based on their value. We also allow for a variety of day abbreviations such as ``M'' or ``Mon'' for Monday. We allow for special time conventions such as "afternoon", "late afternoon", "early", "morning", "night", "noon" to give users additional flexibility.
+
+\item Additional Parsing
+We also search the query for patterns that might indicate a specific course abbreviation, department or course number. We then specify these fields in the query in order to return the most relevant results.  
+
+\end{enumerate}
 
 \section{Future Works}
 

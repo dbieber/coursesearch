@@ -8,6 +8,9 @@
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -35,12 +38,14 @@ public class CourseSearcher {
         searcher = new IndexSearcher(reader);
         analyzer = new StandardAnalyzer(Version.LUCENE_35);
     }
+    
 
     /* Creates a search from a CourseQuery object
      * 
      */
     public ScoreDoc[] search(CourseQuery query, int hitsPerPage) throws ParseException, IOException {
         ScoreDoc[] hits = search(query.getQueryString(), hitsPerPage);
+        
         return hits;
     }
     
@@ -97,15 +102,15 @@ public class CourseSearcher {
         mysearch.search("Architecture");
         mysearch.search("title:Architecture");*/
 
-        CourseQuery q = new CourseQuery("Monday Wedn pdf cos 3:30 pm");
+        CourseQuery q = new CourseQuery("T Th 1:30");
         System.out.println("Query:" + q.toString());
-        mysearch.search(q, 14);
+        mysearch.search(q, 10);
         
         String indexDir2 = "AllCourseIndexNoBoost";
         CourseSearcher mysearch2 = new CourseSearcher(indexDir2);
         //CourseQuery q2 = new CourseQuery("ceramics");
         System.out.println("Query:" + q.toString());
-        mysearch2.search(q, 14);
+        mysearch2.search(q, 10);
         
 //        mysearch.search(CourseDetails.COURSE +": PHI " + CourseDetails.DIST_AREA + ": QR", 100);
 
