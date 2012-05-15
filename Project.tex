@@ -37,9 +37,17 @@
 \author{David Bieber, Abbi Ward}
 \date{May 15, 2012}
 
+\null  % Empty line
+\nointerlineskip  % No skip for prev line
+\vfill
+\let\snewpage \newpage
+\let\newpage \relax
 \maketitle
+\let \newpage \snewpage
+\vfill 
+\break % page break
 
-\pagebreak
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{abstract}
@@ -52,7 +60,7 @@ The search engine built for this project performs better than and handles more t
 We created a robust Princeton course search engine. It handles free-text queries and can be integrated with the ICE (Integrated Course Engine) application that many students use for scheduling.
 In addition to allowing users to search for specific courses, it allows users to get P/D/F-able and P/D/F only courses and search and filter based on the amount of reading per week required and the professors teaching the course, in addition to other course information.
 The search engine is built on top of Apache Lucene, an open source Java search engine library. Lucene helps manage the index and parse queries into acceptable formats.
-As part of creating the search engine, we built a scraper tool that scrapes the Registrar's Course Offering page and stores all course data.
+As part of creating the search engine, we built a scraper tool that scrapes the Registrar's Course Offerings page and stores all course data.
 
 \section{Goals}
 Our motivation for this project stems from our own need to find courses to take at Princeton. There are already a few ways to look for classes including the paper course catalog, word of mouth, the Registrar's website, and the Integrated Course Engine (ICE).
