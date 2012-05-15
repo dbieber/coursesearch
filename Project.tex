@@ -37,9 +37,17 @@
 \author{David Bieber, Abbi Ward}
 \date{May 15, 2012}
 
+\null  % Empty line
+\nointerlineskip  % No skip for prev line
+\vfill
+\let\snewpage \newpage
+\let\newpage \relax
 \maketitle
+\let \newpage \snewpage
+\vfill 
+\break % page break
 
-\pagebreak
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{abstract}
@@ -52,7 +60,7 @@ The search engine built for this project performs better than and handles more t
 We created a robust Princeton course search engine. It handles free-text queries and can be integrated with the ICE (Integrated Course Engine) application that many students use for scheduling.
 In addition to allowing users to search for specific courses, it allows users to get P/D/F-able and P/D/F only courses and search and filter based on the amount of reading per week required and the professors teaching the course, in addition to other course information.
 The search engine is built on top of Apache Lucene, an open source Java search engine library. Lucene helps manage the index and parse queries into acceptable formats.
-As part of creating the search engine, we built a scraper tool that scrapes the Registrar's Course Offering page and stores all course data.
+As part of creating the search engine, we built a scraper tool that scrapes the Registrar's Course Offerings page and stores all course data.
 
 \section{Goals}
 Our motivation for this project stems from our own need to find courses to take at Princeton. There are already a few ways to look for classes including the paper course catalog, word of mouth, the Registrar's website, and the Integrated Course Engine (ICE).
@@ -105,10 +113,10 @@ For our search engine, we aimed to create a single free text search box that can
 
 \section{Use Cases}
 \subsection{Max the Lazy Architect}
-Max is interested in art and architecture, and really hates all forms of work. He'd love to sleep in until noon, and he'd like to take the easiest classes possible. Of course, he needs to fulfill his departmental and distribution requirements, but he doesn't really care how as long as he can take his daily afternoon nap. So Max pulls up our search engine and types in ``easy afternoon courses''. He gets PSY 207. It's an SA distribution, is P/D/F-able, and lectures don't start until 12:30 pm. ``I'll take it!'' he exclaims, then takes a 15 minute Reddit break before looking for more classes. Max decides to look at courses he needs to take for architecture. He first decides to look at ARC and technology through the query 'ARC technology' and sees ARC 311 looks like an interesting course.
+Max is interested in art and architecture, and really hates all forms of work. He'd love to sleep in until noon, and he'd like to take the easiest classes possible. Of course, he needs to fulfill his departmental and distribution requirements, but he doesn't really care how as long as he can take his daily afternoon nap. So Max pulls up our search engine and types in ``easy afternoon courses''. He gets PSY 207. It's an SA distribution, is P/D/F-able, and lectures don't start until 12:30 pm. ``I'll take it!'' he exclaims, then takes a 15 minute Reddit break before looking for more classes. Max decides to look at courses he needs to take for architecture. He first decides to look at ARC and technology through the query `ARC technology' and sees ARC 311 looks like an interesting course.
 		
 \subsection{Julie the Undecided Poet}
-Julie can't decide between psychology and poetry. She wishes to pursue understanding the abnormalities and idiosyncracies of the human mind, through both art and science. She first browses the psychology offerings through the query 'psy' and decides PSY 207 would be an appropriate course. Julie then, looking for a challenge, seeks a course with about 200 pages of reading per week and no P/D/F option using the query 'ENG 200 pages no p/d/f'.She finds ENG 344, Topics in Romanticism: Romantic Passions, is a perfect fit for her interests.  
+Julie can't decide between psychology and poetry. She wishes to pursue understanding the abnormalities and idiosyncracies of the human mind, through both art and science. She first browses the psychology offerings through the query `psy' and decides PSY 207 would be an appropriate course. Julie then, looking for a challenge, seeks a course with about 200 pages of reading per week and no P/D/F option using the query `ENG 200 pages no p/d/f'.She finds ENG 344, Topics in Romanticism: Romantic Passions, is a perfect fit for her interests.  
 
 \section{Components}
 
