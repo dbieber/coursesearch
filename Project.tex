@@ -51,7 +51,7 @@ This is an abstract.
 \end{abstract}
 
 \section{Introduction}
-We created a robust Princeton course search engine. It handles free-text queries and is integrated with the ICE (Integrated Course Engine) application that many students use for scheduling. In addition to allowing users to search for specific courses, it allows users to get P/D/F-able and P/D/F only courses and search and filter based on the amount of reading per week required and the professors teaching the course, in addition to other course information. Our search engine is built on top of Apache Lucene, an open source Java search engine library.
+We created a robust Princeton course search engine. It handles free-text queries and can be integrated with the ICE (Integrated Course Engine) application that many students use for scheduling. In addition to allowing users to search for specific courses, it allows users to get P/D/F-able and P/D/F only courses and search and filter based on the amount of reading per week required and the professors teaching the course, in addition to other course information. The search engine is built on top of Apache Lucene, an open source Java search engine library. Lucene helps manage the index and parse queries into acceptable formats. As part of creating the search engine, we also built a scraper tool that scrapes the Registrar's Course Offering page and stores all course data. 
 
 
 \section{Goals}
@@ -224,14 +224,19 @@ There are a variety of other sources we may use to help refine our results. We c
 
 \section{Conclusion}
 
-We built a useful and interesting tool. In order to create this, we had to learn about web scraping and built our own Princeton-specific web crawler. Towards the end of the project, we moved towards the Mercator model, as we used queues to determine which links to crawl.    We successfully are able to search for desired PDF and audit options. We can also search for reading amounts 
+We built a useful and interesting tool. In order to create it, we had to learn about web scraping and built our own Princeton-specific web crawler. Towards the end of the project, we moved towards the Mercator model, as we used queues to determine which links to crawl. Our search engine is designed to meet students's information needs. In addition to basic searches, we successfully are able to search for desired PDF and audit options. We can also search for reading amounts and under schedule constraints. We've also created code that is easy to maintain and extend, as we choose to incorporate more signals.
 
 \appendix
 
 \section{Source Code}
 \url{https://github.com/dbieber/coursesearch}
+
 \section{Max and Julie}
+Max and Julie met in PSY 207. They realized they're both abnormal in very different ways, and they belong together. They lived happily ever after. The End.
+
 \section{Thanks}
+Thanks for a great course. Some of our favorite topics were the recommender systems and Map Reduce. Also, we enjoyed the story at the end of the course about the agents that communicate with one another. 
+
 \section{Works Cited}
 \subsection{Reference}
 \url{http://lucene.apache.org/} \\
