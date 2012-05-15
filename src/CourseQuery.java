@@ -8,8 +8,10 @@ public class CourseQuery {
     private String textQuery;
     private String pdf; // CourseDetails: YES, NO, ONLY
     private String audit;
+    private String distAreas;
     private String readingAmt;
     private String specialTimes;
+    private String classSize;
     private String times;
     private String days;
     private String abbr;
@@ -26,8 +28,11 @@ public class CourseQuery {
     private String[] DAYS = {"monday", "tuesday", "wednesday", "thursday", "friday"}; // weekend
     private String[] SPECIAL_TIMES = {"afternoon", "late afternoon", "early", "morning", "night", "noon"}; // weekend
     private String[] SPECIAL_TIME_VALS = {"1:00 pm - 4:30 pm", "3:00 pm - 8:00 pm", "7:00 am - 12:00 pm", "7:00 am - 12:00 pm", "7:00 pm - 11:00 pm", "12:00 pm - 12:30 pm"};
-    
+
     private String[] DIST_AREAS = {"EM", "LA", "SA", "EC", "HA", "QR", "STN", "STL"};
+
+    private String[] SMALL = {"small", "tiny", "personal", "one on one", "engaging", "discussion based", "close knit"};
+    private String[] LARGE = {"large", "lecture", "crowded", "McCosh 50", "big"};
     
     private static final String ANY = "any";
     
@@ -57,11 +62,37 @@ public class CourseQuery {
     private String parseQuery(String query) {
         parseCourseAbbr(query);
         parseSpecialTimes(query);
+        parseClassSize(query);
+        query = parseDistributionAreas(query);
         query = parseReadingAmt(query);
         query = parseTime(query);
         query = parsePdfAudit(query);
         query = parseDays(query);
         return query;
+    }
+
+    private void parseClassSize(String query) {
+        classSize = "";
+        if (containsOneOf(query, SMALL) != null) {
+            classSize = CourseDetails.SMALL;
+        } else if (containsOneOf(query, LARGE) != null) {
+            classSize = CourseDetails.LARGE;
+        }
+    }
+    
+    private String parseDistributionAreas(String query) {
+        distAreas = "";
+        StringBuilder newQuery = new StringBuilder(query);
+        for (String distArea : DIST_AREAS) {
+            Pattern p = Pattern.compile(String.format("\\b%s\\b", distArea));
+            Matcher m = p.matcher(query);
+            if (m.find()) {
+                distAreas += distArea + " ";
+                spacify(newQuery, m.start(), m.end());
+            }
+        }
+        compressSpaces(newQuery);
+        return newQuery.toString();
     }
     
     private String parseReadingAmt(String query) {
@@ -146,14 +177,23 @@ public class CourseQuery {
     
     private void parseCourseAbbr(String query) {
         abbr = "";
-        //StringBuilder newQuery = new StringBuilder(query);
         Pattern abbrPat = Pattern.compile("\\b\\w\\w\\w\\s*\\d\\d\\d\\b");
         Matcher m = abbrPat.matcher(query);
         if (m.find()) {
             abbr = query.substring(m.start(), m.start() + 3) + " " + query.substring(m.end() - 3, m.end());
+            return;
         }
-        //return newQuery.toString();
-        
+
+        Pattern deptPattern = Pattern.compile("\\b\\w\\w\\w\\b");
+        Pattern courseNumPattern = Pattern.compile("\\b\\w\\w\\w\\b");
+        Matcher deptMatcher = deptPattern.matcher(query);
+        Matcher courseNumMatcher = courseNumPattern.matcher(query);
+        if (deptMatcher.find()) {
+            abbr = query.substring(deptMatcher.start(), deptMatcher.end()) + " ";
+        }
+        if (courseNumMatcher.find()) {
+            abbr += query.substring(courseNumMatcher.start(), courseNumMatcher.end());
+        }
     }
     
     private String parsePdfAudit(String query) {
@@ -228,6 +268,13 @@ public class CourseQuery {
         }
         if (!specialTimes.equals("")) {
             query += CourseDetails.TIME + ": " + specialTimes + " ";
+        }
+
+        if (!classSize.equals("")) {
+            query += CourseDetails.SIZE + ": " + classSize + " ";
+        }
+        if (!distAreas.equals("")) {
+            query += CourseDetails.DIST_AREA + ": " + distAreas + " ";
         }
         
         if (!days.equals("")) {

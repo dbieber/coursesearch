@@ -84,6 +84,10 @@ public class CourseIndexer {
     //    in CourseDetails details to the doc
     private boolean addPropToDoc(Document doc, CourseDetails details, String prop, Field.Store store, Field.Index analyzed) {
         String value = details.get(prop);
+        return addFieldToDoc(doc, prop, value, store, analyzed);
+    }
+    
+    private boolean addFieldToDoc(Document doc, String prop, String value, Field.Store store, Field.Index analyzed) {
         if (value != null && !value.equals("")) {
             Field f = new Field(prop, value, store, analyzed);
             f.setBoost((float) getBoostFor(prop));
@@ -121,6 +125,16 @@ public class CourseIndexer {
                 addPropToDoc(doc, course, header, YES, ANALYZED);
             }
             addPropToDoc(doc, course, CourseDetails.READING_AMT, YES, ANALYZED);
+            
+            try {
+                int size = Integer.parseInt(course.get(CourseDetails.MAX));
+                if (size <= 25) { // Size of small class
+                    addFieldToDoc(doc, CourseDetails.SIZE, CourseDetails.SMALL, YES, ANALYZED);
+                } else {
+                    addFieldToDoc(doc, CourseDetails.SIZE, CourseDetails.LARGE, YES, ANALYZED);
+                }
+            } catch (Exception e) { System.out.println("Course has no size: " + course.get(CourseDetails.COURSE)); }
+            
             writer.addDocument(doc);
         }
         catch (Exception e) {
