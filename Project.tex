@@ -104,17 +104,12 @@ Julie can't decide between psychology and poetry. She wishes to pursue understan
 \subsection{Architecture Overview}
 Our search engine has several key components that together allow for sophisticated course searches. A visual overview is provided in the accompanying figure. The data that is searchable all comes from the registrar. We crawl pages on the registrar with our Registrar Scraper in order to accumulate this data. The scraper uses application specific logic in order to get a meaningful understanding of information from the HTML pages on the registrar's website. The data is serialized to disk and is used to build the inverted index that our search engine relies upon. Our Indexer, built atop Lucene, maintains the index on disk. When our search engine receives a query, it first applys the query parser in order to create an application specific query. The query parser determines the meaning of the query, so that the search engine knows what to look for in what fields of the indexed course documents. The result of query parsing is then used with the inverted index in order to generate a number of results. These are ranked and given as the result of the search.
 
-\begin{figure}
-%\includegraphics{OverallArchDiagram.png}
-\caption{Architecture Overview}
-
-\end{figure}
 
 \subsection{Registrar Scraper}
 
 Our registrar scraper operates in three tiers and is highly specific to the job of scraping course data. A visual overview of the registrar scraper's logic is provided in the accompanying figure. The first tier contains a single document, the registrar's main page, from which we scrape a list of department pages. The second tier is made of these department pages, each of which contains a list of courses. We begin gather course specific information on the second tier, as the department pages contain information about when the classes meet, how large the classes are, and what distribution areas they satisfy. Additionally and most importantly we crawl the second tier for links to pages with additional information about the classes. These class specific pages form the third tier of the registrar scraper. For each page in the third tier we gather as much information as possible about the individual course represented. We can usually find most of the following information about each class: the professor teaching it, a description of the class, a sample reading list, any prerequesites, the way the class is graded, P/D/F and audit options, the amount of work to expect, when the course is offered, and sometimes even more. All of the information about the classes gather during tiers two and three is aggregated and serialized to disk so that it can be later used by the indexer.
 
-The course data for the whole registrar is 1649kB.
+The course data for the whole registrar is 1649kB. While scraping the whole registrar, 6 department pages failed to load and 52 course pages failed to load on the first try. Our scraper handled these failures gracefully and reconnected to these pages at a later time. The time of day at which we scrape may be a factor. All but 1 link succeeded on the second iteration. The last one, Macroeconomics/Int'l Finance Workshop, succeeded on the third iteration. There are 1201 total courses and 96 departments (from the perspective of our scraper -- Freshman Seminars and Writing Seminars are considered departments by it). This gives us a $4.3\%$ error rate for courses, $6.3\%$ error rate for department pages, and a $4.5\%$ error rate overall. 
 
 \subsection{Indexer}
 	
@@ -122,7 +117,7 @@ The indexer takes the RegistrarData object we created in the RegistrarScraper an
 
 We then create the index using a Standard Analyzer which turns our text in the documents into tokens and applies two filters. It first makes everything lowercase, and then it eliminates stop words (such as ``a'', ``an'',  ``and'', ``are'', ``as'', ``at'', ``be'', ``but'', ``by'', ``for'', ``if'', ``in'', ``into'', ``is'', ``it'', ``no'', ``not'', ``of'', ``on'', ``or'', ``such'', ``that'', ``the'', ``their'', ``then'', ``there'', ``these'', ``they'', ``this'', ``to'', ``was'', ``will'', ``with''). We have also configured it to overwrite the index as we update. This means we can update documents without worrying if they'll be indexed twice. At the end of this process, we have created a searchable index that contains all the course information. 
 
-The index of our course data is 370kB.
+The index of our course data is 370kB. It indexes our course data in an average of 2.1 seconds. 
 	
 \subsection{Query Parser}
 	
@@ -133,7 +128,6 @@ At this level, the user types a query into the search bar. The query is sent to 
 
 This search engine is a Chrome extension and accompanies the existing ICE tool. Our extension takes over the search bar on ICE and submits queries to our server. 
 				
-\url{http://lucene.apache.org/core/old_versioned_docs/versions/3_5_0/api/all/org/apache/lucene/search/Similarity.html}
 		
 \subsection{Ranker}
 
@@ -152,7 +146,7 @@ $norm(t, d)$ takes into account the document boosts (we can boost documents to a
 \[ norm(t,d) = docBoost(d) * lengthNorm * \prod_{\text{field f in d named as t}}{fieldBoost(f)} \] 				
 
 \subsubsection{Course Ranking}
-At indexing time, we adjusted the fieldBoost for the following fields: course abbreviation, distribution area, title, and PDF. We determined these values experimentally using a technique similar to the machine learning method gradient descent. As the default fieldBoost values are 1.0, indicating no boost, we first tried our algorithm without any boosting. The results were stellar but the ranking was less than adequate. Based on an educated guess, we set the initial boost values to 1.07
+At indexing time, we adjusted the fieldBoost for the following fields: course abbreviation, distribution area, title, and PDF. We chose these fields as they tend to be most relevant to a user's query. We determined these values experimentally using a technique similar to the machine learning method gradient descent. As the default fieldBoost values are 1.0, indicating no boost, we first tried our algorithm without any boosting. The results were stellar but the ranking was less than adequate. Based on an educated guess, we set the initial boost values to 1.07
 
 \section{Experiments}
 
@@ -169,6 +163,13 @@ At indexing time, we adjusted the fieldBoost for the following fields: course ab
 
 We are limited in the queries we can use to compare our search engine with the existing ones because the queries ICE and the registrar accept are severely limited compared to the ones our search engine accepts.
 \subsection{Experiment Results}
+
+We tested our index without fieldBoosts versus the index with fieldBoosts. As the score is only affected when relevant fields are selected, we chose queries that included those fields. We found that the ranking with the boosts was improved. 
+
+\begin{tabular}{ | l | c | r |}
+	
+\end{tabular}
+
 \subsection{Comparison with Existing Search Engines}
 \begin{enumerate}
 \item Registrar Search
@@ -218,7 +219,8 @@ There are a variety of other sources we may use to help refine our results. We c
 
 \section{Conclusion}
 
-We built a useful and interesting tool. In order to create it, we had to learn about web scraping and built our own Princeton-specific web crawler. Towards the end of the project, we moved towards the Mercator model, as we used queues to determine which links to crawl. Our search engine is designed to meet students's information needs. In addition to basic searches, we successfully are able to search for desired PDF and audit options. We can also search for reading amounts and under schedule constraints. We've also created code that is easy to maintain and extend, as we choose to incorporate more signals.
+We useful tool for Princeton students. In order to create it, we had to learn about web scraping and built our own Princeton-specific web crawler. Towards the end of the project, we moved towards the Mercator model, as we used queues to determine which links to crawl. Our search engine is designed to meet students's information needs. In addition to basic searches, we successfully are able to search for desired PDF and audit options. We can also search for reading amounts and under schedule constraints. We've also created code that is easy to maintain and extend, as we choose to incorporate more signals.
+
 
 \appendix
 
@@ -236,4 +238,5 @@ Thanks for a great course. Some of our favorite topics were the recommender syst
 \url{http://lucene.apache.org/} \\
 \url{jsoup.org} \\
 \url{http://www.lucenetutorial.com/sample-apps/textfileindexer-java.html} \\
+\url{http://lucene.apache.org/core/old_versioned_docs/versions/3_5_0/api/all/org/apache/lucene/search/Similarity.html} \\
 \end{document}
