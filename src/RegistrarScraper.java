@@ -33,7 +33,6 @@ public class RegistrarScraper {
     // Season
     private final static String SEASON = "Fall 2012-2013";
 
-    // TODO: delete this comment? npdf and na are <em> right after <strong> in id="timetable"
     // Ways that npdf, na, and pdf only appear
     private final static String[] NPDF = {"No Pass/D/Fail",  "npdf"};
     private final static String[] PDFONLY = {"P/D/F Only"};
@@ -111,6 +110,7 @@ public class RegistrarScraper {
             details.put(CourseDetails.ENROLLED, cells.remove(0).text());
             details.put(CourseDetails.MAX, cells.remove(0).text());
             details.put(CourseDetails.STATUS, cells.remove(0).text());
+            details.put(CourseDetails.SEASON, SEASON); // Only one season
 
             Element booksCell = cells.remove(0);
             Element booksLink = booksCell.getElementsByTag(A_TAG).first();
@@ -237,8 +237,6 @@ public class RegistrarScraper {
 
             text = text.trim();
             details.put(headerText, text);
-            
-            // TODO -- parse schedule/classroom assignment for times            
         }
         
         String readingsText = details.get(CourseDetails.ASSIGNMENTS);

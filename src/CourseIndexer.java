@@ -41,9 +41,7 @@ public class CourseIndexer {
     public CourseIndexer(RegistrarData rd, String indexDir) throws IOException {
         this.rd = rd;
 
-        //index = SimpleFSDirectory.open(new File(indexDir));
         index = FSDirectory.open(new File(indexDir));
-        
         analyzer = new StandardAnalyzer(Version.LUCENE_35);
 
         IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_35, analyzer);
@@ -56,10 +54,6 @@ public class CourseIndexer {
         closeIndex();
     }
 
-    // -----------------------------------------------------------------
-    // create another constructor that takes a RegistrarData and another indexer and UPDATES an index
-    // -----------------------------------------------------------------	
-
     // cycles through courses and indexes each course
     private void indexRegistrar() {
         Collection<CourseDetails> courses = rd.courseDetails();
@@ -68,21 +62,24 @@ public class CourseIndexer {
         }
     }
     
+    private double getBoostFor(String fieldType) {
+        if (fieldType.equals(CourseDetails.COURSE)) return 1.07;
+        if (fieldType.equals(CourseDetails.DIST_AREA)) return 1.07;
+        if (fieldType.equals(CourseDetails.TITLE)) return 1.07;
+        if (fieldType.equals(CourseDetails.PDF)) return 1.09;
+        return 1.0;
+    }
+    
     // helper method: creates a field based on String prop and adds the proper information
     //    in CourseDetails details to the doc
     private boolean addPropToDoc(Document doc, CourseDetails details, String prop, Field.Store store, Field.Index analyzed) {
         String value = details.get(prop);
-        if (prop.equals(CourseDetails.TIME)) {
-            System.out.println(value + " asdad ");
-        }
-        if (prop.equals(CourseDetails.TITLE)) {
-            System.out.println(value);
-        }
         if (value != null && !value.equals("")) {
-            doc.add(new Field(prop, value, store, analyzed));
+            Field f = new Field(prop, value, store, analyzed);
+            f.setBoost((float) getBoostFor(prop));
+            doc.add(f);
             return true;
         }
-//        System.out.println("VALUEUEEU  " + value);
         return false;
     }
     
@@ -115,8 +112,6 @@ public class CourseIndexer {
             }
             addPropToDoc(doc, course, CourseDetails.READING_AMT, YES, ANALYZED);
             writer.addDocument(doc);
-
-            //System.out.println("Added " + course.get(CourseDetails.COURSE));
         }
         catch (Exception e) {
             System.out.println("I couldn't index this course:" + course.get(CourseDetails.COURSE) + " " + e);
@@ -130,19 +125,16 @@ public class CourseIndexer {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         RegistrarData rd = new RegistrarData();
-
         String filename = "coursedata";
-        //String filename = "hisdata";
-        //rd.dump("temp");
-
+        
         try {
             rd.load(filename);
             System.out.println("made it here!");
-            CourseIndexer indexer = new CourseIndexer(rd, "AllCourseIndex");
-
+            new CourseIndexer(rd, "AllCourseIndex");
         } catch (Exception e) {
             System.out.println("Couldn't load the file or couldn't index.");
         }
+        System.out.println("Indexer finished.");
     }
 }
 

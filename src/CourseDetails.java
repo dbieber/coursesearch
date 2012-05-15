@@ -37,8 +37,9 @@ public class CourseDetails extends HashMap<String, String> {
     public static final String COURSE_URL = "courseURL";
     public static final String BOOKS_URL = "booksURL";
     public static final String EVAL_URL = "evalURL";
-    
+
     public static final String READING_AMT = "readingamt";
+    public static final String SEASON = "season";
     
     public static final String PDF = "pdf";
     public static final String AUDIT = "audit";
