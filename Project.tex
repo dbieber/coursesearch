@@ -79,7 +79,7 @@ For our search engine, we aimed to create a single free text search box that can
 \begin{enumerate}
 \item Free text search. One search bar for everything.
   
-  The user can simply put what they want into the search bar (for instance, a pdf-able class on Tuesday at 1:30) and they'll get back courses that fit or nearly fit that description. The search is natural and requires little thought from the user on formulating his information need. 
+  The user can simply put what she wants into the search bar (for instance, a pdf-able class on Tuesday at 1:30) and shw will get back courses that fit or nearly fit that description. The search is natural and requires little thought from the user on formulating her information need. 
   
 \item Basic Search Capabilities
   
@@ -91,11 +91,11 @@ For our search engine, we aimed to create a single free text search box that can
   
 \item Time and Day
 			  
-  The user can specify the time and day of the courses for which they're looking. The search engine prioritizes courses that take place in those time slots.
+  The user can specify the time and day of the courses for which she's looking. The search engine prioritizes courses that take place in those time slots.
   
 \item Reading per week
   
-  The user may specify a desired amount of reading per week. The search engine returns courses with reading amounts in that range. For this and all of our features, the user may specify their search in a human readable format. The search engine will do its best to understand ``100 pages per week'' or ``100 pp/wk'', for instance.
+  The user may specify a desired amount of reading per week. The search engine returns courses with reading amounts in that range. For this and all of our features, the user may specify her search in a human readable format. The search engine will do its best to understand ``100 pages per week'' or ``100 pp/wk'', for instance.
   
 \end{enumerate}
 
@@ -138,7 +138,7 @@ The course data for the whole registrar is 1649kB. While scraping the whole regi
 
 \subsection{Indexer}
 	
-The indexer takes the RegistrarData object we created in the RegistrarScraper and returns an inverted index. We first take all the course data and put it into documents, one per course. In Lucene, documents consist of sets of fields. We use the key-value pairs from the CourseDetails object of each course as fields in each document. This method of construction allows us to take advantage of the known information structure for user search. Through this application-specific structure, we can parse queries to examine particualr fields and will thus return more accurate results. Furthermore, the parallel structure between CourseDetails object and our Indexer makes the code clear and easy to extend and change. If we expand our project to include additional sources, such as the SCORE evaluations and the Student Course Guide, this extensability is critical. 
+The indexer takes the RegistrarData object we created in the RegistrarScraper and returns an inverted index. We first take all the course data and put it into documents, one per course. In Lucene, documents consist of sets of fields. We use the key-value pairs from the CourseDetails object of each course as fields in each document. This method of construction allows us to take advantage of the known information structure for user search. Through this application-specific structure, we can parse queries to examine particular fields and will thus return more accurate results. Furthermore, the parallel structure between CourseDetails object and our Indexer makes the code clear and easy to extend and change. If we expand our project to include additional sources, such as the SCORE evaluations and the Student Course Guide, this extensability is critical. 
 
 We then create the index using a Standard Analyzer which turns our text in the documents into tokens and applies two filters. It first makes everything lowercase, and then it eliminates stop words (such as ``a'', ``an'',  ``and'', ``are'', ``as'', ``at'', ``be'', ``but'', ``by'', ``for'', ``if'', ``in'', ``into'', ``is'', ``it'', ``no'', ``not'', ``of'', ``on'', ``or'', ``such'', ``that'', ``the'', ``their'', ``then'', ``there'', ``these'', ``they'', ``this'', ``to'', ``was'', ``will'', ``with''). We have also configured it to overwrite the index as we update. This means we can update documents without worrying if they'll be indexed twice. At the end of this process, we have created a searchable index that contains all the course information. 
 
@@ -146,7 +146,8 @@ The index of our course data is 370kB, giving a compression ratio of 0.224 with 
 	
 \subsection{Query Parser}
 	
-The two primary components of the query parser are our CourseQuery parsing and Lucene's multi-field query parser. From a user's query, we create a CourseQuery object. The CourseQuery object parses this query to extract pdf-options, days, times and reading amount. To extract the P/D/F and audit options information, it searches the query for a pre-determined set of keywords, such as ``pdf'' or ``easy''. It then extracts these from the free-text portion of the query and appends to the remaining query directions for the value the searcher should search. For instance, a query including ``pdf-only art drawing'' will become ``art drawing pdf: only'' at this stage. A similar process occurs for days, times, and reading amount. For times, we perform two special operations. We must convert ranges to sets of values and put these values into military time. We also search for special time search terms such as ``afternoon'' or ``noon'' and use them to set ranges of times. We do not remove these terms from the query in the case that time is not the query term's intention. Once we have extracted the Princeton-specific information, we pass our new query to Lucene's multi-field query parser. This parser takes a query string expands it into a form suitable for searching a Lucene index. Specifically, for each search term for which a field is not specified, it constructs the query such that the searcher will search all specified fields for the term. 
+The two primary components of the query parser are our CourseQuery parsing and Lucene's multi-field query parser. From a user's query, we create a CourseQuery object. The CourseQuery object parses this query to extract pdf-options, days, times and reading amount. To extract the P/D/F and audit options information, it searches the query for a pre-determined set of keywords, such as ``pdf'' or ``easy''. It then extracts these from the free-text portion of the query and appends to the remaining query directions for the value the searcher should search. For instance, a query including ``pdf-only art drawing'' will become ``art drawing pdf: only'' at this stage. A similar process occurs for days, times, and reading amount.
+For times, we perform two special operations. We must convert ranges to sets of values and put these values into military time. We also search for special time search terms such as ``afternoon'' or ``noon'' and use them to set ranges of times. We do not remove these terms from the query in the case that time is not the query term's intention. Once we have extracted the Princeton-specific information, we pass our new query to Lucene's multi-field query parser. This parser takes a query string expands it into a form suitable for searching a Lucene index. Specifically, for each search term for which a field is not specified, it constructs the query such that the searcher will search all specified fields for the term. 
 	
 \subsection{Search Engine}
 At this level, the user types a query into the search bar. The query is sent to the query parser which puts it into a form appropriate for the index. The searcher is a Lucene object created from the index. For a given query, it retrieves information from the index and compiles a list ranked by score. ??? We then take these ranked results and re-order them according to our own ranking scheme. ???
@@ -171,7 +172,8 @@ $norm(t, d)$ takes into account the document boosts (we can boost documents to a
 \[ norm(t,d) = docBoost(d) * lengthNorm * \prod_{\text{field f in d named as t}}{fieldBoost(f)} \] 				
 
 \subsubsection{Course Ranking}
-At indexing time, we adjusted the fieldBoost for the following fields: course abbreviation, distribution area, title, and PDF. We chose these fields as they tend to be most relevant to a user's query. We determined these values experimentally using a technique similar to the machine learning method gradient descent. As the default fieldBoost values are 1.0, indicating no boost, we first tried our algorithm without any boosting. The results were stellar but the ranking was less than adequate. Based on an educated guess, we set the initial boost values to 1.07
+At indexing time, we adjusted the fieldBoost for the following fields: course abbreviation, distribution area, title, and PDF. We chose these fields as they tend to be most relevant to a user's query. We determined these values experimentally using a technique similar to the machine learning method gradient descent. As the default fieldBoost values are 1.0, indicating no boost, we first tried our algorithm without any boosting. The results were stellar but the ranking was less than adequate.
+With a combination of logical reasoning and simply fiddling with the numbers, we adjusted the boost values in order to improve the rankings generated by our search engine. When adjusting the values too far in one direction made the results worse, we modified the fieldBoost values in order to correct for this change, until we were satisfied with the results.
 
 \section{Experiments}
 
