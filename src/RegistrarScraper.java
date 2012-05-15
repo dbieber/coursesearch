@@ -12,6 +12,9 @@
  */
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.Queue;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,6 +22,8 @@ import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 
 public class RegistrarScraper {
+    
+    public static final String URL = "http://registrar.princeton.edu/course-offerings/";
     
     // HTML tags/IDs
     private final String TABLE_TAG = "table";
@@ -38,51 +43,86 @@ public class RegistrarScraper {
     private final static String[] PDFONLY = {"P/D/F Only"};
     private final static String[] NAUDIT = {"na", "No Audit"};    
 
+    private Queue<DepartmentURL> departmentURLS;
+    private Queue<CourseURL> courseURLS;
+
+    private class DepartmentURL {
+        public String name;
+        public String url;
+    }
+    
+    private class CourseURL {
+        public String name;
+        public String url;
+    }
+    
     // All course information
     RegistrarData data;
 
     public RegistrarScraper() throws IOException {
         data = new RegistrarData();
+        departmentURLS = new LinkedList<DepartmentURL>();
+        courseURLS = new LinkedList<CourseURL>();
     }
 
     public RegistrarScraper(RegistrarData data) {
         this.data = data;
+        departmentURLS = new LinkedList<DepartmentURL>();
+        courseURLS = new LinkedList<CourseURL>();
     }
     
-    public void scrapeRegistrar(String URL) throws IOException {
-        scrapeRegistrar(URL, false);
+    // Scrapes the registrar.
+    public void scrapeRegistrar() {
+        scrapeMainPage();
+        
+        while (!departmentURLS.isEmpty() || !courseURLS.isEmpty()) {
+            if (!departmentURLS.isEmpty()) {
+                scrapeDepartment(departmentURLS.remove());
+            }
+            if (!courseURLS.isEmpty()) {
+                scrapeCourse(courseURLS.remove());
+            }
+        }
     }
-
-    // Scrapes the registrar pointed to by URL by scraping each department
-    // recursive specifies if each course should be scraped in scrapeDepartment()
-    public void scrapeRegistrar(String URL, boolean recursive) throws IOException {
+    
+    // Performs tier 1 of scraping.
+    public boolean scrapeMainPage() {
         Document doc = null;
         try {
             doc = Jsoup.connect(URL).get();
         }
         catch (Exception e){
             System.out.println("Failed to load registrar: " + URL);
-            return;
+            return false;
         }
 
         Element table = doc.getElementsByTag(TABLE_TAG).first();
         Elements links = table.getElementsByTag(A_TAG);
         for (Element link : links) {
-            System.out.println("Scraping " + link.text());
-            if (link.text().charAt(0) <'E') continue;
-            scrapeDepartment(URL + link.attr(HREF_ATTR), recursive);
+            DepartmentURL u = new DepartmentURL();
+            u.name = link.text();
+            u.url = link.attr(HREF_ATTR);
+            departmentURLS.add(u);
+        }
+        return true;
+    }
+    
+    public void scrapeDepartments() {
+        while (!departmentURLS.isEmpty()) {
+            DepartmentURL dept = departmentURLS.remove();
+            scrapeDepartment(dept);
         }
     }
 
-    // Scrapes a department at the given URL -- scrapes all courses within a 
-    //department when recursive is true
-    public void scrapeDepartment(String URL, boolean recursive) throws IOException {
+    // Scrapes a department at the given URL
+    public void scrapeDepartment(DepartmentURL u) {
         Document doc = null;
         try {
-            doc = Jsoup.connect(URL).get();
+            doc = Jsoup.connect(URL + u.url).get();
         }
         catch (Exception e){
-            System.out.println("Failed to load department: " + URL);
+            System.out.println("Failed to load department: " + u.name);
+            departmentURLS.add(u);
             return;
         }
 
@@ -121,9 +161,11 @@ public class RegistrarScraper {
             details.put(CourseDetails.EVAL_URL, evalLink.attr(HREF_ATTR));
 
             data.addCourseDetails(details);
-            if (recursive) {                
-                scrapeCourse(details.get(CourseDetails.COURSE_URL));
-            }
+            
+            CourseURL c = new CourseURL();
+            c.name = details.get(CourseDetails.TITLE);
+            c.url = details.get(CourseDetails.COURSE_URL);
+            courseURLS.add(c);
         }
     }
 
@@ -154,21 +196,20 @@ public class RegistrarScraper {
     
     // Scrapes a course at the given URL
     // Specially process grading restrictions and reading amount
-    public void scrapeCourse(String URL) throws IOException {
-        //System.out.println(URL);
-        String base = "http://registrar.princeton.edu/course-offerings/";
-        URL = base + URL;
+    public void scrapeCourse(CourseURL c) {
+        String myURL = URL + c.url;
         Document doc = null;
         try {
-            doc = Jsoup.connect(URL).get();
+            doc = Jsoup.connect(myURL).get();
         }
         catch (Exception e){
-            System.out.println("Failed to load course: " + URL);
+            System.out.println("Failed to load course: " + c.name);
+            courseURLS.add(c);
             return;
         }
         CourseDetails details = new CourseDetails();
 
-        details.put(CourseDetails.COURSE_URL, URL);
+        details.put(CourseDetails.COURSE_URL, myURL);
 
         Element timetable = doc.getElementById("timetable");
         
@@ -191,7 +232,6 @@ public class RegistrarScraper {
             details.put(CourseDetails.AUDIT, CourseDetails.YES);
         }
         
-        
         // description
         Element descr = doc.getElementById(DESCR_ID);
         if (descr != null) {
@@ -202,10 +242,6 @@ public class RegistrarScraper {
         // professors
         String professors = doc.select("p strong").text();
         details.put(CourseDetails.PROFESSORS, professors);
-
-        System.out.print(title + " ");
-        System.out.print(details.get(CourseDetails.PDF));
-        System.out.println(details.get(CourseDetails.PROFESSORS));
 
         // Checks if headers are present and if so, assigns appropriate CourseDetails
         //      field the appropriate data
@@ -243,46 +279,17 @@ public class RegistrarScraper {
         if (readingsText != null) {
             details.setReadingAmt(readingsText);
         }
-
+        
         data.addCourseDetails(details);
     }
-    // Tries scraping up to 100 courses
-    public static void test1() throws IOException, ClassNotFoundException {
-//        String URL = "http://registrar.princeton.edu/course-offerings/";
-        RegistrarData data = new RegistrarData();
-        data.load("coursedata");
-        RegistrarScraper rs = new RegistrarScraper(data);
 
-        int count = 100;
-        for (CourseDetails details : data.courseDetails()) {
-            try {
-                rs.scrapeCourse(details.get(CourseDetails.COURSE_URL));
-            } catch(Exception e) { System.out.println("minor failure for " + details.get(CourseDetails.COURSE_URL));}
-            count--;
-            if (count == 0) {
-                break;
-            }
-        }
-        rs.data.dump("coursedata");
-        System.out.println(rs.data);
-    }
-    
-    // scrapes a given department to file
-    public static void test2() throws IOException {
-        String URL = "http://registrar.princeton.edu/course-offerings/search_results.xml?term=1132&subject=HIS";
+    // Scrape the Registrar
+    public static void test() throws IOException, ClassNotFoundException {
         RegistrarData data = new RegistrarData();
+//        data.load("coursedata");
         RegistrarScraper rs = new RegistrarScraper(data);
-        rs.scrapeDepartment(URL, true);
-        rs.data.dump("hisdata");
-        System.out.println(rs.data);
-    }
-    
-    // scrapes the registrar
-    public static void test() throws IOException {
-        String URL = "http://registrar.princeton.edu/course-offerings/";
-        RegistrarScraper rs = new RegistrarScraper();
-        rs.scrapeRegistrar(URL, true);
-        rs.data.dump("coursedata");
+        rs.scrapeRegistrar();
+        data.dump("coursedata2");
         System.out.println(rs.data);
     }
 

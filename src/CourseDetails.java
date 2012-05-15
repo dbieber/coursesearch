@@ -44,6 +44,10 @@ public class CourseDetails extends HashMap<String, String> {
     public static final String PDF = "pdf";
     public static final String AUDIT = "audit";
 
+    public static final String SIZE = "size";
+    public static final String SMALL = "small";
+    public static final String LARGE = "large";
+
     public static final String PROFESSORS = "professors";
     public static final String DESCRIPTION = "description";
     

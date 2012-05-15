@@ -65,7 +65,7 @@ public class CourseSearcher {
         for(int i = 0; i < hits.length; ++i) {
             int docId = hits[i].doc;
             Document d = searcher.doc(docId);
-            System.out.println((i + 1) + ". " + hits[i].score + " " + d.get(CourseDetails.COURSE) + ": " + d.get(CourseDetails.READING_AMT) + " " + d.get(CourseDetails.TIME) + " " + d.get(CourseDetails.PDF) + " " + d.get(CourseDetails.DAYS));
+            System.out.println((i + 1) + ". " + hits[i].score + " " + d.get(CourseDetails.COURSE) + ": " + d.get(CourseDetails.READING_AMT) + " " + d.get(CourseDetails.TIME) + " " + d.get(CourseDetails.PDF) + " " + d.get(CourseDetails.MAX));
         }
         return hits;
     }
@@ -94,10 +94,10 @@ public class CourseSearcher {
         mysearch.search("Architecture");
         mysearch.search("title:Architecture");*/
 
-        CourseQuery q = new CourseQuery("afternoon pdf");
+        CourseQuery q = new CourseQuery("small");
         System.out.println("Query:" + q.toString());
         mysearch.search(q, 14);
-        mysearch.search(CourseDetails.COURSE + ": vis 201 ", 1);
+//        mysearch.search(CourseDetails.COURSE +": PHI " + CourseDetails.DIST_AREA + ": QR", 100);
         //mysearch.search("time: thirteenthir pdf: only");
         //mysearch.search(CourseDetails.PDF + ": only");
        // mysearch.search(CourseDetails.DAYS + ":thursday");
