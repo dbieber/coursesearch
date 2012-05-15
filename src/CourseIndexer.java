@@ -155,7 +155,7 @@ public class CourseIndexer {
         
         try {
             rd.load(filename);
-            new CourseIndexer(rd, "AllCourseIndexBoost", true);
+            new CourseIndexer(rd, "AllCourseIndexNoBoost", false);
         } catch (Exception e) {
             System.out.println("Couldn't load the file or couldn't index.");
         }

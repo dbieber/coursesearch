@@ -102,6 +102,7 @@ public class CourseSearcher {
         mysearch.search("Architecture");
         mysearch.search("title:Architecture");*/
 
+
         CourseQuery q = new CourseQuery("T Th 1:30");
         System.out.println("Query:" + q.toString());
         mysearch.search(q, 10);
