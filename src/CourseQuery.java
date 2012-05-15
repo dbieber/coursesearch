@@ -186,6 +186,7 @@ public class CourseQuery {
     
     private void parseCourseAbbr(String query) {
         abbr = "";
+        query = query.toUpperCase();
         Pattern abbrPat = Pattern.compile("\\b\\w\\w\\w\\s*\\d\\d\\d\\b");
         Matcher m = abbrPat.matcher(query);
         if (m.find()) {
