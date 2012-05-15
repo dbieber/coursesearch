@@ -191,10 +191,9 @@ With a combination of logical reasoning and simply fiddling with the numbers, we
 
 \section{Experiments}
 
-We tested our index without fieldBoosts versus the index with fieldBoosts. As the score is only affected when relevant fields are selected, we chose queries that included those fields. We found that the ranking with the boosts was improved. We used
-Query: ``arc technology'' \\
+We tested our index without fieldBoosts versus the index with fieldBoosts. As the score is only affected when relevant fields are selected, we chose queries that included those fields. We found that the ranking with the boosts was improved. We used the query ``arc technology'' as our means for comparison. Based on how we boosted fields, this will increase the importance of the 'ARC' term relative to the technology term. \\
 
-We used 3 weights to rate relevance. Very relevant documents earned a weight of 10 and included architecture courses with a focus on technology. Relevant documents that included at least one of the terms received a score of 5. Slightly relevant documents
+We used 3 weights to rate relevance. Very relevant documents earned a weight of 10 and included architecture courses with a focus on technology. Relevant documents were courses that were very related at least one of the terms received a score of 5. Slightly relevant courses included the terms but were more tangentially related. 
 
 \begin{tabular}{ | l | c | r |}
 	\hline
@@ -219,20 +218,31 @@ We used 3 weights to rate relevance. Very relevant documents earned a weight of 
 
 \vspace{1 cm}
 
+These results illustrate that our boosted ranking gives improved results in cases where 
+
+The effect of our boost is relatively slight. It is important in cases such as these where, when many courses contain the second keyword, emphasis on the department (or whatever other fields the query includes) give us more relevant results. In most other cases, the results between the two will not differ significantly. 
 
 \section{Evaluation}
 
+\subsection{Comparison with Existing Search Engines}
+
 We are limited in the queries we can use to compare our search engine with the existing ones because the queries ICE and the registrar accept are severely limited compared to the ones our search engine accepts.
 
+Comparing search engines on a query by query basis is difficult in this case. Neither the Registrar nor ICE performs any sort of ranking (both return alphabetical results) so we cannot evaluate performance as we did in our earlier experiment. To evaluate our performance, we will consider the degree to which we met our primary three goals : to create something that is (1) simpler than the registrar's search feature, (2) more flexible than ICE, and (3)more powerful than either. 
+
+The Registrar Search is essentially a database query. You select values for particular fields and the registrar returns results that exactly match the values for those chosen fields. Results are returned in alphabetical order by course abbreviation. Selecting these values requires checkboxes, drop-down menus and multiple textboxes. Users must read the page in order to determine how to fill in the form to get desired results. Our search is a single text-box that requires the user to type what they want. That's it. From the user's perspective, this interface is simpler. 
+
+From what we can tell based on experimentation, ICE only indexes the description, title, and course abbreviation. It suffices then as a tool to create a schedule but is not, at the moment, a tool that's effective for finding courses to take. ICE does allow you to search by time but not in conjunction with other search terms. The results ICE returns are in alphabetical order by course abbreviation (i.e. COS 435). They are not ranked. Our search engine, on the other hand, allows queries of all course information including times, P/D/F-options, professors and reading list. Both interfaces take free-text queries as searches but the terms by which users can search on ICE are severely limited compared to ours. 
+  
 
 
-\subsection{Comparison with Existing Search Engines}
+
+
 \begin{enumerate}
 \item Registrar Search
-  The Registrar Search is essentially a database query. You select values for particular fields and the registrar returns results that exactly match the values for those chosen fields. Results are returned in alphabetical order by course abbreviation. 
+  
   
 \item ICE
-  From what we can tell based on experimentation, ICE only indexes the description, title, and course abbreviation. It suffices then as a tool to create a schedule but is not, at the moment, a tool that's effective for finding courses to take. ICE does allow you to search by time but not in conjunction with other search terms. The results ICE returns are in alphabetical order by course abbreviation (i.e. COS 435). They are not truly ranked.  
   
 \item Conclusion
   None of these search engines give the ability to search for the pdf option and none offers the same flexibility as ours.
