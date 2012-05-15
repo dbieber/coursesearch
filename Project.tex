@@ -120,24 +120,43 @@ We then create the index using a Standard Analyzer which turns our text in the d
 The two primary components of the query parser are our CourseQuery parsing and Lucene's multi-field query parser. From a user's query, we create a CourseQuery object. The CourseQuery object parses this query to extract pdf-options, days, times and reading amount. To extract the P/D/F and audit options information, it searches the query for a pre-determined set of keywords, such as ``pdf'' or ``easy''. It then extracts these from the free-text portion of the query and appends to the remaining query directions for the value the searcher should search. For instance, a query including ``pdf-only art drawing'' will become ``art drawing pdf: only'' at this stage. A similar process occurs for days, times, and reading amount. For times, we perform two special operations. We must convert ranges to sets of values and put these values into military time. We also search for special time search terms such as ``afternoon'' or ``noon'' and use them to set ranges of times. We do not remove these terms from the query in the case that time is not the query term's intention. Once we have extracted the Princeton-specific information, we pass our new query to Lucene's multi-field query parser. This parser takes a query string expands it into a form suitable for searching a Lucene index. Specifically, for each search term for which a field is not specified, it constructs the query such that the searcher will search all specified fields for the term. 
 	
 \subsection{Search Engine}
-At this level, the user interacts with a search bar. Once he's formed a query, the query is sent to the query parser which puts it into a form appropriate for the index. The searcher is a Lucene object created from the index. For a given query, it retrieves information from the index and compiles a list ranked by score. (Explained under ranker). ???? We then take these ranked results and re-order them according to our own ranking scheme. ???
+At this level, the user types a query into the search bar. The query is sent to the query parser which puts it into a form appropriate for the index. The searcher is a Lucene object created from the index. For a given query, it retrieves information from the index and compiles a list ranked by score. ??? We then take these ranked results and re-order them according to our own ranking scheme. ???
 				
 \url{http://lucene.apache.org/core/old_versioned_docs/versions/3_5_0/api/all/org/apache/lucene/search/Similarity.html}
 		
 \subsection{Ranker}
 
-\subsection{Personal Data Store}
-Personal Data stored:
+\subsubsection{How Lucene Ranking Works}
+The Lucene ranking takes into account several factors. 
+\begin{equation}
+  score(q,d) = coord(q,d) * queryNorm * \sum_{\text{term t } \in q}{tf(\text{t in d}) * idf(t)^2 * termBoost(t) * norm(t,d)}
+  \label{eq:practical}
+\end{equation}
+$coord(q,d)$ is the number of terms in doc d\\
+$queryNorm$ is a normalizing factor and allows comparison between queries. It is the Euclidean norm of the weights as determined by ???\\
+$tf(\text{t in d})$ represents the term frequency of term t in document d \\
+$idf(t)$ is the inverse document frequency of term t and is represented mathematically by \[ 1 + log(\frac{numDocs}{docFreq + 1}) \] where docFreq is the frequency of term t in each document. \\
+$termBoost(t)$ is a factor that essentially boosts a given term t in query q. For instance, we could boost time and days specified to give classes that fit the user's need better.\\
+$norm(t, d)$ takes into account the document boosts (we can boost documents to appear more frequently), lengthNorm (a factor that allows short fields to contribute more to the score), and the individual field boosts for which term t is the name of a field. 
+\[ norm(t,d) = docBoost(d) * lengthNorm * \prod_{\text{field f in d named as t}}{fieldBoost(f)} \] 				
+
+
+	
+
+\subsection{Personal Data}
+The following is the personal data we could use to implement personalized search results. 
 \begin{enumerate}
 \item Course History
 \item Associated Ratings for each course taken
-\item 
+\item Friend's Data
 \end{enumerate}
-
+What we would do with the data
 \begin{enumerate}
 \item Weight departments you've taken courses in and have high scores for those coures
-\item 
+\item Know which prerequisites you've filled and give a warning before adding
 \end{enumerate}
+
+
 \section{Experiments}
 
 \section{Evaluation}
@@ -158,20 +177,6 @@ Personal Data stored:
 
 \section{Future Works}
 \subsection{Personalization}
-How Lucene Ranking Works
-The Lucene ranking takes into account several factors. 
-\begin{equation}
-  score(q,d) = coord(q,d) * queryNorm * \sum_{term t \in q}{tf(\text{t in d}) * idf(t)^2 * termBoost(t) * norm(t,d)}
-  \label{eq:practical}
-\end{equation}
-$coord(q,d)$ is the number of terms in doc d\\
-$queryNorm$ is a normalizing factor and allows comparison between queries. It is the Euclidean norm of the weights as determined by ???\\
-$tf(\text{t in d})$ represents the term frequency of term t in document d \\
-$idf(t)$ is the inverse document frequency of term t and is represented mathematically by \[ 1 + log(\frac{numDocs}{docFreq + 1}) \] where docFreq is the frequency of term t in each document. \\
-$termBoost(t)$ is a factor that essentially boosts a given term t in query q. For instance, we could boost time and days specified to give classes that fit the user's need better.\\
-$norm(t, d)$ takes into account the document boosts (we can boost documents to appear more frequently), lengthNorm (a factor that allows short fields to contribute more to the score), and the individual field boosts for which term t is the name of a field. 
-\[ norm(t,d) = docBoost(d) * lengthNorm * \prod_{\text{field f in d named as t}}{fieldBoost(f)} \] 				
-	
 	
 \subsection{User Interface}
 Can we make it so that it displays the information requested? i.e. Q = ``CLA MW 330 pdfonly'' then in addition to CLA XXX - TITLE, we should display the time/days of the course and what the pdf options are
