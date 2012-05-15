@@ -101,11 +101,11 @@ For our search engine, we aimed to create a single free text search box that can
 
 \subsection{Additional Features}
 \begin{enumerate}
-\item Scraping registrar
+\item Scraping registrar 
   
   We've created a tool that scrapes the registrar and stores all course data in an easily accessible data format. It is resistant to registrar server failures, as well as local failures.
 			
-\item Updating index
+\item Updating index 
   
   The Indexer interprets our course data and creates an inverted index. As new courses become available or new data becomes available about old courses, the index is updated to reflect these changes.
   
@@ -113,7 +113,7 @@ For our search engine, we aimed to create a single free text search box that can
 
 \section{Use Cases}
 \subsection{Max the Lazy Architect}
-Max is interested in art and architecture, and really hates all forms of work. He'd love to sleep in until noon, and he'd like to take the easiest classes possible. Of course, he needs to fulfill his departmental and distribution requirements, but he doesn't really care how as long as he can take his daily afternoon nap. So Max pulls up our search engine and types in ``easy afternoon courses''. He gets PSY 207. It's an SA distribution, is P/D/F-able, and lectures don't start until 12:30 pm. ``I'll take it!'' he exclaims, then takes a 15 minute Reddit break before looking for more classes. Max decides to look at courses he needs to take for architecture. He first decides he's interested in the looking at technology in architecture and thus searches with the query `ARC technology' and sees ARC 311 looks like an interesting course.
+Max is interested in art and architecture, and really hates all forms of work. He'd love to sleep in until noon, and he'd like to take the easiest classes possible. Of course, he needs to fulfill his departmental and distribution requirements, but he doesn't really care how as long as he can take his daily afternoon nap. So Max pulls up our search engine and types in ``ha sa easy afternoon courses'', to search for an easy afternoon course that fulfills an SA or HA requirement. The top two results he gets are  REL 230 JDS 230 and PSY 207. REL 230 would fulfill an HA requirement, and PSY 207 fulfills an SA requirement. As he's more technically minded, he decides to do PSY 207. It's satisfies a distribution requirement, is P/D/F-able, and lectures don't start until 12:30 pm. ``I'll take it!'' he exclaims, then takes a 15 minute Reddit break before looking for more classes. Max decides to look at courses he needs to take for architecture. Knowing he's interested in technology in architecture, he searches with the query `ARC technology' and sees ARC 311, Building Science and Technology, looks like an interesting course.
 		
 \subsection{Julie the Undecided Poet}
 Julie can't decide between psychology and poetry. She wishes to pursue understanding the abnormalities and idiosyncracies of the human mind, through both art and science. She first browses the psychology offerings through the query `psy' and decides PSY 207 would be an appropriate course. Julie then, looking for a challenge, seeks a course with about 200 pages of reading per week and no P/D/F option using the query `ENG 200 pages no p/d/f'. She finds ENG 344, Topics in Romanticism: Romantic Passions, is a perfect fit for her interests.  
@@ -172,21 +172,21 @@ This search engine is a Chrome extension and accompanies the existing ICE tool. 
 \subsection{Ranker}
 
 \subsubsection{Lucene Ranking}
-The Lucene ranking takes into account several factors. 
+The Lucene ranking takes into account several factors. The score for a given query q and document d is as follows:
 \begin{equation}
   score(q,d) = coord(q,d) * queryNorm * \sum_{\text{term t } \in q}{tf(\text{t in d}) * idf(t)^2 * termBoost(t) * norm(t,d)}
   \label{eq:practical}
 \end{equation}
-$coord(q,d)$ is the number of terms in doc d\\
-$queryNorm$ is a normalizing factor and allows comparison between queries. It is the Euclidean norm of the weights as determined by ???\\
-$tf(\text{t in d})$ represents the term frequency of term t in document d \\
-$idf(t)$ is the inverse document frequency of term t and is represented mathematically by \[ 1 + log(\frac{numDocs}{docFreq + 1}) \] where docFreq is the frequency of term t in each document. \\
-$termBoost(t)$ is a factor that essentially boosts a given term t in query q. For instance, we could boost time and days specified to give classes that fit the user's need better.\\
+Where $coord(q,d)$ is the number of terms in doc d,\\
+$queryNorm$ is a normalizing factor and allows comparison between queries. It is the Euclidean norm of the weights. The sum of the squared weights is determined by the following equation. \[ sumOfSqWeights = (queryBoost(q))^2 * \sum_{\text{t in q}}{(idf(t) * termBoost(t))^2}\]\\
+$tf(\text{t in d})$ represents the term frequency of term t in document d, \\
+$idf(t)$ is the inverse document frequency of term t and is represented mathematically by \[ 1 + log(\frac{numDocs}{docFreq + 1}) \] where docFreq is the frequency of term t in each document, \\
+$termBoost(t)$ is a factor that essentially boosts a given term t in query q. For instance, we could boost time and days specified to give classes that fit the user's need better,\\
 $norm(t, d)$ takes into account the document boosts (we can boost documents to appear more frequently), lengthNorm (a factor that allows short fields to contribute more to the score), and the individual field boosts for which term t is the name of a field. 
 \[ norm(t,d) = docBoost(d) * lengthNorm * \prod_{\text{field f in d named as t}}{fieldBoost(f)} \] 				
 
 \subsubsection{Course Ranking}
-At indexing time, we adjusted the fieldBoost for the following fields: course abbreviation, distribution area, title, and PDF. We chose these fields as they tend to be most relevant to a user's query. We determined these values experimentally using a technique similar to the machine learning method gradient descent. As the default fieldBoost values are 1.0, indicating no boost, we first tried our algorithm without any boosting. The results were stellar but the ranking was less than adequate.
+At indexing time, we adjusted the fieldBoost for the following fields: course abbreviation, distribution area, title, and PDF. We chose these fields as they tend to be most relevant to a user's query. We attempted to determine these values experimentally using a technique similar to the machine learning method gradient descent. As the default fieldBoost values are 1.0, indicating no boost, we first tried our algorithm without any boosting. The results were good but the ranking was less than adequate.
 With a combination of logical reasoning and simply fiddling with the numbers, we adjusted the boost values in order to improve the rankings generated by our search engine. When adjusting the values too far in one direction made the results worse, we modified the fieldBoost values in order to correct for this change, until we were satisfied with the results.
 
 \section{Experiments}
@@ -211,42 +211,24 @@ We used 3 weights to rate relevance. Very relevant documents earned a weight of 
 	7: 										& .95 & 	 \\
 	8: 										& .94 & .93 \\
 	9: 										& 		& .91 \\
-	10: 									&	 		& .90 \\
-	Last Relevant Recall & & \\
+	10: 									&	 		& .90 \\	
 	\hline 
 \end{tabular}
 
 \vspace{1 cm}
 
-These results illustrate that our boosted ranking gives improved results in cases where 
-
-The effect of our boost is relatively slight. It is important in cases such as these where, when many courses contain the second keyword, emphasis on the department (or whatever other fields the query includes) give us more relevant results. In most other cases, the results between the two will not differ significantly. 
+The effect of our boost undoubtedly improves results but is also relatively slight. The boost is important in cases such as these where, when many courses contain the second keyword, emphasis on the department (or whatever other fields the query includes) give us more relevant results. We know that in this application, the course abbrevation, course title and PDF options are important constraints in a student's search. However, in most other query cases, the results between the two will not differ significantly. 
 
 \section{Evaluation}
 
 \subsection{Comparison with Existing Search Engines}
-
-We are limited in the queries we can use to compare our search engine with the existing ones because the queries ICE and the registrar accept are severely limited compared to the ones our search engine accepts.
-
-Comparing search engines on a query by query basis is difficult in this case. Neither the Registrar nor ICE performs any sort of ranking (both return alphabetical results) so we cannot evaluate performance as we did in our earlier experiment. To evaluate our performance, we will consider the degree to which we met our primary three goals : to create something that is (1) simpler than the registrar's search feature, (2) more flexible than ICE, and (3)more powerful than either. 
+Comparing search engines on a query by query basis is difficult in this case. The Registrar Neither the Registrar nor ICE performs any sort of ranking (both return alphabetical results) so we cannot evaluate performance as we did in our earlier experiment. To evaluate our performance, we will consider the degree to which we met our primary three goals : to create something that is (1) simpler than the registrar's search feature, (2) more flexible than ICE, and (3)more powerful than either. 
 
 The Registrar Search is essentially a database query. You select values for particular fields and the registrar returns results that exactly match the values for those chosen fields. Results are returned in alphabetical order by course abbreviation. Selecting these values requires checkboxes, drop-down menus and multiple textboxes. Users must read the page in order to determine how to fill in the form to get desired results. Our search is a single text-box that requires the user to type what they want. That's it. From the user's perspective, this interface is simpler. 
 
 From what we can tell based on experimentation, ICE only indexes the description, title, and course abbreviation. It suffices then as a tool to create a schedule but is not, at the moment, a tool that's effective for finding courses to take. ICE does allow you to search by time but not in conjunction with other search terms. The results ICE returns are in alphabetical order by course abbreviation (i.e. COS 435). They are not ranked. Our search engine, on the other hand, allows queries of all course information including times, P/D/F-options, professors and reading list. Both interfaces take free-text queries as searches but the terms by which users can search on ICE are severely limited compared to ours. 
   
-
-
-
-
-\begin{enumerate}
-\item Registrar Search
-  
-  
-\item ICE
-  
-\item Conclusion
-  None of these search engines give the ability to search for the pdf option and none offers the same flexibility as ours.
-\end{enumerate}
+At a broader scale, our search engine is simply more powerful than both existing tools. We can search for a variety of options that neither of the other two can and we parse complex queries to deliver more relevant results. The Registrar and ICE are functional when you know what courses you want to see. However, when you only know the characteristics of the courses you want to take, our search engine can find those relevant courses for you. In this respect, we are more powerful than both alternatives.
 
 \section{Future Works}
 
@@ -264,7 +246,7 @@ What we would do with the data:
 \begin{enumerate}
 \item Use search history to tailor results
 
-\item Rank higher the departments in which you've taken courses and have high ratings for that department's courses
+\item Rank higher the departments in which you've taken courses and have high ratings for that department's courses \\
 
 This would be especially useful for breaking ties. For instance, I'm more interested in ELE 218 than CLA 218 so if I search 218, ELE 218 should be the top result. 
 
