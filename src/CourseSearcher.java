@@ -97,7 +97,7 @@ public class CourseSearcher {
         mysearch.search("Architecture");
         mysearch.search("title:Architecture");*/
 
-        CourseQuery q = new CourseQuery("Monday Wedn pdf cos 3:30 pm");
+        CourseQuery q = new CourseQuery("machine language");
         System.out.println("Query:" + q.toString());
         mysearch.search(q, 14);
         
