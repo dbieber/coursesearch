@@ -194,7 +194,7 @@ public class CourseQuery {
         }
 
         Pattern deptPattern = Pattern.compile("\\b\\w\\w\\w\\b");
-        Pattern courseNumPattern = Pattern.compile("\\b\\w\\w\\w\\b");
+        Pattern courseNumPattern = Pattern.compile("\\b\\d\\d\\d\\b");
         Matcher deptMatcher = deptPattern.matcher(query);
         Matcher courseNumMatcher = courseNumPattern.matcher(query);
         while (deptMatcher.find()) {
