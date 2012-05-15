@@ -52,13 +52,13 @@
 
 \begin{abstract}
 The purpose of this project is to create an application specific search engine for the purpose of finding Princeton courses highly relevant to any course information need.
-The resulting search engine takes simple text queries, and returns a list of courses relevant to the query. The project includes a crawler for gather the course data from the Princeton Registrar's website, as well as all of the components of the search engine, which is built on top of Lucene.
+The resulting search engine takes simple text queries, and returns a list of courses relevant to the query. The project includes a crawler for gathering the course data from the Princeton Registrar's website, as well as all of the components of the search engine, which is built on top of Lucene.
 The search engine built for this project performs better than and handles more types of queries than either of the two existing alternatives, the Integrated Course Engine (ICE) and the Registrar's own search feature.
 \end{abstract}
 
 \section{Introduction}
 We created a robust Princeton course search engine. It handles free-text queries and can be integrated with the ICE (Integrated Course Engine) application that many students use for scheduling.
-In addition to allowing users to search for specific courses, it allows users to get P/D/F-able and P/D/F only courses and search and filter based on the amount of reading per week required and the professors teaching the course, in addition to other course information.
+In addition to allowing users to search for specific courses, it allows users to get P/D/F-able and P/D/F only courses and search and filter based on the amount of reading per week required, professors teaching the course, and other course information.
 The search engine is built on top of Apache Lucene, an open source Java search engine library. Lucene helps manage the index and parse queries into acceptable formats.
 As part of creating the search engine, we built a scraper tool that scrapes the Registrar's Course Offerings page and stores all course data.
 
@@ -79,7 +79,7 @@ For our search engine, we aimed to create a single free text search box that can
 \begin{enumerate}
 \item Free text search. One search bar for everything.
   
-  The user can simply put what she wants into the search bar (for instance, a pdf-able class on Tuesday at 1:30) and shw will get back courses that fit or nearly fit that description. The search is natural and requires little thought from the user on formulating her information need. 
+  The user can simply put what she wants into the search bar (for instance, a pdf-able class on Tuesday at 1:30) and she will get back courses that fit or nearly fit that description. The search is natural and requires little thought from the user on formulating her information need. 
   
 \item Basic Search Capabilities
   
@@ -113,7 +113,7 @@ For our search engine, we aimed to create a single free text search box that can
 
 \section{Use Cases}
 \subsection{Max the Lazy Architect}
-Max is interested in art and architecture, and really hates all forms of work. He'd love to sleep in until noon, and he'd like to take the easiest classes possible. Of course, he needs to fulfill his departmental and distribution requirements, but he doesn't really care how as long as he can take his daily afternoon nap. So Max pulls up our search engine and types in ``ha sa easy afternoon courses'', to search for an easy afternoon course that fulfills an SA or HA requirement. The top two results he gets are  REL 230 JDS 230 and PSY 207. REL 230 would fulfill an HA requirement, and PSY 207 fulfills an SA requirement. As he's more technically minded, he decides to do PSY 207. It's satisfies a distribution requirement, is P/D/F-able, and lectures don't start until 12:30 pm. ``I'll take it!'' he exclaims, then takes a 15 minute Reddit break before looking for more classes. Max decides to look at courses he needs to take for architecture. Knowing he's interested in technology in architecture, he searches with the query `ARC technology' and sees ARC 311, Building Science and Technology, looks like an interesting course.
+Max is interested in art and architecture, and really hates all forms of work. He'd love to sleep in until noon, and he'd like to take the easiest classes possible. Of course, he needs to fulfill his departmental and distribution requirements, but he doesn't really care how as long as he can take his daily afternoon nap. So Max pulls up our search engine and types in ``ha sa easy afternoon courses'', to search for an easy afternoon course that fulfills an SA or HA requirement. The top two results he gets are  REL 230 JDS 230 and PSY 207. REL 230 would fulfill an HA requirement, and PSY 207 fulfills an SA requirement. As he's more technically minded, he decides to do PSY 207. It satisfies a distribution requirement, is P/D/F-able, and lectures don't start until 12:30 pm. ``I'll take it!'' he exclaims, then takes a 15 minute Reddit break before looking for more classes. Max decides to look at courses he needs to take for architecture. Knowing he's interested in technology in architecture, he searches with the query `ARC technology' and sees that ARC 311, Building Science and Technology, looks like an interesting course.
 		
 \subsection{Julie the Undecided Poet}
 Julie can't decide between psychology and poetry. She wishes to pursue understanding the abnormalities and idiosyncracies of the human mind, through both art and science. She first browses the psychology offerings through the query `psy' and decides PSY 207 would be an appropriate course. Julie then, looking for a challenge, seeks a course with about 200 pages of reading per week and no P/D/F option using the query `ENG 200 pages no p/d/f'. She finds ENG 344, Topics in Romanticism: Romantic Passions, is a perfect fit for her interests.  
