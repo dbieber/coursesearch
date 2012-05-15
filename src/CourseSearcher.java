@@ -39,9 +39,9 @@ public class CourseSearcher {
     /* Creates a search from a CourseQuery object
      * 
      */
-    public void search(CourseQuery query, int hitsPerPage) throws ParseException, IOException {
+    public ScoreDoc[] search(CourseQuery query, int hitsPerPage) throws ParseException, IOException {
         ScoreDoc[] hits = search(query.getQueryString(), hitsPerPage);
-        // TODO return results
+        return hits;
     }
     
     /*
