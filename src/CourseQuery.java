@@ -68,11 +68,12 @@ public class CourseQuery {
     }
     
     private String parseQuery(String query) {
-        parseCourseAbbr(query);
+        
         parseSpecialTimes(query);
         parseClassSize(query);
         query = parseDistributionAreas(query);
         query = parseReadingAmt(query);
+        parseCourseAbbr(query);
         query = parseTime(query);
         query = parsePdfAudit(query);
         query = parseDays(query);
