@@ -27,6 +27,8 @@ public class CourseIndexer {
     private FSDirectory index;
     private RegistrarData rd;
     private StandardAnalyzer analyzer;
+    
+    public static final boolean BOOST = true;
 
     static final Field.Store YES = Field.Store.YES;
     static final Field.Store NO = Field.Store.NO;
@@ -63,10 +65,12 @@ public class CourseIndexer {
     }
     
     private double getBoostFor(String fieldType) {
-        if (fieldType.equals(CourseDetails.COURSE)) return 1.07;
-        if (fieldType.equals(CourseDetails.DIST_AREA)) return 1.07;
-        if (fieldType.equals(CourseDetails.TITLE)) return 1.07;
-        if (fieldType.equals(CourseDetails.PDF)) return 1.09;
+        if (BOOST) {
+            if (fieldType.equals(CourseDetails.COURSE)) return 1.07;
+            if (fieldType.equals(CourseDetails.DIST_AREA)) return 1.07;
+            if (fieldType.equals(CourseDetails.TITLE)) return 1.07;
+            if (fieldType.equals(CourseDetails.PDF)) return 1.09;
+        }
         return 1.0;
     }
     
