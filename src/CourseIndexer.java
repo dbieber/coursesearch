@@ -28,7 +28,7 @@ public class CourseIndexer {
     private RegistrarData rd;
     private StandardAnalyzer analyzer;
     
-    public static final boolean BOOST = true;
+    public boolean boost = true;
 
     static final Field.Store YES = Field.Store.YES;
     static final Field.Store NO = Field.Store.NO;
@@ -40,8 +40,14 @@ public class CourseIndexer {
      * @param rd : RegistrarData we want to index
      * @param indexDir : directory to put the index in
      */
+    
     public CourseIndexer(RegistrarData rd, String indexDir) throws IOException {
+        this(rd, indexDir, true);
+    }
+        
+    public CourseIndexer(RegistrarData rd, String indexDir, boolean boost) throws IOException {
         this.rd = rd;
+        this.boost = boost;
 
         index = FSDirectory.open(new File(indexDir));
         analyzer = new StandardAnalyzer(Version.LUCENE_35);
