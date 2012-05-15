@@ -65,7 +65,9 @@ public class CourseSearcher {
         for(int i = 0; i < hits.length; ++i) {
             int docId = hits[i].doc;
             Document d = searcher.doc(docId);
-            System.out.println((i + 1) + ". " + hits[i].score + " " + d.get(CourseDetails.COURSE) + ": " + d.get(CourseDetails.READING_AMT) + " " + d.get(CourseDetails.TIME) + " " + d.get(CourseDetails.PDF) + " " + d.get(CourseDetails.MAX));
+            System.out.println((i + 1) + ". " + hits[i].score + " " + d.get(CourseDetails.COURSE) + ": " + d.get(CourseDetails.DAYS)  
+                        + " " + d.get(CourseDetails.TIME) + " " + d.get(CourseDetails.PDF) + " " + d.get(CourseDetails.MAX) + " " 
+                        + d.get(CourseDetails.DESCRIPTION));
         }
         return hits;
     }
@@ -83,7 +85,8 @@ public class CourseSearcher {
     public static void main(String[] args) throws IOException, ParseException, ClassNotFoundException {
         // directory of index to search
         //String indexDir = "testIndex";
-        String indexDir = "AllCourseIndex";
+        //String indexDir = "testHisIndex";
+        String indexDir = "AllCourseIndexBoost";
         CourseSearcher mysearch = new CourseSearcher(indexDir);
         // brings up any course with even a precept at 300?
         //mysearch.searchTime("lala");
@@ -94,9 +97,16 @@ public class CourseSearcher {
         mysearch.search("Architecture");
         mysearch.search("title:Architecture");*/
 
-        CourseQuery q = new CourseQuery("small");
+        CourseQuery q = new CourseQuery("Monday Wedn pdf cos 3:30 pm");
         System.out.println("Query:" + q.toString());
         mysearch.search(q, 14);
+        
+        String indexDir2 = "AllCourseIndexNoBoost";
+        CourseSearcher mysearch2 = new CourseSearcher(indexDir2);
+        //CourseQuery q2 = new CourseQuery("ceramics");
+        System.out.println("Query:" + q.toString());
+        mysearch2.search(q, 14);
+        
 //        mysearch.search(CourseDetails.COURSE +": PHI " + CourseDetails.DIST_AREA + ": QR", 100);
 
         //mysearch.search("time: thirteenthir pdf: only");

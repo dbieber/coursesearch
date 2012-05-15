@@ -72,10 +72,10 @@ public class CourseIndexer {
     
     private double getBoostFor(String fieldType) {
         if (boost) {
-            if (fieldType.equals(CourseDetails.COURSE)) return 1.07;
-            if (fieldType.equals(CourseDetails.DIST_AREA)) return 1.07;
-            if (fieldType.equals(CourseDetails.TITLE)) return 1.07;
-            if (fieldType.equals(CourseDetails.PDF)) return 1.09;
+            if (fieldType.equals(CourseDetails.COURSE)) return 2.0;
+            if (fieldType.equals(CourseDetails.DIST_AREA)) return 2.0;
+            if (fieldType.equals(CourseDetails.TITLE)) return 2.0;
+            if (fieldType.equals(CourseDetails.PDF)) return 2.0;
         }
         return 1.0;
     }
@@ -149,12 +149,12 @@ public class CourseIndexer {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         RegistrarData rd = new RegistrarData();
-        String filename = "coursedata";
+        String filename = "coursedata2";
         
         try {
             rd.load(filename);
             System.out.println("made it here!");
-            new CourseIndexer(rd, "AllCourseIndex");
+            new CourseIndexer(rd, "AllCourseIndexBoost", true);
         } catch (Exception e) {
             System.out.println("Couldn't load the file or couldn't index.");
         }
