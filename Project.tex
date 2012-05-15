@@ -37,6 +37,10 @@
 \date{May 15, 2012}
 
 \begin{titlepage}
+\begin{center}
+\textsc{\LARGE Course Search}\\[1.5cm]
+\textsc{\Large COS 435 Final Project}\\[.5cm]
+\end{center}
 \maketitle
 \end{titlepage}
 
@@ -155,7 +159,6 @@ $norm(t, d)$ takes into account the document boosts (we can boost documents to a
 \subsubsection{Course Ranking}
 At indexing time, we adjusted the fieldBoost for the following fields: course abbreviation, distribution area, title, and PDF. We determined these values experimentally using a technique similar to the machine learning method gradient descent. As the default fieldBoost values are 1.0, indicating no boost, we first tried our algorithm without any boosting. The results were stellar but the ranking was less than adequate. Based on an educated guess, we set the initial boost values to 1.07
 
-
 \section{Experiments}
 
 \section{Evaluation}
@@ -174,22 +177,20 @@ We are limited in the queries we can use to experiment because the queries ICE a
 \subsection{Comparison with Existing Search Engines}
 \begin{enumerate}
 \item Registrar Search
-  The Registrar Search is essentially a database query. You select values for particular fields and the registrar returns results that exactly match the values for those chosen fields. 
+  The Registrar Search is essentially a database query. You select values for particular fields and the registrar returns results that exactly match the values for those chosen fields. Results are returned in alphabetical order by course abbreviation. 
   
 \item ICE
-  From what we can tell based on experiments, ICE only indexes the description, title, and course abbreviation. It suffices then as a tool to create a schedule but is not, at the moment, a tool that's effective for finding courses to take. ICE does allow you to search by time but not in conjunction with other search terms. The results ICE returns are in alphabetical order by course abbreviation (i.e. COS 435). They are not truly ranked.
-  
-\item TigerTracks
+  From what we can tell based on experimentation, ICE only indexes the description, title, and course abbreviation. It suffices then as a tool to create a schedule but is not, at the moment, a tool that's effective for finding courses to take. ICE does allow you to search by time but not in conjunction with other search terms. The results ICE returns are in alphabetical order by course abbreviation (i.e. COS 435). They are not truly ranked.  
   
 \item Conclusion
-  None of these search engines give the ability to search for the pdf option. 
+  None of these search engines give the ability to search for the pdf option and none offers the same flexibility as ours.
 \end{enumerate}
 
 \section{Future Works}
 
 \subsection{Personalization}
 
-\subsection{Personal Data}
+Personal Data
 The following is the personal data we could use to implement personalized search results. These are data we theoretically have access to on the ICE platform.
 \begin{enumerate}
 \item Course History
@@ -218,6 +219,8 @@ As we hope to fully integrate this with ICE, our primary flexibility is with the
 
 \subsection{Additional Signals}
 
+There are a variety of other sources we may use to help refine our results. We could use SCORE evaluations and the student course guide to help students choose courses with lighter workloads. Additionally, data on friends's course histories also serve as a ranking signal. We could also consider signals outside ICE such as what's trending on Twitter or on PrincetonFML, a site where students go to complain, celebrate, and share snippets of their lives. 
+
 \section{Conclusion}
 
 \appendix
@@ -226,5 +229,9 @@ As we hope to fully integrate this with ICE, our primary flexibility is with the
 \url{https://github.com/dbieber/coursesearch}
 \section{Max and Julie}
 \section{Thanks}
-
+\section{Works Cited}
+\subsection{Reference}
+\url{http://lucene.apache.org/} \\
+\url{jsoup.org} \\
+\url{http://www.lucenetutorial.com/sample-apps/textfileindexer-java.html} \\
 \end{document}
