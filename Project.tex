@@ -183,16 +183,34 @@ We are limited in the queries we can use to compare our search engine with the e
 
 We tested our index without fieldBoosts versus the index with fieldBoosts. As the score is only affected when relevant fields are selected, we chose queries that included those fields. We found that the ranking with the boosts was improved. 
 
+Query: ``arc technology'' \\
+
+We used 3 weights to rate relevance. Very relevant documents earned a weight of 10 and included architecture courses with a focus on technology. Relevant documents that included at least one of the terms received a score of 5. Slightly relevant documents
+
 \begin{tabular}{ | l | c | r |}
-	Reciprocal Rank & & \\
-	Precision at Rank 10 & & \\
-	DCG(10) & & \\
-	Avg over precisions 1: & & \\
-	2: & & \\
-	3: & & \\
+	\hline
+		& With Boost & Without Boost\\
+	\hline
+	Reciprocal Rank 			 & 1 & 1\\
+	Precision at Rank 10 & $\frac{7}{10}$ & $\frac{8}{10}$ \\
+	DCG(10) 								& $26.0$ & $24.9$ \\
+	Avg over precisions 1: & 1 	& 1 \\
+	2: 										& 1 	& 1 \\
+	3: 										& 1 	& 1 \\
+	4: 										& 1 	& 1 \\
+	5: 										& 		&   \\
+	6: 										& .97 & .97\\
+	7: 										& .95 & 	 \\
+	8: 										& .94 & .93 \\
+	9: 										& 		& .91 \\
+	10: 									&	 		& .90 \\
 	Last Relevant Recall & & \\
+	\hline 
 \end{tabular}
-Details: Did we use different weights for relevance?
+
+\vspace{1 cm}
+
+
 
 \subsection{Comparison with Existing Search Engines}
 \begin{enumerate}
