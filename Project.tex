@@ -100,9 +100,10 @@ For our search engine, we aimed to create a single free text search box that can
 
 \section{Use Cases}
 \subsection{Max the Lazy Architect}
-Max is interested in art and architecture, and really hates all forms of work. He'd love to sleep in until noon, and he'd like to take the easiest classes possible. Of course, he needs to fulfill his departmental and distribution requirements, but he doesn't really care how as long as he can take his daily afternoon nap. So Max pulls up our search engine and types in ``easy afternoon courses''. He gets PSY 207. It's an SA distribution, is P/D/F-able, and lectures don't start until 12:30 pm. ``I'll take it!'' he exclaims, then takes a 15 minute Reddit break before looking for more classes.
+Max is interested in art and architecture, and really hates all forms of work. He'd love to sleep in until noon, and he'd like to take the easiest classes possible. Of course, he needs to fulfill his departmental and distribution requirements, but he doesn't really care how as long as he can take his daily afternoon nap. So Max pulls up our search engine and types in ``easy afternoon courses''. He gets PSY 207. It's an SA distribution, is P/D/F-able, and lectures don't start until 12:30 pm. ``I'll take it!'' he exclaims, then takes a 15 minute Reddit break before looking for more classes. Max decides to look at courses he needs to take for architecture. He first decides to look at ARC and technology through the query 'ARC technology' and sees ARC 311 looks like an interesting course.
 		
 \subsection{Julie the Undecided Poet}
+Julie can't decide between psychology and poetry. She wishes to pursue understanding the abnormalities and idiosyncracies of the human mind, through both art and science. She first browses the psychology offerings through the query 'psy' and decides PSY 207 would be an appropriate course. Julie then, looking for a challenge, seeks a course with about 200 pages of reading per week and no P/D/F option using the query 'ENG 200 pages no p/d/f'.She finds ENG 344, Topics in Romanticism: Romantic Passions, is a perfect fit for her interests.  
 
 \section{Components}
 
@@ -222,6 +223,8 @@ As we hope to fully integrate this with ICE, our primary flexibility is with the
 There are a variety of other sources we may use to help refine our results. We could use SCORE evaluations and the student course guide to help students choose courses with lighter workloads. Additionally, data on friends's course histories also serve as a ranking signal. We could also consider signals outside ICE such as what's trending on Twitter or on PrincetonFML, a site where students go to complain, celebrate, and share snippets of their lives. 
 
 \section{Conclusion}
+
+We built a useful and interesting tool. In order to create this, we had to learn about web scraping and built our own Princeton-specific web crawler. Towards the end of the project, we moved towards the Mercator model, as we used queues to determine which links to crawl.    We successfully are able to search for desired PDF and audit options. We can also search for reading amounts 
 
 \appendix
 
