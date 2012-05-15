@@ -32,13 +32,6 @@ public class RegistrarData {
                 oldDetails.put(key, details.get(key));
             }
         }
-
-        System.out.print(courses.get(courseId).get(CourseDetails.COURSE) + " ");
-        System.out.print(courses.get(courseId).get(CourseDetails.TITLE) + " ");
-        System.out.print(courses.get(courseId).get(CourseDetails.PDF) + " ");
-        System.out.print(courses.get(courseId).get(CourseDetails.AUDIT) + " ");
-        System.out.print(courses.get(courseId).get(CourseDetails.PROFESSORS) + " ");
-        System.out.println(courses.get(courseId).get(CourseDetails.MAX) + " ");
     }
 
     public Collection<CourseDetails> courseDetails() {

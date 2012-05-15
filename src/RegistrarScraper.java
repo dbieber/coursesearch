@@ -119,6 +119,7 @@ public class RegistrarScraper {
         Document doc = null;
         try {
             doc = Jsoup.connect(URL + u.url).get();
+            System.out.println("Loaded department: " + u.name);
         }
         catch (Exception e){
             System.out.println("Failed to load department: " + u.name);
@@ -201,6 +202,7 @@ public class RegistrarScraper {
         Document doc = null;
         try {
             doc = Jsoup.connect(myURL).get();
+            System.out.println("Loaded course: " + c.name);
         }
         catch (Exception e){
             System.out.println("Failed to load course: " + c.name);
@@ -286,10 +288,9 @@ public class RegistrarScraper {
     // Scrape the Registrar
     public static void test() throws IOException, ClassNotFoundException {
         RegistrarData data = new RegistrarData();
-//        data.load("coursedata");
         RegistrarScraper rs = new RegistrarScraper(data);
         rs.scrapeRegistrar();
-        data.dump("coursedata2");
+        data.dump("NewCourseData");
         System.out.println(rs.data);
     }
 
