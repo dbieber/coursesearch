@@ -73,7 +73,7 @@ public class CourseQuery {
         parseClassSize(query);
         query = parseDistributionAreas(query);
         query = parseReadingAmt(query);
-        parseCourseAbbr(query);
+        query = parseCourseAbbr(query);
         query = parseTime(query);
         query = parsePdfAudit(query);
         query = parseDays(query);
@@ -184,14 +184,17 @@ public class CourseQuery {
         }
     }
     
-    private void parseCourseAbbr(String query) {
+    private String parseCourseAbbr(String query) {
+        StringBuilder newQuery = new StringBuilder(query);
         abbr = "";
         query = query.toUpperCase();
         Pattern abbrPat = Pattern.compile("\\b\\w\\w\\w\\s*\\d\\d\\d\\b");
         Matcher m = abbrPat.matcher(query);
         if (m.find()) {
             abbr = query.substring(m.start(), m.start() + 3) + " " + query.substring(m.end() - 3, m.end());
-            return;
+            spacify(newQuery, m.start(), m.end());
+            compressSpaces(newQuery);
+            return newQuery.toString();
         }
 
         Pattern deptPattern = Pattern.compile("\\b\\w\\w\\w\\b");
@@ -201,12 +204,15 @@ public class CourseQuery {
         while (deptMatcher.find()) {
             if (containsOneOf(query.substring(deptMatcher.start(), deptMatcher.end()), DEPARTMENTS) != null) {
                 abbr = query.substring(deptMatcher.start(), deptMatcher.end()) + " ";
+                spacify(newQuery, deptMatcher.start(), deptMatcher.end());
                 break;
             }
         }
         if (courseNumMatcher.find()) {
             abbr += query.substring(courseNumMatcher.start(), courseNumMatcher.end());
+            spacify(newQuery, courseNumMatcher.start(), courseNumMatcher.end());
         }
+        return newQuery.toString();
     }
     
     private String parsePdfAudit(String query) {
