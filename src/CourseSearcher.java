@@ -29,27 +29,34 @@ public class CourseSearcher {
     private IndexSearcher searcher;
     private StandardAnalyzer analyzer;
 
-    public CourseSearcher(String indexDir) throws CorruptIndexException, IOException {
-        index = FSDirectory.open(new File(indexDir));
-        IndexReader reader = IndexReader.open(index);
-        searcher = new IndexSearcher(reader);
-        analyzer = new StandardAnalyzer(Version.LUCENE_35);
+    public CourseSearcher(String indexDir) throws CorruptIndexException {
+        try {
+            index = FSDirectory.open(new File(indexDir));
+            IndexReader reader = IndexReader.open(index);
+            searcher = new IndexSearcher(reader);
+            analyzer = new StandardAnalyzer(Version.LUCENE_35);
+        } catch (IOException e) {
+            System.err.println("Could not create CourseSearcher.");
+            e.printStackTrace();
+        }
     }
     
 
     /* Creates a search from a CourseQuery object
      * 
      */
-    public ScoreDoc[] search(CourseQuery query, int hitsPerPage) throws ParseException, IOException {
-        ScoreDoc[] hits = search(query.getQueryString(), hitsPerPage);
-        
+    public Document[] search(CourseQuery query, int hitsPerPage) throws ParseException, IOException {
+        Document[] hits = search(query.getQueryString(), hitsPerPage);
         return hits;
     }
     
     /*
-     * Searches using a plaintext query and prints the top scoring result
+     * Searches using a plain text query and prints the top scoring result
      */
-    public ScoreDoc[] search(String query, int hitsPerPage) throws ParseException, IOException {
+    public Document[] search(String query, int hitsPerPage) throws ParseException, IOException {
+        if (query.trim().isEmpty()) {
+            return new Document[0];
+        }
         Similarity me = Similarity.getDefault();
         Similarity.setDefault(me);        
         System.out.println(me.idfExplain(new Term("Roman"), searcher, 1).explain());
@@ -61,17 +68,21 @@ public class CourseSearcher {
         TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);
         searcher.search(q, collector);
         ScoreDoc[] hits = collector.topDocs().scoreDocs;
+        Document[] results = new Document[hits.length];
 
         System.out.println("Found " + hits.length + " hits.");
 
         for(int i = 0; i < hits.length; ++i) {
             int docId = hits[i].doc;
             Document d = searcher.doc(docId);
+            
+            results[i] = d;
+            
             System.out.println((i + 1) + ". " + hits[i].score + " " + d.get(CourseDetails.COURSE) + ": " + d.get(CourseDetails.DAYS)  
                         + " " + d.get(CourseDetails.TIME) + " " + d.get(CourseDetails.PDF) + " " + d.get(CourseDetails.MAX) + " " 
                         + d.get(CourseDetails.DESCRIPTION));
         }
-        return hits;
+        return results;
     }
     
 
