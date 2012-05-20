@@ -62,8 +62,8 @@ public class SearchClient {
         
         public void setupWindow() {
             setTitle("Course Search Engine");
-            setMinimumSize(new Dimension(300, 200));
-            setSize(600,400);
+            setMinimumSize(new Dimension(400, 300));
+            setSize(800,600);
             setLocation(10, 10);
         }
         
@@ -214,8 +214,7 @@ public class SearchClient {
     }
     
     private Document[] search(String query) throws ParseException, IOException {
-        CourseQuery cq = new CourseQuery(query);
-        Document[] results = searcher.search(cq, HITS_PER_PAGE);
+        Document[] results = searcher.search(query, HITS_PER_PAGE);
         return results;
     }
     

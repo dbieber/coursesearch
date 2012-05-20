@@ -57,6 +57,10 @@ public class CourseSearcher {
     public Document[] search(CourseQuery query, int hitsPerPage) throws ParseException, IOException {
         String queryString = query.getQueryString();
 
+        if (queryString.trim().isEmpty()) {
+            return new Document[0];
+        }
+
         System.out.println("Query: " + queryString);
 
         Similarity me = Similarity.getDefault();
