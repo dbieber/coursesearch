@@ -13,7 +13,6 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.IndexSearcher;
@@ -41,54 +40,54 @@ public class CourseSearcher {
         }
     }
     
-
-    /* Creates a search from a CourseQuery object
-     * 
-     */
-    public Document[] search(CourseQuery query, int hitsPerPage) throws ParseException, IOException {
-        Document[] hits = search(query.getQueryString(), hitsPerPage);
-        return hits;
-    }
-    
     /*
      * Searches using a plain text query and prints the top scoring result
      */
-    public Document[] search(String query, int hitsPerPage) throws ParseException, IOException {
-        if (query.trim().isEmpty()) {
+    public Document[] search(String queryString, int hitsPerPage) throws ParseException, IOException {
+        if (queryString.trim().isEmpty()) {
             return new Document[0];
         }
+        Document[] hits = search(new CourseQuery(queryString), hitsPerPage);
+        return hits;
+    }
+    
+    /* 
+     * Searches from a CourseQuery object
+     */
+    public Document[] search(CourseQuery query, int hitsPerPage) throws ParseException, IOException {
+        String queryString = query.getQueryString();
+
+        System.out.println("Query: " + queryString);
+
         Similarity me = Similarity.getDefault();
-        Similarity.setDefault(me);        
-        System.out.println(me.idfExplain(new Term("Roman"), searcher, 1).explain());
+        Similarity.setDefault(me);
                 
         Query q = new MultiFieldQueryParser(Version.LUCENE_35,
                 CourseDetails.TEXT_FIELDS,
-                analyzer).parse(query);
-        //int hitsPerPage = 14;
+                analyzer).parse(queryString);
+
         TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);
         searcher.search(q, collector);
+
         ScoreDoc[] hits = collector.topDocs().scoreDocs;
         Document[] results = new Document[hits.length];
-
-        System.out.println("Found " + hits.length + " hits.");
 
         for(int i = 0; i < hits.length; ++i) {
             int docId = hits[i].doc;
             Document d = searcher.doc(docId);
-            
             results[i] = d;
-            
-            System.out.println((i + 1) + ". " + hits[i].score + " " + d.get(CourseDetails.COURSE) + ": " + d.get(CourseDetails.DAYS)  
-                        + " " + d.get(CourseDetails.TIME) + " " + d.get(CourseDetails.PDF) + " " + d.get(CourseDetails.MAX) + " " 
-                        + d.get(CourseDetails.DESCRIPTION));
         }
         return results;
     }
-    
 
-
-    public void closeSearcher() throws IOException {
-        searcher.close();
+    public boolean closeSearcher() {
+        try {
+            searcher.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     /**

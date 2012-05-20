@@ -8,6 +8,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -39,7 +42,7 @@ public class SearchClient {
     private Desktop desktop;
     
     public SearchClient() throws CorruptIndexException {
-        searcher = new CourseSearcher("AllCourseIndex");
+        searcher = new CourseSearcher("AllCourseIndex519");
         desktop = Desktop.getDesktop();
         JFrame f = new SearchFrame();
         f.setVisible(true);
@@ -91,6 +94,7 @@ public class SearchClient {
         
         private class SearchFrameTerminator extends WindowAdapter {
             public void windowClosing(WindowEvent e) {
+                searcher.closeSearcher();
                 System.exit(0);
             }
         }
@@ -157,25 +161,43 @@ public class SearchClient {
                     public void mouseClicked(MouseEvent e) {
                         if (e.getClickCount() == 2) {
                             int index = resultsList.locationToIndex(e.getPoint());
-                            Document d = documents.get(index);
-                            String url = d.get(CourseDetails.COURSE_URL);
-                            try {
-                                URI uri = new URI(url);
-                                desktop.browse(uri);
-                            } catch (IOException e1) {
-                                // TODO Auto-generated catch block
-                                e1.printStackTrace();
-                            } catch (URISyntaxException e1) {
-                                // TODO Auto-generated catch block
-                                e1.printStackTrace();
+                            handleSelect(index);
+                        }
+                    }
+                };
+                KeyListener keyListener = new KeyAdapter() {
+                    public void keyPressed(KeyEvent e) {
+                        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                            int index = resultsList.getSelectedIndex();
+                            if (index >= 0) {
+                                handleSelect(index);
                             }
-                         }
+                        }
                     }
                 };
                 resultsList.addMouseListener(mouseListener);
+                resultsList.addKeyListener(keyListener);
 
                 resultsPane = new JScrollPane(resultsList);
                 add(resultsPane);
+            }
+            
+            private void handleSelect(int index) {
+                Document d = documents.get(index);
+                String url = d.get(CourseDetails.COURSE_URL);
+                System.out.println(d.get(CourseDetails.COURSE_URL));
+                System.out.println(d.get(CourseDetails.COURSE));
+                System.out.println(d.get(CourseDetails.PDF));
+                try {
+                    URI uri = new URI(url);
+                    desktop.browse(uri);
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                } catch (URISyntaxException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
             }
 
             public void addDocument(Document d) {
@@ -192,7 +214,8 @@ public class SearchClient {
     }
     
     private Document[] search(String query) throws ParseException, IOException {
-        Document[] results = searcher.search(query, HITS_PER_PAGE);
+        CourseQuery cq = new CourseQuery(query);
+        Document[] results = searcher.search(cq, HITS_PER_PAGE);
         return results;
     }
     

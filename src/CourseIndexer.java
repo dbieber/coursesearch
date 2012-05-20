@@ -113,7 +113,7 @@ public class CourseIndexer {
             addPropToDoc(doc, course, CourseDetails.ENROLLED, YES, NOT_ANALYZED);
             addPropToDoc(doc, course, CourseDetails.MAX, YES, NOT_ANALYZED);
             addPropToDoc(doc, course, CourseDetails.STATUS, YES, ANALYZED);
-            addPropToDoc(doc, course, CourseDetails.COURSE_URL, NO, NOT_ANALYZED);
+            addPropToDoc(doc, course, CourseDetails.COURSE_URL, YES, NOT_ANALYZED);
             addPropToDoc(doc, course, CourseDetails.BOOKS_URL, NO, NOT_ANALYZED);
             addPropToDoc(doc, course, CourseDetails.EVAL_URL, NO, NOT_ANALYZED);
             addPropToDoc(doc, course, CourseDetails.PROFESSORS, YES, ANALYZED);
@@ -151,11 +151,11 @@ public class CourseIndexer {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         RegistrarData rd = new RegistrarData();
-        String filename = "coursedata2";
+        String filename = "CourseData519";
         
         try {
             rd.load(filename);
-            new CourseIndexer(rd, "AllCourseIndexNoBoost", false);
+            new CourseIndexer(rd, "AllCourseIndex519", false);
         } catch (Exception e) {
             System.out.println("Couldn't load the file or couldn't index.");
         }
